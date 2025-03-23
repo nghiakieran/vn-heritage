@@ -1,3 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Playfair+Display:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --font-family: "Merriweather", serif;
+    --font-secondary: 'Playfair Display', serif;
+    --background: 0 0% 100%; 
+    --foreground: 220 10% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 10% 15%;
+    --primary: 215 25% 27%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 215 25% 27%;
+    --muted: 210 20% 96%;          /* Màu nền nhẹ */
+    --muted-foreground: 220 10% 45%;
+    --accent: 210 30% 95%;        /* Màu điểm nhấn */
+    --accent-foreground: 215 25% 27%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 215 25% 65%;    /* Hiệu ứng focus */
+  }
+   .dark {
+    --background: 220 10% 10%;
+    --foreground: 210 40% 98%;
+    --card: 220 10% 10%;
+    --card-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 220 10% 10%;
+    --secondary: 215 25% 15%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 215 25% 15%;
+    --muted-foreground: 220 10% 70%;
+    --accent: 215 25% 15%;
+    --accent-foreground: 210 40% 98%;
+    --border: 215 25% 20%;
+    --input: 215 25% 20%;
+    --ring: 215 25% 65%;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+
+  .page-container {
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 py-6;
+  }
+}
