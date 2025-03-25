@@ -31,7 +31,11 @@ export default {
           DEFAULT: 'hsl(var(--heritage-primary))',
           light: 'hsl(var(--heritage-light))',
           dark: 'hsl(var(--heritage-dark))',
-        }
+        },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))'
+        },
       },
       keyframes: {
         "fade-in": {

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Playfair+Display:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400..700&family=Playfair+Display:wght@400..700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -23,6 +23,8 @@
     --border: 214 32% 91%;
     --input: 214 32% 91%;
     --ring: 215 25% 65%;    /* Hiệu ứng focus */
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 210 40% 98%;
 
     --heritage-primary: 25 70% 47%;
     --heritage-light: 30 75% 93%;
@@ -44,6 +46,8 @@
     --border: 215 25% 20%;
     --input: 215 25% 20%;
     --ring: 215 25% 65%;
+    --destructive: 0 60% 40%;
+    --destructive-foreground: 210 40% 98%;
 
     --heritage-primary: 25 70% 47%;
     --heritage-light: 30 20% 20%;
