@@ -27,6 +27,11 @@ export default {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
+        heritage: {
+          DEFAULT: 'hsl(var(--heritage-primary))',
+          light: 'hsl(var(--heritage-light))',
+          dark: 'hsl(var(--heritage-dark))',
+        }
       },
       keyframes: {
         "fade-in": {
