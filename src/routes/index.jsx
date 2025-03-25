@@ -3,19 +3,19 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 
 import publicRoutes from './publicRoutes'
 import privateRoutes from './privateRoutes'
-import NotFound from '../pages/NotFound'
-import MainLayout from '../layout/MainLayout'
+import NotFound from '~/pages/NotFound'
+import MainLayout from '~/layout/MainLayout'
 
 const PublicRoutes = ({ children, restricted }) => {
   // Fake auth
-  const user = true
+  const user = false
   if (user && restricted) return <Navigate to='/' replace />
   return children
 }
 
 const PrivateRoutes = ({ children }) => {
   // Fake auth
-  const user = true
+  const user = false
   if (!user) return <Navigate to='/login' replace />
   return children
 }
@@ -24,7 +24,7 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route path='/' element={<MainLayout />}>
-        {/* Public Routes */}
+      {/* Public Routes */}
         {
           publicRoutes.map(({ path, element, restricted }) => (
             <Route
@@ -33,7 +33,7 @@ const AppRoutes = () => {
             />
           ))
         }
-        {/* Private Routes */}
+      {/* Private Routes */}
         {
           privateRoutes.map(({ path, element }) => (
             <Route

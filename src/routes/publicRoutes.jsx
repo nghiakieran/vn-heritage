@@ -1,8 +1,8 @@
-import HeritageDetail from "../pages/HeritageDetail"
-import Heritages from "../pages/Heritages"
-import Home from "../pages/Home"
-import Login from "../pages/Login"
-import Register from "../pages/Register"
+import HeritageDetail from "~/pages/HeritageDetail"
+import Heritages from "~/pages/Heritages"
+import Home from "~/pages/Home"
+import Login from "~/pages/Login"
+import Register from "~/pages/Register"
 
 const publicRoutes = [
   { path: '/', element: <Home /> },

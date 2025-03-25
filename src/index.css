@@ -23,6 +23,10 @@
     --border: 214 32% 91%;
     --input: 214 32% 91%;
     --ring: 215 25% 65%;    /* Hiệu ứng focus */
+
+    --heritage-primary: 25 70% 47%;
+    --heritage-light: 30 75% 93%;
+    --heritage-dark: 25 80% 25%;
   }
    .dark {
     --background: 220 10% 10%;
@@ -40,6 +44,10 @@
     --border: 215 25% 20%;
     --input: 215 25% 20%;
     --ring: 215 25% 65%;
+
+    --heritage-primary: 25 70% 47%;
+    --heritage-light: 30 20% 20%;
+    --heritage-dark: 25 80% 60%;
   }
 }
 
