@@ -13,7 +13,7 @@ const NavLinks = ({ navLinks }) => {
             to={item.to}
             className={cn(
               'flex items-center gap-1.5 text-sm hover:text-heritage transition-colors',
-              location.pathname === item.path ? 'text-heritage font-medium' : 'text-muted-foreground')}
+              location.pathname === item.to ? 'text-heritage font-medium' : 'text-muted-foreground')}
           >
             {item.icon}
             <span>{item.name}</span>

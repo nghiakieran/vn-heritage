@@ -31,7 +31,7 @@ const UserMenu = ({ userMenuLinks }) => {
   
   return (
     <div className='flex items-center gap-2' ref={dropDownRef}>
-      <Link to='/favorites' className="flex items-center gap-1.5 text-sm hover:text-accent-foreground hover:bg-accent px-4 py-2 h-10 rounded-md">
+      <Link to='/favorites' className='flex items-center gap-1.5 text-sm hover:text-accent-foreground hover:bg-accent px-4 py-2 h-10 rounded-md'>
         <Heart size={20} />
         <span>Favorites</span>
       </Link>
@@ -40,7 +40,7 @@ const UserMenu = ({ userMenuLinks }) => {
           className='h-9 w-9 rounded-full bg-heritage hover:opacity-80 transition-opacity flex items-center justify-center'>
           {
             user?.profileImage ? (
-              <img src={user?.profileImage} alt="profile" className='h-full w-full rounded-full object-cover' />
+              <img src={user?.profileImage} alt='profile' className='h-full w-full rounded-full object-cover' />
             ) : (
               <span className='text-white text-sm font-medium'>{user?.name?.slice(0, 2).toUpperCase() || 'UN'}</span>
             )
@@ -48,7 +48,7 @@ const UserMenu = ({ userMenuLinks }) => {
         </button>
         {
           isOpen && (
-            <div className='absolute right-0 mt-2 w-56 bg-white border border-gray-300 rounded-md shadow-lg'>
+            <div className='absolute right-0 mt-2 w-56 border rounded-md shadow-lg'>
               <div className='px-4 py-2'>
                 <p className='text-sm font-medium truncate'>{user?.name}</p>
                 <p className='text-xs text-muted-foreground truncate'>{user?.email}</p>
@@ -65,7 +65,7 @@ const UserMenu = ({ userMenuLinks }) => {
                 ))
               }
               <hr className='border-gray-100' />
-              <button onClick={handleLogout} className='w-full py-2 text-sm text-red-600 hover:bg-gray-100 rounded-md'>Logout</button>
+              <button onClick={handleLogout} className='w-full py-2 text-sm text-destructive hover:bg-destructive-foreground rounded-md'>Logout</button>
             </div>
           )
         }
