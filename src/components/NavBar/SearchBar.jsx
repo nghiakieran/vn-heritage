@@ -20,7 +20,7 @@ const SearchBar = ({ searchValue, setSearchValue, inputRef }) => {
         placeholder='Tìm kiếm di tích...'
         onChange={handleChange}
         value={searchValue}
-        className='border rounded-full w-[150px] sm:w-[200px] pr-8 sm:pr-10 sm:px-5 sm:py-2 px-3 py-2 text-xs sm:text-sm focus:border-gray-500 focus:outline-none'
+        className='border rounded-full w-[150px] sm:w-[200px] pr-8 sm:pr-10 sm:px-5 sm:py-2 px-3 py-2 text-[13px] sm:text-sm focus:border-gray-500 focus:outline-none'
       />
       <button 
         aria-label='Tìm kiếm'

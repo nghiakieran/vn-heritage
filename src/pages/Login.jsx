@@ -24,17 +24,17 @@ const Login = () => {
   }
 
   return (
-    <div className='flex items-center justify-center min-h-[calc(100vh -16rem)] px-4 py-12'>
+    <div className='flex items-center justify-center min-h-[calc(100vh -16rem)] sm:px-4 py-12'>
       <div className='max-w-md w-full animate-fade-up'>
         <div className='rounded-lg shadow-lg border border-heritage-light/50 bg-card text-card-foreground'>
           <div className='flex flex-col items-center p-6 gap-1'>
             <h3 className='text-xl sm:text-2xl text-heritage-dark font-bold tracking-tight'>Đăng nhập vào Heritage</h3>
-            <p className='text-sm text-muted-foreground text-center'>Vui lòng nhập thông tin để truy cập</p>
+            <p className='text-sm text-muted-foreground text-center'>Khám phá quá khứ, tận hưởng hiện tại</p>
           </div>
           <div className='pt-0 p-6'>
             <form onSubmit={handleSubmit} action='' className='space-y-4'>
               <div className='space-y-2'>
-                <label className='text-sm font-semibold' htmlFor='email'>Email</label>
+                <label className='text-sm font-medium' htmlFor='email'>Email</label>
                 <input 
                   type='email'
                   id='email'
@@ -43,12 +43,12 @@ const Login = () => {
                   placeholder='Nhập email...'
                   value={formData.email}
                   onChange={handleChange}
-                  className='w-full h-10 rounded-md border px-3 py-2 placeholder:text-muted-foreground focus:ring-heritage focus:ring-2 focus:outline-none text-sm'
+                  className='w-full h-10 rounded-md border px-3 py-2 placeholder:text-muted-foreground focus:ring-heritage focus:border-none focus:ring-2 focus:outline-none text-sm'
                 />
               </div>
               <div className='space-y-2'>
                 <div className='flex justify-between items-center'>
-                  <label className='text-sm font-semibold' htmlFor='password'>Mật khẩu</label>
+                  <label className='text-sm font-medium' htmlFor='password'>Mật khẩu</label>
                   <Link to='/forgot-password' className='text-xs text-heritage hover:underline'>Quên mật khẩu?</Link>
                 </div>
                 <div className='relative'>
@@ -57,10 +57,10 @@ const Login = () => {
                     id='password' 
                     name='password'
                     required
-                    placeholder='Nhập mật khẩu...'
-                    value={formData.email}
+                    placeholder='••••••••'
+                    value={formData.password}
                     onChange={handleChange}
-                    className='w-full h-10 rounded-md border px-3 py-2 placeholder:text-muted-foreground focus:ring-heritage focus:ring-2 focus:outline-none text-sm'
+                    className='w-full h-10 rounded-md border px-3 py-2 placeholder:text-muted-foreground focus:ring-heritage focus:border-none focus:ring-2 focus:outline-none text-sm'
                   />
                   <button onClick={() => setShowPassword(!showPassword)} className='absolute right-0 top-0 px-3 py-2 h-10' type='button'>
                     {
@@ -82,8 +82,8 @@ const Login = () => {
               >
                 {
                   isLoading ? (
-                    <div className="flex items-center">
-                      <div className="animate-spin mr-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
+                    <div className='flex items-center'>
+                      <div className='animate-spin mr-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full' />
                       Đang xử lý...
                     </div>
                   ) : (
@@ -97,7 +97,7 @@ const Login = () => {
             </form>
           </div>
           <div className='text-center pt-0 p-6 text-sm'>
-            <span>Bạn chưa có tài khoản? </span>
+            <span>Bạn chưa có tài khoản ư? </span>
             <Link to='/register' className='text-heritage font-medium hover:underline'>Đăng ký ngay</Link>
           </div>
         </div>
