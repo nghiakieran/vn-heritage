@@ -22,7 +22,7 @@ const MobileMenu = ({ isOpen, navLinks, userMenuLinks, onClose }) => {
               'p-4 rounded-md transition-colors',
               location.pathname === item.to
                 ? 'bg-heritage-light text-heritage font-medium'
-                : 'hover:bg-accent' )}
+                : 'hover:bg-accent hover:text-accent-foreground')}
           >
             <div className='flex items-center space-x-3'>
               {item.icon}
