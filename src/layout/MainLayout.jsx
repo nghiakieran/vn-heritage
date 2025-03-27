@@ -1,5 +1,6 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
+import Footer from '~/components/Footer/Footer'
 import NavBar from '~/components/NavBar/NavBar'
 
 const MainLayout = () => {
@@ -9,7 +10,7 @@ const MainLayout = () => {
       <div className='flex-grow container max-w-7xl mx-auto px-4 sm:px-6 pt-[65.6px] sm:pt-[72px]'>
         <Outlet />
       </div>
-      <div>Footer</div>
+      <Footer />
     </div>
   )
 }
