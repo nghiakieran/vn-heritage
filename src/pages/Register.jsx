@@ -28,7 +28,7 @@ const Register = () => {
     // Validate Data
   }
   return (
-    <div className='flex items-center justify-center sm:px-4 py-12 min-h-[calc(100vh -16rem)]'>
+    <div className='flex items-center justify-center sm:px-4 py-12'>
       <div className='max-w-md w-full animate-fade-up'>
         <div className='border shadow-lg rounded-lg border-heritage-light/50 bg-card text-card-foreground'>
           <div className='text-center p-6 space-y-1'>
@@ -36,7 +36,7 @@ const Register = () => {
             <p className='text-sm text-muted-foreground'>Nhanh chóng và dễ dàng</p>
           </div>
           <div className='p-6 pt-0'>
-            <form obSubmit={handleSubmit} action="" className='space-y-4'>
+            <form onSubmit={handleSubmit} action="" className='space-y-4'>
               <div className='space-y-2'>
                 <label htmlFor='username' className='text-sm font-medium'>Tên người dùng</label>
                 <input
