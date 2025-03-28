@@ -12,7 +12,7 @@ const MobileMenu = ({ isOpen, navLinks, userMenuLinks, onClose }) => {
   if (!isOpen) return null
 
   return (
-    <div className='fixed inset-0 z-40 bg-background/95 backdrop-blur-sm sm:hidden pt-[65.6px] animate-fade-in'>
+    <div className='fixed inset-0 z-40 bg-background/95 backdrop-blur-sm sm:hidden pt-navbar-mobile animate-fade-in'>
       <nav className='container px-4 py-8 flex flex-col space-y-8'>
         {navLinks.map((item) => (
           <Link

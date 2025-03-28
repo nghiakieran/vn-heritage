@@ -6,7 +6,7 @@ import { siFacebook, siInstagram } from 'simple-icons'
 const Footer = () => {
   return (
     <footer className='bg-gray-50 border-t border-gray-200'>
-      <div className='container max-w-6xl mx-auto px-4 py-8'>
+      <div className='container max-w-7xl mx-auto px-6 py-8'>
         <div className='flex flex-col md:flex-row justify-between items-center gap-6 sm:gap-8'>
           {/* Brand & Social */}
           <div className='flex flex-col items-center md:items-start space-y-4'>

@@ -7,6 +7,10 @@ export default {
   ],
   theme: {
     extend: {
+      spacing: {
+        'navbar': '72px',
+        'navbar-mobile': '69px'
+      },
       fontFamily: {
         sans: ['ui-sans-serif', 'system-ui', 'sans-serif', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji']
       },
