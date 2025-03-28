@@ -48,7 +48,7 @@ const UserMenu = ({ userMenuLinks }) => {
         </button>
         {
           isOpen && (
-            <div className='absolute right-0 mt-2 w-56 border rounded-md shadow-lg'>
+            <div className='absolute right-0 mt-2 w-56 border rounded-md shadow-lg bg-background'>
               <div className='px-4 py-2'>
                 <p className='text-sm font-medium truncate'>{user?.name}</p>
                 <p className='text-xs text-muted-foreground truncate'>{user?.email}</p>
