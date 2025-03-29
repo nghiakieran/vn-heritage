@@ -24,7 +24,7 @@ const Login = () => {
   }
 
   return (
-    <div className='flex items-center justify-center sm:px-4 py-12'>
+    <div className='flex items-center justify-center sm:px-4 py-12 mt-navbar-mobile sm:mt-navbar'>
       <div className='max-w-md w-full animate-fade-up'>
         <div className='rounded-lg shadow-lg border border-heritage-light/50 bg-card text-card-foreground'>
           <div className='flex flex-col items-center p-6 gap-1'>

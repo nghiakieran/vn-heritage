@@ -31,8 +31,8 @@ const featuredData = [
 const FeatureHighlight = () => {
   return (
     <section>
-      <Title icon={Sparkles} title={'Tính năng nổi bật'} />
-      <div className='grid grid-cols-1 sm:grid-cols-3 gap-6'>
+      <Title icon={Sparkles} title={'Tính năng nổi bật'}/>
+      <div className='grid grid-cols-1 sm:grid-cols-3 gap-6 mt-10'>
         {
           featuredData.map(item => (
             <FeatureItem key={item._id} item={item} />
