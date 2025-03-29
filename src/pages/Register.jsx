@@ -28,7 +28,7 @@ const Register = () => {
     // Validate Data
   }
   return (
-    <div className='flex items-center justify-center sm:px-4 py-12'>
+    <div className='flex items-center justify-center sm:px-4 py-12 mt-navbar-mobile sm:mt-navbar'>
       <div className='max-w-md w-full animate-fade-up'>
         <div className='border shadow-lg rounded-lg border-heritage-light/50 bg-card text-card-foreground'>
           <div className='text-center p-6 space-y-1'>
