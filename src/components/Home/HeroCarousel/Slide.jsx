@@ -18,7 +18,7 @@ const Slide = ({ slide, index, activeIndex }) => {
       <div className='absolute inset-0 bg-gradient-to-b from-black/55 via-black/45 to-black/60'/>
       {/* Content */}
       <div className='relative h-full flex flex-col items-center justify-center text-center px-6 sm:px-20'>
-        <div className='max-w-5xl mx-auto'>
+        <div className='max-w-5xl mx-auto animate-fade-up'>
           <h1 className='text-4xl sm:text-6xl font-bold text-primary-foreground'>{slide.title}</h1>
           <p className='text-lg sm:text-xl mt-6 mb-10 text-primary-foreground/90'>{slide.subTitle}</p>
           <div className='flex flex-col sm:flex-row justify-center gap-4'>

@@ -8,7 +8,7 @@ const Home = () => {
   return (
     <>
       <HeroCarousel />
-      <div className='container max-w-7xl mx-auto px-4 sm:px-6 py-16 space-y-16 sm:space-y-24 sm:py-24'>
+      <div className='lcn-container'>
         <FeatureHighlight />
         <PopularHeritage />
         <HowItWork />
