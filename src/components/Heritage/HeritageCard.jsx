@@ -14,7 +14,7 @@ const HeritageCard = ({ item }) => {
     <Link to={`/heritage/${item._id}`} className='block group'>
       <div className='shadow-sm border rounded-lg bg-card text-card-foreground overflow-hidden transition-all duration-300 hover:shadow-lg h-full flex flex-col'>
         <div className='relative overflow-hidden'>
-          <img src={item.image} alt={item.title} className='object-cover transition-transform duration-700 group-hover:scale-105' />
+          <img src={item.image} alt={item.title} className='aspect-[3/2] w-full object-cover transition-transform duration-700 group-hover:scale-105' />
           {
             isAuthenticated && (
               <button 

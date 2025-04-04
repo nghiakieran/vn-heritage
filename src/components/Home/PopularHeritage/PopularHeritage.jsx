@@ -5,9 +5,10 @@ import { Link } from 'react-router-dom'
 import Title from '~/components/common/Title'
 import { mockData } from '~/api/mock-data'
 import HeritageList from '~/components/Heritage/HeritageList'
+import HeritageSkeleton from '~/components/Heritage/HeritageSkeleton'
 
 const PopularHeritage = () => {
-  const heritages = mockData.heritages
+  const heritages = mockData.heritages.slice(0, 6)
   // Fake loading
   const isLoading = false
   return (
@@ -21,19 +22,7 @@ const PopularHeritage = () => {
       </div>
       {
         isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {heritages.map((item) => (
-              <div key={item._id} className="rounded-lg overflow-hidden border shadow animate-pulse">
-                <div className="h-48 bg-gray-200"></div>
-                <div className="p-4 space-y-3">
-                  <div className="h-6 bg-gray-200 rounded w-3/4"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-full"></div>
-                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <HeritageSkeleton count={6} />
         ) : (
           <>
             <HeritageList heritages={heritages}/>
