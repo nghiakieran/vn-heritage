@@ -68,6 +68,227 @@ export const mockData = {
       significance: 'The Great Pyramid of Giza is the only wonder of the ancient world that has survived to the present day. For 3,800 years, the Great Pyramid was the tallest man-made structure in the world.',
       yearStart: -2550,
       yearEnd: -2490
+    },
+    {
+      _id: '5',
+      title: 'Pyramids of Giza',
+      period: 'Ancient Egypt',
+      location: 'Giza, Egypt',
+      description: 'Ancient Egyptian pyramid complexes that were built during the Fourth Dynasty.',
+      image: 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?q=80&w=2070&auto=format&fit=crop',
+      details: 'The Giza pyramid complex, also called the Giza Necropolis, is the site on the Giza Plateau in Greater Cairo, Egypt that includes the Great Pyramid of Giza, the Pyramid of Khafre, and the Pyramid of Menkaure, along with their associated pyramid complexes and the Great Sphinx of Giza.',
+      facts: [
+        'Built in the Fourth Dynasty of Egypt\'s Old Kingdom',
+        'The Great Pyramid is the oldest and largest of the three pyramids',
+        'The only one of the Seven Wonders of the Ancient World still in existence'
+      ],
+      significance: 'The Great Pyramid of Giza is the only wonder of the ancient world that has survived to the present day. For 3,800 years, the Great Pyramid was the tallest man-made structure in the world.',
+      yearStart: -2550,
+      yearEnd: -2490
+    },
+    {
+      _id: '6',
+      title: 'Pyramids of Giza',
+      period: 'Ancient Egypt',
+      location: 'Giza, Egypt',
+      description: 'Ancient Egyptian pyramid complexes that were built during the Fourth Dynasty.',
+      image: 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?q=80&w=2070&auto=format&fit=crop',
+      details: 'The Giza pyramid complex, also called the Giza Necropolis, is the site on the Giza Plateau in Greater Cairo, Egypt that includes the Great Pyramid of Giza, the Pyramid of Khafre, and the Pyramid of Menkaure, along with their associated pyramid complexes and the Great Sphinx of Giza.',
+      facts: [
+        'Built in the Fourth Dynasty of Egypt\'s Old Kingdom',
+        'The Great Pyramid is the oldest and largest of the three pyramids',
+        'The only one of the Seven Wonders of the Ancient World still in existence'
+      ],
+      significance: 'The Great Pyramid of Giza is the only wonder of the ancient world that has survived to the present day. For 3,800 years, the Great Pyramid was the tallest man-made structure in the world.',
+      yearStart: -2550,
+      yearEnd: -2490
+    },
+    {
+      _id: '7',
+      title: 'Pyramids of Giza',
+      period: 'Ancient Egypt',
+      location: 'Giza, Egypt',
+      description: 'Ancient Egyptian pyramid complexes that were built during the Fourth Dynasty.',
+      image: 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?q=80&w=2070&auto=format&fit=crop',
+      details: 'The Giza pyramid complex, also called the Giza Necropolis, is the site on the Giza Plateau in Greater Cairo, Egypt that includes the Great Pyramid of Giza, the Pyramid of Khafre, and the Pyramid of Menkaure, along with their associated pyramid complexes and the Great Sphinx of Giza.',
+      facts: [
+        'Built in the Fourth Dynasty of Egypt\'s Old Kingdom',
+        'The Great Pyramid is the oldest and largest of the three pyramids',
+        'The only one of the Seven Wonders of the Ancient World still in existence'
+      ],
+      significance: 'The Great Pyramid of Giza is the only wonder of the ancient world that has survived to the present day. For 3,800 years, the Great Pyramid was the tallest man-made structure in the world.',
+      yearStart: -2550,
+      yearEnd: -2490
+    },
+    {
+      _id: '8',
+      title: 'Pyramids of Giza',
+      period: 'Ancient Egypt',
+      location: 'Giza, Egypt',
+      description: 'Ancient Egyptian pyramid complexes that were built during the Fourth Dynasty.',
+      image: 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?q=80&w=2070&auto=format&fit=crop',
+      details: 'The Giza pyramid complex, also called the Giza Necropolis, is the site on the Giza Plateau in Greater Cairo, Egypt that includes the Great Pyramid of Giza, the Pyramid of Khafre, and the Pyramid of Menkaure, along with their associated pyramid complexes and the Great Sphinx of Giza.',
+      facts: [
+        'Built in the Fourth Dynasty of Egypt\'s Old Kingdom',
+        'The Great Pyramid is the oldest and largest of the three pyramids',
+        'The only one of the Seven Wonders of the Ancient World still in existence'
+      ],
+      significance: 'The Great Pyramid of Giza is the only wonder of the ancient world that has survived to the present day. For 3,800 years, the Great Pyramid was the tallest man-made structure in the world.',
+      yearStart: -2550,
+      yearEnd: -2490
+    },
+    {
+      _id: '9',
+      title: 'Pyramids of Giza',
+      period: 'Ancient Egypt',
+      location: 'Giza, Egypt',
+      description: 'Ancient Egyptian pyramid complexes that were built during the Fourth Dynasty.',
+      image: 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?q=80&w=2070&auto=format&fit=crop',
+      details: 'The Giza pyramid complex, also called the Giza Necropolis, is the site on the Giza Plateau in Greater Cairo, Egypt that includes the Great Pyramid of Giza, the Pyramid of Khafre, and the Pyramid of Menkaure, along with their associated pyramid complexes and the Great Sphinx of Giza.',
+      facts: [
+        'Built in the Fourth Dynasty of Egypt\'s Old Kingdom',
+        'The Great Pyramid is the oldest and largest of the three pyramids',
+        'The only one of the Seven Wonders of the Ancient World still in existence'
+      ],
+      significance: 'The Great Pyramid of Giza is the only wonder of the ancient world that has survived to the present day. For 3,800 years, the Great Pyramid was the tallest man-made structure in the world.',
+      yearStart: -2550,
+      yearEnd: -2490
+    },
+    {
+      _id: '10',
+      title: 'Pyramids of Giza',
+      period: 'Ancient Egypt',
+      location: 'Giza, Egypt',
+      description: 'Ancient Egyptian pyramid complexes that were built during the Fourth Dynasty.',
+      image: 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?q=80&w=2070&auto=format&fit=crop',
+      details: 'The Giza pyramid complex, also called the Giza Necropolis, is the site on the Giza Plateau in Greater Cairo, Egypt that includes the Great Pyramid of Giza, the Pyramid of Khafre, and the Pyramid of Menkaure, along with their associated pyramid complexes and the Great Sphinx of Giza.',
+      facts: [
+        'Built in the Fourth Dynasty of Egypt\'s Old Kingdom',
+        'The Great Pyramid is the oldest and largest of the three pyramids',
+        'The only one of the Seven Wonders of the Ancient World still in existence'
+      ],
+      significance: 'The Great Pyramid of Giza is the only wonder of the ancient world that has survived to the present day. For 3,800 years, the Great Pyramid was the tallest man-made structure in the world.',
+      yearStart: -2550,
+      yearEnd: -2490
+    },
+    {
+      _id: '11',
+      title: 'Pyramids of Giza',
+      period: 'Ancient Egypt',
+      location: 'Giza, Egypt',
+      description: 'Ancient Egyptian pyramid complexes that were built during the Fourth Dynasty.',
+      image: 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?q=80&w=2070&auto=format&fit=crop',
+      details: 'The Giza pyramid complex, also called the Giza Necropolis, is the site on the Giza Plateau in Greater Cairo, Egypt that includes the Great Pyramid of Giza, the Pyramid of Khafre, and the Pyramid of Menkaure, along with their associated pyramid complexes and the Great Sphinx of Giza.',
+      facts: [
+        'Built in the Fourth Dynasty of Egypt\'s Old Kingdom',
+        'The Great Pyramid is the oldest and largest of the three pyramids',
+        'The only one of the Seven Wonders of the Ancient World still in existence'
+      ],
+      significance: 'The Great Pyramid of Giza is the only wonder of the ancient world that has survived to the present day. For 3,800 years, the Great Pyramid was the tallest man-made structure in the world.',
+      yearStart: -2550,
+      yearEnd: -2490
+    },
+    {
+      _id: '12',
+      title: 'Pyramids of Giza',
+      period: 'Ancient Egypt',
+      location: 'Giza, Egypt',
+      description: 'Ancient Egyptian pyramid complexes that were built during the Fourth Dynasty.',
+      image: 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?q=80&w=2070&auto=format&fit=crop',
+      details: 'The Giza pyramid complex, also called the Giza Necropolis, is the site on the Giza Plateau in Greater Cairo, Egypt that includes the Great Pyramid of Giza, the Pyramid of Khafre, and the Pyramid of Menkaure, along with their associated pyramid complexes and the Great Sphinx of Giza.',
+      facts: [
+        'Built in the Fourth Dynasty of Egypt\'s Old Kingdom',
+        'The Great Pyramid is the oldest and largest of the three pyramids',
+        'The only one of the Seven Wonders of the Ancient World still in existence'
+      ],
+      significance: 'The Great Pyramid of Giza is the only wonder of the ancient world that has survived to the present day. For 3,800 years, the Great Pyramid was the tallest man-made structure in the world.',
+      yearStart: -2550,
+      yearEnd: -2490
+    },
+    {
+      _id: '13',
+      title: 'Pyramids of Giza',
+      period: 'Ancient Egypt',
+      location: 'Giza, Egypt',
+      description: 'Ancient Egyptian pyramid complexes that were built during the Fourth Dynasty.',
+      image: 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?q=80&w=2070&auto=format&fit=crop',
+      details: 'The Giza pyramid complex, also called the Giza Necropolis, is the site on the Giza Plateau in Greater Cairo, Egypt that includes the Great Pyramid of Giza, the Pyramid of Khafre, and the Pyramid of Menkaure, along with their associated pyramid complexes and the Great Sphinx of Giza.',
+      facts: [
+        'Built in the Fourth Dynasty of Egypt\'s Old Kingdom',
+        'The Great Pyramid is the oldest and largest of the three pyramids',
+        'The only one of the Seven Wonders of the Ancient World still in existence'
+      ],
+      significance: 'The Great Pyramid of Giza is the only wonder of the ancient world that has survived to the present day. For 3,800 years, the Great Pyramid was the tallest man-made structure in the world.',
+      yearStart: -2550,
+      yearEnd: -2490
+    },
+    {
+      _id: '14',
+      title: 'Pyramids of Giza',
+      period: 'Ancient Egypt',
+      location: 'Giza, Egypt',
+      description: 'Ancient Egyptian pyramid complexes that were built during the Fourth Dynasty.',
+      image: 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?q=80&w=2070&auto=format&fit=crop',
+      details: 'The Giza pyramid complex, also called the Giza Necropolis, is the site on the Giza Plateau in Greater Cairo, Egypt that includes the Great Pyramid of Giza, the Pyramid of Khafre, and the Pyramid of Menkaure, along with their associated pyramid complexes and the Great Sphinx of Giza.',
+      facts: [
+        'Built in the Fourth Dynasty of Egypt\'s Old Kingdom',
+        'The Great Pyramid is the oldest and largest of the three pyramids',
+        'The only one of the Seven Wonders of the Ancient World still in existence'
+      ],
+      significance: 'The Great Pyramid of Giza is the only wonder of the ancient world that has survived to the present day. For 3,800 years, the Great Pyramid was the tallest man-made structure in the world.',
+      yearStart: -2550,
+      yearEnd: -2490
+    },
+    {
+      _id: '15',
+      title: 'Pyramids of Giza',
+      period: 'Ancient Egypt',
+      location: 'Giza, Egypt',
+      description: 'Ancient Egyptian pyramid complexes that were built during the Fourth Dynasty.',
+      image: 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?q=80&w=2070&auto=format&fit=crop',
+      details: 'The Giza pyramid complex, also called the Giza Necropolis, is the site on the Giza Plateau in Greater Cairo, Egypt that includes the Great Pyramid of Giza, the Pyramid of Khafre, and the Pyramid of Menkaure, along with their associated pyramid complexes and the Great Sphinx of Giza.',
+      facts: [
+        'Built in the Fourth Dynasty of Egypt\'s Old Kingdom',
+        'The Great Pyramid is the oldest and largest of the three pyramids',
+        'The only one of the Seven Wonders of the Ancient World still in existence'
+      ],
+      significance: 'The Great Pyramid of Giza is the only wonder of the ancient world that has survived to the present day. For 3,800 years, the Great Pyramid was the tallest man-made structure in the world.',
+      yearStart: -2550,
+      yearEnd: -2490
+    },
+    {
+      _id: '16',
+      title: 'Pyramids of Giza',
+      period: 'Ancient Egypt',
+      location: 'Giza, Egypt',
+      description: 'Ancient Egyptian pyramid complexes that were built during the Fourth Dynasty.',
+      image: 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?q=80&w=2070&auto=format&fit=crop',
+      details: 'The Giza pyramid complex, also called the Giza Necropolis, is the site on the Giza Plateau in Greater Cairo, Egypt that includes the Great Pyramid of Giza, the Pyramid of Khafre, and the Pyramid of Menkaure, along with their associated pyramid complexes and the Great Sphinx of Giza.',
+      facts: [
+        'Built in the Fourth Dynasty of Egypt\'s Old Kingdom',
+        'The Great Pyramid is the oldest and largest of the three pyramids',
+        'The only one of the Seven Wonders of the Ancient World still in existence'
+      ],
+      significance: 'The Great Pyramid of Giza is the only wonder of the ancient world that has survived to the present day. For 3,800 years, the Great Pyramid was the tallest man-made structure in the world.',
+      yearStart: -2550,
+      yearEnd: -2490
+    },
+    {
+      _id: '17',
+      title: 'Pyramids of Giza',
+      period: 'Ancient Egypt',
+      location: 'Giza, Egypt',
+      description: 'Ancient Egyptian pyramid complexes that were built during the Fourth Dynasty.',
+      image: 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?q=80&w=2070&auto=format&fit=crop',
+      details: 'The Giza pyramid complex, also called the Giza Necropolis, is the site on the Giza Plateau in Greater Cairo, Egypt that includes the Great Pyramid of Giza, the Pyramid of Khafre, and the Pyramid of Menkaure, along with their associated pyramid complexes and the Great Sphinx of Giza.',
+      facts: [
+        'Built in the Fourth Dynasty of Egypt\'s Old Kingdom',
+        'The Great Pyramid is the oldest and largest of the three pyramids',
+        'The only one of the Seven Wonders of the Ancient World still in existence'
+      ],
+      significance: 'The Great Pyramid of Giza is the only wonder of the ancient world that has survived to the present day. For 3,800 years, the Great Pyramid was the tallest man-made structure in the world.',
+      yearStart: -2550,
+      yearEnd: -2490
     }
   ]
 }
