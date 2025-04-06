@@ -1,6 +1,8 @@
-import { Heart } from 'lucide-react'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { Heart } from 'lucide-react'
+
+import { Button } from '~/components/common/ui/button'
 
 const UserMenu = ({ userMenuLinks }) => {
   // Fake user
@@ -31,21 +33,22 @@ const UserMenu = ({ userMenuLinks }) => {
   
   return (
     <div className='flex items-center gap-2' ref={dropDownRef}>
-      <Link to='/favorites' className='flex items-center gap-1.5 text-sm hover:text-accent-foreground hover:bg-accent px-4 py-2 h-10 rounded-md'>
-        <Heart size={20} />
-        <span>Favorites</span>
+      <Link to='/favorites'>
+        <Button variant='ghost'>
+          <Heart size={20} />
+          <span>Favorites</span>
+        </Button>
       </Link>
       <div className='relative'>
-        <button onClick={() => setIsOpen(!isOpen)} 
-          className='h-9 w-9 rounded-full bg-heritage hover:opacity-80 transition-opacity flex items-center justify-center'>
+         <Button onClick={() => setIsOpen(!isOpen)} variant='ghost' size='icon' className='hover:bg-transparent'>
           {
             user?.profileImage ? (
-              <img src={user?.profileImage} alt='profile' className='h-full w-full rounded-full object-cover' />
+              <img src={user?.profileImage} alt='profile' className='h-9 w-9 rounded-full object-cover hover:opacity-80 transition-opacity' />
             ) : (
-              <span className='text-white text-sm font-medium'>{user?.name?.slice(0, 2).toUpperCase() || 'UN'}</span>
+              <span className='text-white bg-heritage hover:opacity-80 h-9 w-9 rounded-full flex items-center justify-center text-sm font-medium'>{user?.name?.slice(0, 2).toUpperCase() || 'UN'}</span>
             )
           }
-        </button>
+        </Button>
         {
           isOpen && (
             <div className='absolute right-0 mt-2 w-56 border rounded-md shadow-lg bg-background'>
@@ -57,15 +60,21 @@ const UserMenu = ({ userMenuLinks }) => {
               {
                 userMenuLinks.map(item => (
                   <Link key={item.to} to={item.to} onClick={() => setIsOpen(false)}>
-                    <button className='flex items-center w-full h-full gap-1.5 text-sm rounded-md px-4 py-2 hover:text-accent-foreground hover:bg-accent'>
+                     <Button variant='ghost' className='!flex w-full h-full !justify-start' >
                       {item.icon}
                       <span>{item.name}</span>
-                    </button>
+                    </Button>
                   </Link>
                 ))
               }
               <hr className='border-gray-100' />
-              <button onClick={handleLogout} className='w-full py-2 text-sm text-destructive hover:bg-destructive-foreground rounded-md'>Logout</button>
+              <Button 
+                onClick={handleLogout} 
+                className='w-full text-destructive hover:text-destructive'
+                variant='ghost'
+              >
+                Logout
+              </Button>
             </div>
           )
         }

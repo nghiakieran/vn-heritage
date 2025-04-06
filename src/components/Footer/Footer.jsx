@@ -1,6 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Mail } from 'lucide-react';
+import { Link } from 'react-router-dom'
+import { Mail } from 'lucide-react'
 import { siFacebook, siInstagram } from 'simple-icons'
 
 const Footer = () => {
@@ -27,7 +26,6 @@ const Footer = () => {
               </Link>
             </div>
           </div>
-
           {/* Navigation */}
           <div className='flex flex-col md:flex-row gap-4 md:gap-12'>
             <Link to='/heritages' className='text-sm text-muted-foreground hover:text-heritage transition-colors'>
@@ -48,7 +46,7 @@ const Footer = () => {
         </div>    
       </div>
     </footer>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer

@@ -1,6 +1,8 @@
 import { Eye, EyeOff, LogIn } from 'lucide-react'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
+
+import { Button } from '~/components/common/ui/button'
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
@@ -73,10 +75,9 @@ const Login = () => {
                   </button>
                 </div>
               </div>
-              <button 
+              <Button
                 type='submit' 
-                className='flex items-center justify-center gap-2 text-sm rounded-md px-4 py-2 h-10 bg-heritage text-primary-foreground font-medium w-full
-                  hover:bg-heritage-dark transition-colors'
+                className='w-full'
                 disabled={isLoading}
                 onClick={() => setIsLoading(!isLoading)}
               >
@@ -93,7 +94,7 @@ const Login = () => {
                     </>
                   )
                 }
-              </button>
+              </Button>
             </form>
           </div>
           <div className='text-center pt-0 p-6 text-sm'>

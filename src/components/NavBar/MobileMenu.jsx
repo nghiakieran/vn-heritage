@@ -1,8 +1,8 @@
-import React from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { LogIn, UserPlus } from 'lucide-react'
 
 import { cn } from '~/lib/utils'
+import { Button } from '~/components/common/ui/button'
 
 const MobileMenu = ({ isOpen, navLinks, userMenuLinks, onClose }) => {
   const location = useLocation()
@@ -30,7 +30,6 @@ const MobileMenu = ({ isOpen, navLinks, userMenuLinks, onClose }) => {
             </div>
           </Link>
         ))}
-
         {isAuthenticated ? (
           <>
             {userMenuLinks.map((item) => (
@@ -49,31 +48,26 @@ const MobileMenu = ({ isOpen, navLinks, userMenuLinks, onClose }) => {
                 </div>
               </Link>
             ))}
-            <button
-              className='py-2 px-4 rounded-md border h-10 text-left text-destructive border-destructive hover:bg-destructive/10'
-              onClick={() => {
-                navigate('/')
-                onClose()
-              }}
+            <Button variant='destructive' onClick={() => {
+              navigate('/')
+              onClose()}}
             >
               Đăng xuất
-            </button>
+            </Button>
           </>
         ) : (
             <div className='flex flex-col space-y-4 pt-4'>
             <Link to='/login'>
-                <button className='inline-flex items-center rounded-md text-sm transition-colors
-                  border bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full'>
+              <Button variant='outline' className='w-full'>
                 <LogIn className='h-5 w-5 mr-3' />
                 <span>Đăng nhập</span>
-              </button>
+              </Button>
             </Link>
             <Link to='/register'>
-                <button className='inline-flex items-center rounded-md text-sm transition-colors
-                  text-primary-foreground h-10 px-4 py-2 w-full bg-heritage hover:bg-heritage-dark'>
+              <Button className='w-full'>
                 <UserPlus className='h-5 w-5 mr-3' />
                 <span>Đăng ký</span>
-              </button>
+              </Button>
             </Link>
           </div>
         )}

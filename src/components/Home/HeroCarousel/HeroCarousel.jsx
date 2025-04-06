@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+
 import Slide from './Slide'
 import ArrowButton from './ArrowButton'
 

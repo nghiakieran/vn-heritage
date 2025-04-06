@@ -1,4 +1,3 @@
-import { selectCurrentPage, selectItemsPerPage, selectSearchQuery } from '~/store/selectors/paginationSelectors'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 
@@ -6,6 +5,7 @@ import { useLazyGetHeritagesQuery } from '~/store/apis/heritageApi'
 import { setCurrentPage } from '~/store/slices/paginationSlice'
 import HeritageList from '~/components/Heritage/HeritageList'
 import HeritageSkeleton from '~/components/Heritage/HeritageSkeleton'
+import { selectCurrentPage, selectItemsPerPage, selectSearchQuery } from '~/store/selectors/paginationSelectors'
 
 const Heritages = () => {
 

@@ -11,6 +11,7 @@ import MobileMenu from './MobileMenu'
 import { selectSearchQuery } from '~/store/selectors/paginationSelectors'
 import useDebounce from '~/hooks/useDebounce'
 import { setSearchQuery } from '~/store/slices/paginationSlice'
+import { Button } from '~/components/common/ui/button'
 
 const navLinks = [
   { name: 'Trang chủ', to: '/', icon: <House className='h-5 w-5' /> },
@@ -118,17 +119,18 @@ const NavBar = () => {
                 )
               }
             </div>
-            <button 
+            <Button 
               onClick={() => setShowMobileMenu(!showMobileMenu)} 
-              className='inline-flex items-center justify-center sm:hidden
-              rounded-md w-9 h-9 hover:text-accent-foreground hover:bg-accent transition-colors' 
+              className='sm:hidden'
               aria-label='Toggle-Menu'
+              size='icon'
+              variant='ghost'
             >
               {
                 showMobileMenu ? (<X className='w-5 h-5 text-muted-foreground' />) : 
                   <Menu className='w-5 h-5 text-muted-foreground' />
               }
-            </button>
+            </Button>
           </div>
         </div>
       </header>
