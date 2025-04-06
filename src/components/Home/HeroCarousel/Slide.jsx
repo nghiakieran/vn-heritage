@@ -1,6 +1,7 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 import { BookOpen, MessageSquare } from 'lucide-react'
+
+import { Button } from '~/components/common/ui/button'
 
 const Slide = ({ slide, index, activeIndex }) => {
   const isActive = index === activeIndex
@@ -23,16 +24,21 @@ const Slide = ({ slide, index, activeIndex }) => {
           <p className='text-lg sm:text-xl mt-6 mb-10 text-primary-foreground/90'>{slide.subTitle}</p>
           <div className='flex flex-col sm:flex-row justify-center gap-4'>
             <Link to='/heritages'>
-              <button className='inline-flex items-center justify-center px-6 py-3 font-medium bg-heritage hover:bg-heritage/80 text-primary-foreground w-52 shadow-lg transition-all duration-300 hover:scale-105 rounded-md'>
+              <Button 
+                size='lg'
+                className='w-52'>
                 <BookOpen className='mr-2' size={20} />
                 Khám phá di tích
-              </button>
+              </Button>
             </Link>
             <Link to='/chatbot'>
-              <button className='inline-flex items-center justify-center px-6 py-3 font-medium bg-primary-foreground/10 backdrop-blur-sm text-primary-foreground border border-primary-foreground hover:bg-primary-foreground/20 w-52 shadow-lg transition-all duration-300 hover:scale-105 rounded-md'>
+              <Button 
+                size='lg'
+                variant='outline'
+                className='bg-primary-foreground/10 backdrop-blur-sm text-primary-foreground border hover:bg-primary-foreground/20 w-52'>
                 <MessageSquare className='mr-2' size={20} />
                 Trợ lý AI
-              </button>
+              </Button>
             </Link>
           </div>
         </div>

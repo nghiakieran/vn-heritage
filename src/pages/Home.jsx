@@ -1,7 +1,6 @@
-import React from 'react'
 import FeatureHighlight from '~/components/Home/FeatureHighlight/FeatureHighlight'
 import HeroCarousel from '~/components/Home/HeroCarousel/HeroCarousel'
-import HowItWork from '~/components/Home/HowItWork/HowItWork';
+import HowItWork from '~/components/Home/HowItWork/HowItWork'
 import PopularHeritage from '~/components/Home/PopularHeritage/PopularHeritage'
 
 const Home = () => {

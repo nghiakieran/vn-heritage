@@ -1,6 +1,8 @@
 import { Eye, EyeOff, UserPlus } from 'lucide-react'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
+
+import { Button } from '~/components/common/ui/button'
 
 const Register = () => {
 
@@ -97,9 +99,12 @@ const Register = () => {
                   onChange={handleChange}
                   className='w-full h-10 px-3 py-2 rounded-md border focus:ring-2 focus:ring-heritage focus:outline-none focus:border-none placeholder:text-muted-foreground text-sm' />
               </div>
-              <button type='submit' disabled={isLoading} onClick={() => setIsLoading(!isLoading)}
-                className='flex items-center justify-center h-10 px-4 py-2 gap-2 text-sm rounded-md bg-heritage 
-                text-primary-foreground font-medium w-full hover:bg-heritage-dark transition-colors'>
+              <Button
+                type='submit'
+                disabled={isLoading}
+                onClick={() => setIsLoading(!isLoading)}
+                className='w-full'
+              >
                 {
                   isLoading ? (
                     <div className='flex items-center'>
@@ -113,7 +118,7 @@ const Register = () => {
                     </>
                   )
                 }
-              </button>
+              </Button>
             </form>
           </div>
           <div className='text-center pt-0 p-6 text-sm'>

@@ -1,4 +1,3 @@
-import React from 'react'
 import { Sparkles, MessageSquare, Brain, Theater } from 'lucide-react'
 
 import Title from '~/components/common/Title'

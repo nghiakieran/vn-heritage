@@ -6,6 +6,7 @@ import Title from '~/components/common/Title'
 import { mockData } from '~/api/mock-data'
 import HeritageList from '~/components/Heritage/HeritageList'
 import HeritageSkeleton from '~/components/Heritage/HeritageSkeleton'
+import { Button } from '~/components/common/ui/button'
 
 const PopularHeritage = () => {
   const heritages = mockData.heritages.slice(0, 6)
@@ -26,9 +27,11 @@ const PopularHeritage = () => {
         ) : (
           <>
             <HeritageList heritages={heritages}/>
-              <Link to='/heritages' className='mt-8 inline-flex sm:hidden items-center justify-center gap-2 text-sm px-4 py-2 h-10 w-full font-medium border bg-heritage text-primary-foreground hover:bg-heritage-dark duration-300 transition-all rounded-md'>
-                Xem tất cả di tích
-                <MoveRight className='ml-2' size={16} />
+              <Link to='/heritages' className='sm:hidden w-full'>
+                <Button className='w-full mt-8'>
+                  Xem tất cả di tích
+                  <MoveRight className='ml-2' size={16} />
+                </Button>
               </Link>
           </>
         )

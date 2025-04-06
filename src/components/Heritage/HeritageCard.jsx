@@ -1,7 +1,8 @@
 import { Heart } from 'lucide-react'
-import React from 'react'
 import { Link } from 'react-router-dom'
+
 import { cn } from '~/lib/utils'
+import { Button } from '~/components/common/ui/button'
 
 const HeritageCard = ({ item }) => {
   // Fake authen
@@ -17,14 +18,15 @@ const HeritageCard = ({ item }) => {
           <img src={item.image} alt={item.title} className='aspect-[3/2] w-full object-cover transition-transform duration-700 group-hover:scale-105' />
           {
             isAuthenticated && (
-              <button 
+              <Button
+                variant='ghost'
+                size='icon'
                 onClick={handleFavoriteClick}
-                className='absolute bg-white/80 w-10 h-10 top-2 right-2 flex items-center justify-center rounded-md hover:bg-white/90 hover:text-accent-foreground transition-colors'>
+                className='absolute top-2 right-2 bg-white/80 backdrop-blur-sm hover:bg-white/90'
+              >
                 <Heart size={20} className={cn('transition-colors', 
-                  favorite ? 'fill-heritage text-heritage' : 'text-gray-500'
-                )} 
-              />
-              </button>
+                  favorite ? 'fill-heritage text-heritage' : 'text-gray-500')} />
+              </Button>
             )
           }
           <div className='absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent h-1/3 pointer-events-none'></div>

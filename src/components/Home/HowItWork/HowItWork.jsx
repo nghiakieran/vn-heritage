@@ -1,5 +1,5 @@
 import { Brain, MessageSquare, Search, UserPlus, Workflow } from 'lucide-react'
-import React from 'react'
+
 import Title from '~/components/common/Title'
 import FeatureItem from '~/components/Home/FeatureHighlight/FeatureItem'
 
