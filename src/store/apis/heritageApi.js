@@ -30,8 +30,22 @@ export const heritageApi = createApi({
           }
         }
       }
+    }),
+    getHeritagesById: builder.query({
+      queryFn: async (heritageId) => {
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        const heritageItem = mockData.heritages.find(item => item._id === heritageId)
+        if (heritageItem) {
+          return {
+            data: heritageItem
+          }
+        }
+        return {
+          error: 'Heritage not found'
+        }
+      }  
     })
   })
 })
 
-export const { useLazyGetHeritagesQuery } = heritageApi
+export const { useLazyGetHeritagesQuery, useGetHeritagesByIdQuery } = heritageApi
