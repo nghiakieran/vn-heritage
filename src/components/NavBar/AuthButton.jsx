@@ -1,7 +1,7 @@
 import { LogIn, UserPlus } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-import { Button } from '~/components/common/ui/button'
+import { Button } from '~/components/common/ui/Button'
 
 const AuthButton = () => {
   return (

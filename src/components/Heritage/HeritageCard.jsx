@@ -2,7 +2,7 @@ import { Heart } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { cn } from '~/lib/utils'
-import { Button } from '~/components/common/ui/button'
+import { Button } from '~/components/common/ui/Button'
 
 const HeritageCard = ({ item }) => {
   // Fake authen
