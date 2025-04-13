@@ -59,4 +59,12 @@
   .lcn-container {
     @apply container max-w-7xl mx-auto px-4 sm:px-6 py-16 space-y-16 sm:space-y-24 sm:py-24;
   }
+
+  .lcn-container-x {
+    @apply container max-w-7xl mx-auto px-4 sm:px-6
+  }
+
+  .lcn-heritage-detail-title {
+    @apply text-xl font-medium text-heritage-dark
+  }
 }
