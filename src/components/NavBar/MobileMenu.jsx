@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { LogIn, UserPlus } from 'lucide-react'
 
 import { cn } from '~/lib/utils'
-import { Button } from '~/components/common/ui/button'
+import { Button } from '~/components/common/ui/Button'
 
 const MobileMenu = ({ isOpen, navLinks, userMenuLinks, onClose }) => {
   const location = useLocation()

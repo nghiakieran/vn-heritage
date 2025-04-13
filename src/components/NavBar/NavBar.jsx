@@ -11,7 +11,7 @@ import MobileMenu from './MobileMenu'
 import { selectSearchQuery } from '~/store/selectors/paginationSelectors'
 import useDebounce from '~/hooks/useDebounce'
 import { setSearchQuery } from '~/store/slices/paginationSlice'
-import { Button } from '~/components/common/ui/button'
+import { Button } from '~/components/common/ui/Button'
 
 const navLinks = [
   { name: 'Trang chủ', to: '/', icon: <House className='h-5 w-5' /> },
@@ -79,7 +79,7 @@ const NavBar = () => {
   return (
     <>
       <header className={navbarClasses}>
-        <div className='container max-w-7xl mx-auto px-4 sm:px-6 flex justify-between py-4'>
+        <div className='lcn-container-x flex justify-between py-4'>
           {/* Logo */}
           <Link to='/' className='flex items-center gap-2'>
             <img src='/favicon.svg' alt='logo' className='w-6 h-6' />

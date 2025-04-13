@@ -2,7 +2,7 @@ import { Eye, EyeOff, LogIn } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import { Button } from '~/components/common/ui/button'
+import { Button } from '~/components/common/ui/Button'
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)

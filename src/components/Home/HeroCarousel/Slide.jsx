@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { BookOpen, MessageSquare } from 'lucide-react'
 
-import { Button } from '~/components/common/ui/button'
+import { Button } from '~/components/common/ui/Button'
 
 const Slide = ({ slide, index, activeIndex }) => {
   const isActive = index === activeIndex

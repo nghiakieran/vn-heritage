@@ -6,7 +6,7 @@ import Title from '~/components/common/Title'
 import { mockData } from '~/api/mock-data'
 import HeritageList from '~/components/Heritage/HeritageList'
 import HeritageSkeleton from '~/components/Heritage/HeritageSkeleton'
-import { Button } from '~/components/common/ui/button'
+import { Button } from '~/components/common/ui/Button'
 
 const PopularHeritage = () => {
   const heritages = mockData.heritages.slice(0, 6)
