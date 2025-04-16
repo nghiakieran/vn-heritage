@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
-import { useLazyGetHeritagesQuery } from '~/store/apis/heritageApi'
+import { heritageApi, useLazyGetHeritagesQuery } from '~/store/apis/heritageApi'
 import { setCurrentPage } from '~/store/slices/paginationSlice'
 import HeritageList from '~/components/Heritage/HeritageList'
 import HeritageSkeleton from '~/components/Heritage/HeritageSkeleton'
@@ -10,35 +11,65 @@ import {
   selectItemsPerPage,
   selectSearchQuery,
 } from '~/store/selectors/paginationSelectors'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 const Heritages = () => {
   const dispatch = useDispatch()
+  
   const currentPage = useSelector(selectCurrentPage)
   const itemsPerPage = useSelector(selectItemsPerPage)
   const searchQuery = useSelector(selectSearchQuery)
 
-  const [trigger, { data: response, isLoading, isFetching }] = useLazyGetHeritagesQuery()
-  const heritages = response?.data || []
-  const totalItems = response?.total || 0
-  const totalPages = Math.ceil(totalItems / itemsPerPage)
+  const queryParams = useMemo(() => ({
+    page: currentPage,
+    limit: itemsPerPage,
+    name: searchQuery || undefined
+  }), [currentPage, itemsPerPage, searchQuery])
+  
+
+  const [trigger, { data: response, isLoading, isFetching, error }] = useLazyGetHeritagesQuery()
+
+  const { heritages, totalPages } = useMemo(() => {
+    const heritages = response?.heritages || []
+    const pagination = response?.pagination || {}
+    const totalPages = pagination.totalPages ?? 1
+    return { heritages, totalPages }
+  }, [response])
 
   useEffect(() => {
-    trigger({
-      page: currentPage,
-      limit: itemsPerPage,
-      search: searchQuery || undefined,
-    })
-  }, [currentPage, itemsPerPage, searchQuery, trigger])
+    trigger(queryParams)
+  }, [queryParams, trigger])
 
-  const handlePageChange = (page) => {
+  // Handle page change
+  const handlePageChange = useCallback((page) => {
     if (page >= 1 && page <= totalPages) {
       dispatch(setCurrentPage(page))
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
-  }
+  }, [dispatch, totalPages])
 
-  const renderPagination = () => {
+  // Prefetch next page
+  const prefetchNextPage = useCallback(() => {
+    if (currentPage < totalPages && (!searchQuery || heritages.length > 0) && !error) {
+      const nextPageParams = {
+        page: currentPage + 1,
+        limit: itemsPerPage,
+        name: searchQuery || undefined
+      }
+      dispatch(heritageApi.util.prefetch('getHeritages', nextPageParams, { force: false } ))
+    }
+  }, [currentPage, totalPages, itemsPerPage, searchQuery, heritages.length, error, dispatch])
+
+  // Trigger prefetch when data is loaded
+  useEffect(() => {
+    if (!isLoading && !isFetching) {
+      prefetchNextPage()
+    }
+  }, [prefetchNextPage, isLoading, isFetching])
+
+  // Pagination UI generator
+  const paginationButtons = useMemo(() => {
+    if (totalPages <= 1) return null
+    
     const pages = []
     const maxPagesToShow = 5
     const half = Math.floor(maxPagesToShow / 2)
@@ -57,9 +88,7 @@ const Heritages = () => {
 
     return pages.map((page, index) =>
       page === '...' ? (
-        <span key={index} className='px-4 py-2'>
-          ...
-        </span>
+        <span key={index} className='px-4 py-2'>...</span>
       ) : (
         <button
           key={page}
@@ -73,10 +102,75 @@ const Heritages = () => {
         </button>
       )
     )
+  }, [currentPage, totalPages, isFetching, handlePageChange])
+
+  // Render loading state Skeleton
+  const renderLoadingState = () => (
+    <HeritageSkeleton count={itemsPerPage} />
+  )
+
+  // Render empty state
+  const renderEmptyState = () => (
+    <div className='text-center py-12'>
+      <p className='text-muted-foreground'>
+        {searchQuery
+          ? 'Không tìm thấy di tích nào phù hợp.'
+          : 'Không có di tích nào để hiển thị.'}
+      </p>
+    </div>
+  )
+
+  // Render pagination
+  const renderPagination = () => {
+    if (totalPages <= 1) return null
+    
+    return (
+      <div className='mt-8 flex justify-center gap-2'>
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1 || isFetching}
+          className='px-4 py-2 border rounded disabled:opacity-50'
+          aria-label='Previous Page'
+        >
+          <ChevronLeft size={20} />
+        </button>
+        
+        {paginationButtons}
+        
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages || isFetching}
+          className='px-4 py-2 border rounded disabled:opacity-50'
+          aria-label='Next Page'
+        >
+          <ChevronRight size={20} />
+        </button>
+      </div>
+    )
   }
+
+  // Render error state
+  const renderErrorState = () => (
+    <div className='text-center py-12'>
+      <p className='text-destructive font-medium'>
+        Đã xảy ra lỗi khi tải dữ liệu
+      </p>
+      <p className='text-muted-foreground mt-2'>
+        {error?.data?.message || 'Vui lòng thử lại sau'}
+      </p>
+      <button 
+        onClick={() => trigger(queryParams)}
+        className='mt-4 px-4 py-2 bg-heritage-dark text-white rounded hover:bg-heritage-dark/90 transition-colors'
+      >
+        Thử lại
+      </button>
+    </div>
+  )
+
   return (
     <section className='pt-navbar-mobile sm:pt-navbar'>
       <div className='lcn-container min-h-screen'>
+        {/* Header */}
         <div className='text-center animate-fade-up'>
           <h1 className='text-3xl sm:text-4xl font-medium text-heritage-dark mb-4'>
             Khám phá các di tích lịch sử
@@ -86,39 +180,19 @@ const Heritages = () => {
             Nam, nơi đã định hình nền văn minh của dân tộc.
           </p>
         </div>
+        
+        {/* Content */}
         <div>
           {isLoading || isFetching ? (
-            <HeritageSkeleton count={itemsPerPage} />
-          ) : heritages.length === 0 ? (
-            <div className='text-center py-12'>
-              <p className='text-muted-foreground'>
-                {searchQuery
-                  ? 'Không tìm thấy di tích nào phù hợp.'
-                  : 'Không có di tích nào để hiển thị.'}
-              </p>
-            </div>
+            renderLoadingState()
+          ) : error ? (
+            renderErrorState()
+          ) : heritages?.length === 0 ? (
+            renderEmptyState()
           ) : (
             <>
               <HeritageList heritages={heritages} />
-              {totalPages > 1 && (
-                <div className='mt-8 flex justify-center gap-2'>
-                  <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1 || isFetching}
-                    className='px-4 py-2 border rounded disabled:opacity-50'
-                  >
-                    <ChevronLeft size={20} />
-                  </button>
-                  {renderPagination()}
-                  <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages || isFetching}
-                    className='px-4 py-2 border rounded disabled:opacity-50'
-                  >
-                    <ChevronRight size={20} />
-                  </button>
-                </div>
-              )}
+              {renderPagination()}
             </>
           )}
         </div>

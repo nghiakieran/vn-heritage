@@ -183,7 +183,7 @@ const HeritageDetail = () => {
                               ))}
                             </div>
                           </div>
-                          <p className='text-sm text-justify'>{data.title} là một địa điểm tuyệt vời để tìm hiểu về lịch 
+                          <p className='text-sm text-justify'>{data?.title} là một địa điểm tuyệt vời để tìm hiểu về lịch 
                             sử và văn hóa. Kiến trúc ấn tượng và bầu không khí thanh bình. Đáng để ghé thăm!
                           </p>    
                         </div>
