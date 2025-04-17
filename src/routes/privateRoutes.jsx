@@ -1,7 +1,6 @@
-import React from 'react'
+import React from "react";
+import AdminHeritageCreate from "~/pages/admin/Heritage/Create";
 
-const privateRoutes = [
-  
-]
+const privateRoutes = [{}];
 
-export default privateRoutes
+export default privateRoutes;
