@@ -6,6 +6,10 @@ import HistoryTab from './tabs/HistoryTab'
 import GalleryTab from './tabs/GalleryTab'
 
 const HeritageDetailTabs = ({ data, isAuthenticated, navigate }) => {
+
+  const hasReviews = data?.stats?.totalReviews > 0
+  const averageRating = data?.stats?.averageRating || 0.0
+
   return (
     <Tabs defaultValue='overview'>
       <TabsList>
@@ -41,14 +45,14 @@ const HeritageDetailTabs = ({ data, isAuthenticated, navigate }) => {
       <TabsContent value='review' className='space-y-6'>
         <h3 className='lcn-heritage-detail-title'>Đánh giá</h3>
         <div className='flex items-center'>
-          <div className='text-3xl font-bold mr-2'>{data?.stats?.averageRating || 0.0}</div>
+          <div className='text-3xl font-bold mr-2'>{averageRating}</div>
           <div className='flex flex-col'>
             <div className='flex'>
               {[1, 2, 3, 4, 5].map((star) => (
                 <Star
                   key={star}
                   size={16}
-                  className={`${star <= (data?.stats?.averageRating || 0.0) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+                  className={`${star <= averageRating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
                 />
               ))}
             </div>
@@ -56,7 +60,7 @@ const HeritageDetailTabs = ({ data, isAuthenticated, navigate }) => {
           </div>
         </div>
 
-        {data?.stats?.totalReviews > 0 ? (
+        {hasReviews ? (
           <div className='space-y-6'>
             {[1, 2, 3].map((review) => (
               <div key={review} className='border-b pb-6'>
@@ -75,7 +79,7 @@ const HeritageDetailTabs = ({ data, isAuthenticated, navigate }) => {
                       <Star
                         key={star}
                         size={16}
-                        className={`${star <= (data?.stats?.averageRating || 0.0) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+                        className={`${star <= averageRating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
                       />
                     ))}
                   </div>
@@ -87,17 +91,11 @@ const HeritageDetailTabs = ({ data, isAuthenticated, navigate }) => {
               </div>
             ))}
           </div>
-        ) : (
+        ) : isAuthenticated ? (
           <div className='text-center py-12 border border-dashed rounded-lg'>
             <Star size={40} className='mx-auto text-muted-foreground mb-4 opacity-50' />
             <p className='text-muted-foreground'>Chưa có đánh giá nào cho di tích này.</p>
             {isAuthenticated && <Button className='mt-4'>Viết đánh giá đầu tiên</Button>}
-          </div>
-        )}
-
-        {isAuthenticated ? (
-          <div className='flex justify-center'>
-            <Button>Viết đánh giá</Button>
           </div>
         ) : (
           <div className='p-4 bg-heritage-light/20 rounded-md border border-heritage-light text-center'>

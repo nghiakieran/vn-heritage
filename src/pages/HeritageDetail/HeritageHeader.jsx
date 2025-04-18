@@ -4,6 +4,19 @@ import { Link } from 'react-router-dom'
 import { Button } from '~/components/common/ui/Button'
 
 const HeritageHeader = ({ data, isAuthenticated }) => {
+  
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: data?.name,
+        text: `Khám phá ${data?.name} - ${data?.description}`,
+        url: window.location.href,
+      }).catch((error) => console.log('Error sharing', error))
+    } else {
+      navigator.clipboard.writeText(window.location.href)
+    }
+  }
+
   return (
     <div className='relative overflow-hidden h-[44vh] sm:h-[50vh]'>
       <div className='absolute inset-0'>
@@ -48,7 +61,11 @@ const HeritageHeader = ({ data, isAuthenticated }) => {
                 <span>Yêu thích</span>
               </Button>
             )}
-            <Button variant='outline' className='backdrop-blur-sm hover:bg-white/30 text-white bg-white/20 border'>
+            <Button 
+              variant='outline'
+              className='backdrop-blur-sm hover:bg-white/30 text-white bg-white/20 border'
+              onClick={handleShare}
+              >
               <Share size={16} />
               <span>Chia sẻ</span>
             </Button>

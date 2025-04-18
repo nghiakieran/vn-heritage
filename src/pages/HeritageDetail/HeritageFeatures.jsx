@@ -7,14 +7,14 @@ const features = [
   { value: 'chatbot', icon: <MapPin className='h-8 w-8 text-heritage mx-auto mb-2' />, label: 'Hỏi đáp với trợ lý ảo' },
 ]
 
-const HeritageFeatures = () => {
+const HeritageFeatures = ({ handleFeatureClick }) => {
   return (
     <div className='grid grid-cols-2 sm:grid-cols-4 gap-4'>
-      {features.map((feature, index) => (
+      {features.map((feature) => (
         <div
-          key={index}
-          className='p-4 border bg-heritage-light/20 rounded-md border-heritage-light 
-          text-center hover:bg-heritage-light/30 transition-colors duration-200 transform hover:-translate-y-1 cursor-pointer'
+          key={feature.value}
+          className='p-4 border bg-heritage-light/20 rounded-md border-heritage-light text-center hover:bg-heritage-light/50 transition-colors duration-200 cursor-pointer'
+          onClick={() => handleFeatureClick(feature.value)}
         >
           {feature.icon}
           <p className='text-sm font-medium'>{feature.label}</p>

@@ -1,4 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom'
+import { useState } from 'react'
 
 import { useGetHeritagesByIdQuery } from '~/store/apis/heritageApi'
 import HeritageCard from '~/components/Heritage/HeritageCard'
@@ -9,6 +10,7 @@ import HeritageHeader from './HeritageHeader'
 import HeritageInfo from './HeritageInfo'
 import { mockData } from '~/api/mock-data'
 import { Button } from '~/components/common/ui/Button'
+import { Dialog, DialogDescription, DialogHeader, DialogTitle } from '~/components/common/ui/Dialog'
 
 const HeritageDetail = () => {
   const { id } = useParams()
@@ -20,9 +22,23 @@ const HeritageDetail = () => {
   const heritages = mockData.heritages
   const relatedItems = heritages.filter(item => item._id !== id).slice(0, 3)
 
+  const [activeFeature, setActiveFeature] = useState(null)
+  
+  const handleFeatureClick = (feature) => {
+    if (!isAuthenticated) {
+      navigate('/login')
+      return
+    }
+    setActiveFeature(feature)
+  }
+  
+  const closeFeatureDialog = () => {
+    setActiveFeature(null)
+  }
+
   if (isError) {
     return (
-      <div className='lcn-container-x py-16 text-center'>
+      <div className='lcn-container-x py-16 text-center mt-32'>
         <h2 className='text-2xl font-medium mb-4'>Có lỗi xảy ra</h2>
         <p className='text-muted-foreground mb-6'>Không thể tải thông tin di tích. Vui lòng thử lại sau.</p>
         <Button onClick={() => navigate('/heritages')}>Quay lại danh sách di tích</Button>
@@ -48,7 +64,7 @@ const HeritageDetail = () => {
                 {/* Features */}
                 <div className='mt-10'>
                   <h3 className='lcn-heritage-detail-title mb-4'>Tính năng tương tác</h3>
-                  <HeritageFeatures />
+                  <HeritageFeatures handleFeatureClick={handleFeatureClick} />
                 </div>
                 {/* Authenticated */}
                   {
@@ -74,6 +90,18 @@ const HeritageDetail = () => {
               </div>
             </div>
           </div>
+          {/* Dialog */}
+          <Dialog open={activeFeature === 'leaderboard'} onClose={closeFeatureDialog}>
+            <DialogHeader>
+              <DialogTitle>Bảng xếp hạng</DialogTitle>
+              <DialogDescription>
+                Xem thứ hạng của bạn so với những người khác khi khám phá {data?.name}
+              </DialogDescription>
+            </DialogHeader>
+            <div className='py-4'>
+              {/* <LeaderboardTable /> */}
+            </div>
+          </Dialog>
         </>
       )}
     </section>
