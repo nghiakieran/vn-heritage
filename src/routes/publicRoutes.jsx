@@ -1,4 +1,4 @@
-import About from '~/pages/About'
+import About from '~/pages/About/About'
 import HeritageDetail from '~/pages/HeritageDetail/HeritageDetail'
 import Heritages from '~/pages/Heritages'
 import Home from '~/pages/Home'
