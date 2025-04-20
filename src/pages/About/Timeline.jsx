@@ -55,7 +55,14 @@ const Timeline = () => {
               <div className={`sm:w-1/2 p-6 ${index % 2 === 0 ? 'pr-0 ' : 'pl-0'}`}>
                 <div className='rounded-xl overflow-hidden shadow-sm transform transition-transform'>
                   <div className='aspect-video'>
-                    <img src={item.img || 'https://placehold.co/600x400'} alt={item.title} className='object-cover' loading='lazy' />
+                    <img
+                      src={item.img || 'https://placehold.co/600x400'}
+                      alt={item.title}
+                      className='object-cover w-full h-full'
+                      width='600'
+                      height='338'
+                      loading='lazy'
+                      />
                   </div>
                 </div>
               </div>
