@@ -1,0 +1,73 @@
+<svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="450" fill="#f8f9fa" />
+  
+  <!-- Brain with light bulb concept -->
+  <g transform="translate(400, 225)">
+    <!-- Brain outline -->
+    <path d="M-100,-30 C-120,-70 -80,-120 -30,-120 C-10,-135 30,-135 50,-120 C100,-120 140,-70 120,-30 C140,0 140,40 120,70 C140,100 120,130 80,140 C60,160 20,160 0,140 C-20,160 -60,160 -80,140 C-120,130 -140,100 -120,70 C-140,40 -140,0 -120,-30 C-100,-30 -100,-30 -100,-30 Z" 
+          fill="#e6f7ff" stroke="#0066cc" stroke-width="6" />
+    
+    <!-- Brain details -->
+    <path d="M-10,-100 C-30,-80 -30,-40 -10,-20 C10,-40 10,-80 -10,-100 Z" fill="#0066cc" opacity="0.7" />
+    <path d="M40,-100 C20,-80 20,-40 40,-20 C60,-40 60,-80 40,-100 Z" fill="#0066cc" opacity="0.7" />
+    <path d="M-60,-70 C-80,-50 -80,-10 -60,10 C-40,-10 -40,-50 -60,-70 Z" fill="#0066cc" opacity="0.7" />
+    <path d="M-30,20 C-50,40 -50,80 -30,100 C-10,80 -10,40 -30,20 Z" fill="#0066cc" opacity="0.7" />
+    <path d="M30,20 C10,40 10,80 30,100 C50,80 50,40 30,20 Z" fill="#0066cc" opacity="0.7" />
+    
+    <!-- Light bulb -->
+    <circle cx="0" cy="-50" r="40" fill="#ffcc00" stroke="#ff9900" stroke-width="3" />
+    <path d="M-20,-30 L20,-30 L0,-70 Z" fill="#fff" opacity="0.5" />
+    <rect x="-10" y="0" width="20" height="15" fill="#dddddd" stroke="#888888" stroke-width="2" />
+    <rect x="-15" y="15" width="30" height="10" fill="#dddddd" stroke="#888888" stroke-width="2" rx="2" ry="2" />
+    
+    <!-- Cultural symbols floating around -->
+    <g transform="translate(-120, -90) scale(0.4)">
+      <path d="M0,0 L30,0 L30,60 C30,70 0,70 0,60 Z" fill="#cc0000" />
+      <path d="M15,10 L15,30 M5,20 L25,20" stroke="#ffcc00" stroke-width="3" />
+    </g>
+    
+    <g transform="translate(130, -80) scale(0.25)">
+      <rect x="0" y="0" width="80" height="80" fill="#8b5a2b" />
+      <rect x="10" y="10" width="60" height="60" fill="#cd853f" />
+      <path d="M20,20 L60,20 L60,60 L20,60 Z" fill="#8b5a2b" />
+    </g>
+    
+    <g transform="translate(100, 80) scale(0.3)">
+      <circle cx="40" cy="40" r="40" fill="#009900" />
+      <path d="M40,0 L45,30 L75,30 L50,50 L60,80 L40,60 L20,80 L30,50 L5,30 L35,30 Z" fill="#ffcc00" />
+    </g>
+    
+    <g transform="translate(-130, 70) scale(0.2)">
+      <path d="M0,0 C20,-20 80,-20 100,0 C100,80 0,80 0,0 Z" fill="#cc0000" />
+      <circle cx="30" cy="30" r="10" fill="#ffcc00" />
+      <circle cx="70" cy="30" r="10" fill="#ffcc00" />
+    </g>
+    
+    <!-- Digital elements -->
+    <g transform="translate(0, 0)">
+      <circle cx="-70" cy="-130" r="15" fill="#0066cc" opacity="0.2" />
+      <circle cx="80" cy="-120" r="10" fill="#0066cc" opacity="0.2" />
+      <circle cx="120" cy="40" r="20" fill="#0066cc" opacity="0.2" />
+      <circle cx="-100" cy="100" r="15" fill="#0066cc" opacity="0.2" />
+      <circle cx="50" cy="130" r="12" fill="#0066cc" opacity="0.2" />
+      
+      <!-- Connection lines -->
+      <line x1="-70" y1="-130" x2="0" y2="-50" stroke="#0066cc" stroke-width="2" stroke-dasharray="5,5" />
+      <line x1="80" y1="-120" x2="0" y2="-50" stroke="#0066cc" stroke-width="2" stroke-dasharray="5,5" />
+      <line x1="120" y1="40" x2="0" y2="-50" stroke="#0066cc" stroke-width="2" stroke-dasharray="5,5" />
+      <line x1="-100" y1="100" x2="0" y2="-50" stroke="#0066cc" stroke-width="2" stroke-dasharray="5,5" />
+      <line x1="50" y1="130" x2="0" y2="-50" stroke="#0066cc" stroke-width="2" stroke-dasharray="5,5" />
+    </g>
+  </g>
+  
+  <!-- Digital pulse effect -->
+  <circle cx="400" cy="225" r="180" fill="none" stroke="#0066cc" stroke-width="2" opacity="0.3">
+    <animate attributeName="r" from="180" to="200" dur="3s" repeatCount="indefinite" />
+    <animate attributeName="opacity" from="0.3" to="0" dur="3s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="400" cy="225" r="160" fill="none" stroke="#0066cc" stroke-width="2" opacity="0.3">
+    <animate attributeName="r" from="160" to="180" dur="3s" begin="1s" repeatCount="indefinite" />
+    <animate attributeName="opacity" from="0.3" to="0" dur="3s" begin="1s" repeatCount="indefinite" />
+  </circle>
+</svg>
