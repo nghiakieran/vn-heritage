@@ -25,6 +25,13 @@
     --heritage-primary: 25 70% 47%;
     --heritage-light: 30 75% 93%;
     --heritage-dark: 25 80% 25%;
+
+    /* Sidebar Variables - Light Theme */
+    --sidebar: 0 0% 100%;  /* Nền trắng */
+    --sidebar-foreground: 25 70% 47%;  /* Màu chữ vàng heritage */
+    --sidebar-border: 25 75% 93%;  /* Viền vàng nhạt */
+    --sidebar-accent: 25 75% 93%;  /* Hover màu vàng nhạt */
+    --sidebar-accent-foreground: 25 80% 25%;  /* Chữ vàng đậm khi hover */
   }
    .dark {
     --background: 220 10% 10%;
@@ -48,6 +55,13 @@
     --heritage-primary: 25 70% 47%;
     --heritage-light: 30 20% 20%;
     --heritage-dark: 25 80% 60%;
+
+    /* Sidebar Variables - Dark Theme */
+    --sidebar: 25 80% 25%;  /* Nền vàng đậm */
+    --sidebar-foreground: 30 75% 93%;  /* Chữ vàng nhạt */
+    --sidebar-border: 25 70% 47%;  /* Viền vàng heritage */
+    --sidebar-accent: 25 70% 47%;  /* Hover màu vàng heritage */
+    --sidebar-accent-foreground: 0 0% 100%;  /* Chữ trắng khi hover */
   }
 }
 

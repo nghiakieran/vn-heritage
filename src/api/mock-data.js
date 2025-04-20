@@ -292,3 +292,52 @@ export const mockData = {
     }
   ]
 }
+
+// Mock users data
+export const users = [
+  {
+    id: '1',
+    name: 'John Doe',
+    email: 'john@example.com',
+    role: 'admin',
+    status: 'active',
+    lastActive: '2023-04-15T10:30:00',
+    avatar: 'https://randomuser.me/api/portraits/men/1.jpg'
+  },
+  {
+    id: '2',
+    name: 'Jane Smith',
+    email: 'jane@example.com',
+    role: 'editor',
+    status: 'active',
+    lastActive: '2023-04-14T16:45:00',
+    avatar: 'https://randomuser.me/api/portraits/women/2.jpg'
+  },
+  {
+    id: '3',
+    name: 'Mike Johnson',
+    email: 'mike@example.com',
+    role: 'viewer',
+    status: 'inactive',
+    lastActive: '2023-04-10T09:15:00',
+    avatar: 'https://randomuser.me/api/portraits/men/3.jpg'
+  },
+  {
+    id: '4',
+    name: 'Sarah Williams',
+    email: 'sarah@example.com',
+    role: 'editor',
+    status: 'active',
+    lastActive: '2023-04-15T11:20:00',
+    avatar: 'https://randomuser.me/api/portraits/women/4.jpg'
+  },
+  {
+    id: '5',
+    name: 'David Brown',
+    email: 'david@example.com',
+    role: 'viewer',
+    status: 'active',
+    lastActive: '2023-04-13T14:50:00',
+    avatar: 'https://randomuser.me/api/portraits/men/5.jpg'
+  }
+]
