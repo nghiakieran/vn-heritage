@@ -1,4 +1,5 @@
 import About from '~/pages/About/About'
+import EmailVerification from '~/pages/EmailVerification'
 import HeritageDetail from '~/pages/HeritageDetail/HeritageDetail'
 import Heritages from '~/pages/Heritages'
 import Home from '~/pages/Home'
@@ -11,7 +12,8 @@ const publicRoutes = [
   { path: '/heritages', element: <Heritages /> },
   { path: '/heritage/:id', element: <HeritageDetail /> },
   { path: '/login', element: <Login />, restricted: true },
-  { path: '/register', element: <Register />, restricted: true }
+  { path: '/register', element: <Register />, restricted: true },
+  { path: '/authen-confirm', element: <EmailVerification />, restricted: true }
 ]
 
 export default publicRoutes
