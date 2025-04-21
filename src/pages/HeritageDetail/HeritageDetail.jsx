@@ -100,7 +100,11 @@ const HeritageDetail = () => {
               </DialogDescription>
             </DialogHeader>
             <div className='py-4'>
-              <LeaderboardTable heritageId={id} heritageName={data?.name}/>
+              <LeaderboardTable
+                heritageId={id}
+                heritageName={data?.name}
+                isOpen={activeFeature === 'leaderboard'}
+              />
             </div>
           </Dialog>
         </>
