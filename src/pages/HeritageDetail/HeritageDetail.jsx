@@ -11,6 +11,7 @@ import HeritageInfo from './HeritageInfo'
 import { mockData } from '~/api/mock-data'
 import { Button } from '~/components/common/ui/Button'
 import { Dialog, DialogDescription, DialogHeader, DialogTitle } from '~/components/common/ui/Dialog'
+import LeaderboardTable from './LeaderboardTable/LeaderboardTable'
 
 const HeritageDetail = () => {
   const { id } = useParams()
@@ -99,7 +100,11 @@ const HeritageDetail = () => {
               </DialogDescription>
             </DialogHeader>
             <div className='py-4'>
-              {/* <LeaderboardTable /> */}
+              <LeaderboardTable
+                heritageId={id}
+                heritageName={data?.name}
+                isOpen={activeFeature === 'leaderboard'}
+              />
             </div>
           </Dialog>
         </>
