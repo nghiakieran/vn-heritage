@@ -1,9 +1,12 @@
-import { configureStore } from '@reduxjs/toolkit';
-import paginationSlice from './slices/paginationSlice';
-import { heritageApi } from './apis/heritageApi';
 import authSlice from './slices/authSlice'; // Import authSlice
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { apiSlice } from './apis/apiSlice';
+import { configureStore } from '@reduxjs/toolkit'
+import paginationSlice from './slices/paginationSlice'
+import { heritageApi } from './apis/heritageApi'
+import { setupListeners } from '@reduxjs/toolkit/query'
+import { leaderboardApi } from './apis/leaderboardApi'
+import { knowledgeTestApi } from './apis/knowledgeTestApi'
 
 export const store = configureStore({
   reducer: {
@@ -11,11 +14,11 @@ export const store = configureStore({
     auth: authSlice, // Add authSlice reducer
     [heritageApi.reducerPath]: heritageApi.reducer,
     [apiSlice.reducerPath]: apiSlice.reducer, // Include apiSlice
+    [leaderboardApi.reducerPath]: leaderboardApi.reducer,
+    [knowledgeTestApi.reducerPath]: knowledgeTestApi.reducer,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware()
-      .concat(heritageApi.middleware)
-      .concat(apiSlice.middleware), // Include apiSlice middleware
-});
+  middleware: (getDefaultMiddleware) => 
+    getDefaultMiddleware().concat(heritageApi.middleware, leaderboardApi.middleware, knowledgeTestApi.middleware, apiSlice.middleware),
+})
 
 setupListeners(store.dispatch);
