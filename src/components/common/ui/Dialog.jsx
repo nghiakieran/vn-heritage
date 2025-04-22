@@ -2,16 +2,23 @@ import { X } from 'lucide-react'
 import { useEffect } from 'react'
 import { cn } from '~/lib/utils'
 
-
-const Dialog = ({ open, onClose, children }) => {
- 
+const Dialog = ({ open, onClose, children, className }) => {
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') onClose()
+      if (e.key === 'Escape') onClose?.()
     }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [onClose])
+
+    if (open) {
+      // Prevent scrolling when dialog is open
+      document.body.style.overflow = 'hidden'
+      window.addEventListener('keydown', handleKeyDown)
+    }
+
+    return () => {
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [open, onClose])
 
   if (!open) return null
 
@@ -24,7 +31,10 @@ const Dialog = ({ open, onClose, children }) => {
         aria-modal='true'
         aria-labelledby='dialog-title'
         aria-describedby='dialog-description'
-        className='fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 border bg-background p-6 shadow-lg sm:rounded-lg'
+        className={cn(
+          'fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 border bg-background p-6 shadow-lg sm:rounded-lg ',
+          className,
+        )}
         onClick={handleContentClick}
       >
         <button onClick={onClose} className='absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100'>
@@ -44,7 +54,7 @@ const DialogHeader = ({ className, children, ...props }) => (
 )
 
 const DialogFooter = ({ className, children, ...props }) => (
-  <div className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)} {...props}>
+  <div className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 p-6 pt-0', className)} {...props}>
     {children}
   </div>
 )
@@ -61,10 +71,4 @@ const DialogDescription = ({ className, children, ...props }) => (
   </p>
 )
 
-export {
-  Dialog,
-  DialogHeader,
-  DialogFooter,
-  DialogTitle,
-  DialogDescription,
-}
+export { Dialog, DialogHeader, DialogFooter, DialogTitle, DialogDescription }
