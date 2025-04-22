@@ -1,12 +1,12 @@
-import { apiSlice } from "./apiSlice";
-import { BASE_URL } from "~/constants/fe.constant";
+import { apiSlice } from './apiSlice'
+import { BASE_URL } from '~/constants/fe.constant'
 
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (data) => ({
         url: `${BASE_URL}/users`,
-        method: "POST",
+        method: 'POST',
         body: data,
       }),
     }),
@@ -14,7 +14,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
     register: builder.mutation({
       query: (data) => ({
         url: `${BASE_URL}/users/register`,
-        method: "POST",
+        method: 'POST',
         body: data,
       }),
     }),
@@ -22,14 +22,14 @@ export const authApiSlice = apiSlice.injectEndpoints({
     logout: builder.mutation({
       query: () => ({
         url: `${BASE_URL}/users/logout`,
-        method: "POST",
+        method: 'POST',
       }),
     }),
 
     forgotPassword: builder.mutation({
       query: ({ email }) => ({
         url: `${BASE_URL}/auth/forgot-password`,
-        method: "POST",
+        method: 'POST',
         body: { email },
       }),
     }),
@@ -37,12 +37,12 @@ export const authApiSlice = apiSlice.injectEndpoints({
     resetPassword: builder.mutation({
       query: ({ email, code, newPassword }) => ({
         url: `${BASE_URL}/auth/reset-password`,
-        method: "POST",
+        method: 'POST',
         body: { email, code, newPassword },
       }),
     }),
   }),
-});
+})
 
 export const {
   useLoginMutation,
@@ -50,4 +50,4 @@ export const {
   useLogoutMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
-} = authApiSlice;
+} = authApiSlice

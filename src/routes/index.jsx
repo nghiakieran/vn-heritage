@@ -4,18 +4,22 @@ import publicRoutes from './publicRoutes'
 import privateRoutes from './privateRoutes'
 import NotFound from '~/pages/NotFound'
 import MainLayout from '~/layout/MainLayout'
+import { useSelector } from 'react-redux'
+import { selectCurrentUser } from '~/store/slices/authSlice'
 
 const PublicRoutes = ({ children, restricted }) => {
   // Fake auth
-  const user = false
-  if (user && restricted) return <Navigate to='/' replace />
+  const user = useSelector(selectCurrentUser)
+  const isAuthenticated = !!user
+  if (isAuthenticated && restricted) return <Navigate to='/' replace />
   return children
 }
 
 const PrivateRoutes = ({ children }) => {
   // Fake auth
-  const user = false
-  if (!user) return <Navigate to='/login' replace />
+  const user = useSelector(selectCurrentUser)
+  const isAuthenticated = !!user
+  if (!isAuthenticated) return <Navigate to='/login' replace />
   return children
 }
 

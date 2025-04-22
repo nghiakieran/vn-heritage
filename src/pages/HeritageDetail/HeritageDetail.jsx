@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { useState } from 'react'
+import { useSelector } from 'react-redux'
 
 import { useGetHeritagesByIdQuery } from '~/store/apis/heritageApi'
 import HeritageCard from '~/components/Heritage/HeritageCard'
@@ -13,13 +14,15 @@ import { Button } from '~/components/common/ui/Button'
 import { Dialog, DialogDescription, DialogHeader, DialogTitle } from '~/components/common/ui/Dialog'
 import LeaderboardTable from './LeaderboardTable/LeaderboardTable'
 import HeritageKnowledgeTest from './HeritageKnowledgeTest/HeritageKnowledgeTest'
+import { selectCurrentUser } from '~/store/slices/authSlice'
 
 const HeritageDetail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const { data, isFetching, isLoading, isError } = useGetHeritagesByIdQuery(id)
 
-  const isAuthenticated = true
+  const userInfo = useSelector(selectCurrentUser)
+  const isAuthenticated = !!userInfo
   // Fake data
   const heritages = mockData.heritages
   const relatedItems = heritages.filter(item => item._id !== id).slice(0, 3)

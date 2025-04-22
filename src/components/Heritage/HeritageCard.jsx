@@ -1,8 +1,10 @@
 import { Heart } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 import { cn } from '~/lib/utils'
 import { Button } from '~/components/common/ui/Button'
+import { selectCurrentUser } from '~/store/slices/authSlice'
 
 const HeritageCard = ({ item }) => {
   // fallback
@@ -14,8 +16,8 @@ const HeritageCard = ({ item }) => {
     images = [] 
   } = item || {}
   
-  // Fake authen
-  const isAuthenticated = true
+  const userInfo = useSelector(selectCurrentUser)
+  const isAuthenticated = !!userInfo
   const favorite = true
   
   const handleFavoriteClick = (e) => {

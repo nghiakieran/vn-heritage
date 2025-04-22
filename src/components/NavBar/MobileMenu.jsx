@@ -1,12 +1,15 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { LogIn, UserPlus } from 'lucide-react'
+import { useSelector } from 'react-redux'
 
 import { cn } from '~/lib/utils'
 import { Button } from '~/components/common/ui/Button'
+import { selectCurrentUser } from '~/store/slices/authSlice'
 
 const MobileMenu = ({ isOpen, navLinks, userMenuLinks, onClose }) => {
   const location = useLocation()
-  const isAuthenticated = false
+  const userInfo = useSelector(selectCurrentUser)
+  const isAuthenticated = !!userInfo
   const navigate = useNavigate()
 
   if (!isOpen) return null

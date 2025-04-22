@@ -9,6 +9,8 @@ import NavLinks from './NavLinks'
 import MobileMenu from './MobileMenu'
 import { Button } from '~/components/common/ui/Button'
 import SearchBar from './SearchBar'
+import { useSelector } from 'react-redux'
+import { selectCurrentUser } from '~/store/slices/authSlice'
 
 const navLinks = [
   { name: 'Trang chủ', to: '/', icon: <House className='h-5 w-5' /> },
@@ -26,7 +28,9 @@ const NavBar = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const location = useLocation()
-  const isAuthenticated = true
+
+  const userInfo = useSelector(selectCurrentUser)
+  const isAuthenticated = !!userInfo
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10)
