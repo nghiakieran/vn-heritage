@@ -6,6 +6,7 @@ import NotFound from '~/pages/NotFound'
 import MainLayout from '~/layout/MainLayout'
 import { useSelector } from 'react-redux'
 import { selectCurrentUser } from '~/store/slices/authSlice'
+import ScrollToTop from '~/components/common/ScrollToTop'
 
 const PublicRoutes = ({ children, restricted }) => {
   // Fake auth
@@ -25,30 +26,33 @@ const PrivateRoutes = ({ children }) => {
 
 const AppRoutes = () => {
   return (
-    <Routes>
-      <Route path='/' element={<MainLayout />}>
-      {/* Public Routes */}
-        {
-          publicRoutes.map(({ path, element, restricted }) => (
-            <Route
-              key={path} path={path}
-              element={<PublicRoutes restricted={restricted}>{element}</PublicRoutes>} 
-            />
-          ))
-        }
-      {/* Private Routes */}
-        {
-          privateRoutes.map(({ path, element }) => (
-            <Route
-              key={path} path={path} 
-              element={<PrivateRoutes>{element}</PrivateRoutes>}
-            />
-          ))
-        }
-        {/* Not Found */}
-        <Route path='*' element={<NotFound />} />
-      </Route>
-    </Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
+        <Route path='/' element={<MainLayout />}>
+        {/* Public Routes */}
+          {
+            publicRoutes.map(({ path, element, restricted }) => (
+              <Route
+                key={path} path={path}
+                element={<PublicRoutes restricted={restricted}>{element}</PublicRoutes>} 
+              />
+            ))
+          }
+        {/* Private Routes */}
+          {
+            privateRoutes.map(({ path, element }) => (
+              <Route
+                key={path} path={path} 
+                element={<PrivateRoutes>{element}</PrivateRoutes>}
+              />
+            ))
+          }
+          {/* Not Found */}
+          <Route path='*' element={<NotFound />} />
+        </Route>
+      </Routes>
+    </>
   )
 }
 
