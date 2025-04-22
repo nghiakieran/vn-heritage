@@ -34,6 +34,15 @@ const HeritageDetail = () => {
       navigate('/login')
       return
     }
+    if (feature === 'chatroom') {
+      navigate(`/chat/heritage/${id}`, { 
+        state: { 
+          heritageName: data?.name,
+          heritageId: id
+        } 
+      })
+      return
+    }
     setActiveFeature(feature)
   }
   
@@ -123,6 +132,8 @@ const HeritageDetail = () => {
               />
             </div>
           </Dialog>
+
+          {/* Chat room */}
         </>
       )}
     </section>

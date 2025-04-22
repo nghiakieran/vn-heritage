@@ -4,7 +4,7 @@ const features = [
   { value: 'leaderboard', icon: <Award className='h-8 w-8 text-heritage mx-auto mb-2' />, label: 'Bảng xếp hạng' },
   { value: 'knowledge-test', icon: <Star className='h-8 w-8 text-heritage mx-auto mb-2' />, label: 'Kiểm tra kiến thức' },
   { value: 'roleplay', icon: <Play className='h-8 w-8 text-heritage mx-auto mb-2' />, label: 'Trải nghiệm nhập vai' },
-  { value: 'chatbot', icon: <MapPin className='h-8 w-8 text-heritage mx-auto mb-2' />, label: 'Hỏi đáp với trợ lý ảo' },
+  { value: 'chatroom', icon: <MapPin className='h-8 w-8 text-heritage mx-auto mb-2' />, label: 'Tham gia chatroom' },
 ]
 
 const HeritageFeatures = ({ handleFeatureClick }) => {
