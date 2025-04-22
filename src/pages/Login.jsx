@@ -1,8 +1,10 @@
 import { Eye, EyeOff, LogIn } from 'lucide-react'
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Button } from '~/components/common/ui/Button'
 import { useLoginMutation } from '~/store/apis/authSlice'
+import { setCredentials } from '~/store/slices/authSlice'
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
@@ -12,6 +14,7 @@ const Login = () => {
   })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null) // State to handle errors
+  const dispatch = useDispatch()
 
   // Use the login mutation hook
   const [login] = useLoginMutation()
@@ -28,8 +31,13 @@ const Login = () => {
         password: formData.password
       }).unwrap()
 
-      // Handle successful login (e.g., store token, redirect, etc.)
-      console.log('Login successful:', response)
+      const { userInfo, accessToken } = response
+      console.log('response', response)
+
+      dispatch(setCredentials({ user: userInfo, accessToken }))
+
+
+
       // Example: Redirect to a dashboard or home page
       window.location.href = '/'
     } catch (err) {
