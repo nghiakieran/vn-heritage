@@ -1,4 +1,5 @@
 import About from '~/pages/About/About'
+import ChatHeritagePage from '~/pages/ChatHeritagePage/ChatHeritagePage'
 import EmailVerification from '~/pages/EmailVerification'
 import HeritageDetail from '~/pages/HeritageDetail/HeritageDetail'
 import Heritages from '~/pages/Heritages'
@@ -13,7 +14,9 @@ const publicRoutes = [
   { path: '/heritage/:id', element: <HeritageDetail /> },
   { path: '/login', element: <Login />, restricted: true },
   { path: '/register', element: <Register />, restricted: true },
-  { path: '/authen-confirm', element: <EmailVerification />, restricted: true }
+  { path: '/authen-confirm', element: <EmailVerification />, restricted: true },
+  { path: '/chat/heritage/:id', element: <ChatHeritagePage />}
+
 ]
 
 export default publicRoutes
