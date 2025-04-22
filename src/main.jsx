@@ -11,6 +11,16 @@ createRoot(document.getElementById('root')).render(
     <Provider store={store}>
       <BrowserRouter>
         <App />
+        {
+          fetch('http://localhost:8017/v1/heritages', {
+            method : 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+          }
+      })
+      .then(response => response.json())
+      .then(data => console.log(data))
+        }
       </BrowserRouter>
     </Provider>
   </StrictMode>,
