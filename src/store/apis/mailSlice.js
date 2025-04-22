@@ -1,4 +1,4 @@
-import { apiSlice } from './apiSlice';
+import { apiSlice } from './apiSlice'
 
 export const mailSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -17,6 +17,6 @@ export const mailSlice = apiSlice.injectEndpoints({
       }),
     }),
   }),
-});
+})
 
-export const { useSendVerificationEmailMutation, useVerifyEmailMutation } = mailSlice;
+export const { useSendVerificationEmailMutation, useVerifyEmailMutation } = mailSlice

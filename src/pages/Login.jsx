@@ -36,8 +36,6 @@ const Login = () => {
 
       dispatch(setCredentials({ user: userInfo, accessToken }))
 
-
-
       // Example: Redirect to a dashboard or home page
       window.location.href = '/'
     } catch (err) {
