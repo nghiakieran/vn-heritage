@@ -75,18 +75,6 @@ const LeaderboardTable = ({ heritageId, heritageName = 'Di tích lịch sử', i
     observer.observe(loaderRef.current)
     return () => observer.disconnect()
   }, [hasMore, isFetching, isOpen])
-  // Chặn scroll nền khi mở bảng xếp hạng
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [isOpen])
 
   // Các utility function
   const formatDate = date => {
