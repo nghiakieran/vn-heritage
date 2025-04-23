@@ -27,11 +27,42 @@ export const heritageApi = createApi({
             ]
           : [{ type: 'Heritages', id: 'LIST' }]
     }),
+
     getHeritagesById: builder.query({
       query: (heritageId) => `heritages/${heritageId}`,
       providesTags: (id) => [{ type: 'Heritages', id }]
-    })
+    }),
+
+    createHeritage: builder.mutation({
+      query: (data) => {
+        return {
+          url: '/heritages',
+          method: 'POST',
+          body: data,
+        };
+      },
+      invalidatesTags: ['Heritages'], 
+    }),
+
+    updateHeritage: builder.mutation({
+      query: ({ id, data }) => {
+        return {
+          url: `/heritages/${id}`, // Your API endpoint for updating a heritage by ID
+          method: 'PUT',
+          body: data,
+        };
+      },
+      invalidatesTags: (result, error, arg) => [{ type: 'Heritages', id: arg.id }],
+    }),
+
+    deleteHeritage: builder.mutation({
+      query: (id) => ({
+        url: `/heritages/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Heritages'],
+    }),
   })
 })
 
-export const { useLazyGetHeritagesQuery, useGetHeritagesByIdQuery } = heritageApi
+export const { useGetHeritagesQuery, useLazyGetHeritagesQuery, useGetHeritagesByIdQuery, useCreateHeritageMutation, useUpdateHeritageMutation, useDeleteHeritageMutation } = heritageApi
