@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import { Heart } from 'lucide-react'
 
 import { Button } from '~/components/common/ui/Button'
+import { logOut } from '~/store/slices/authSlice'
 
 const UserMenu = ({ userMenuLinks }) => {
   // Fake user
@@ -14,12 +16,17 @@ const UserMenu = ({ userMenuLinks }) => {
   
   const [isOpen, setIsOpen] = useState(false)
   const dropDownRef = useRef(null)
+  const dispatch = useDispatch()
   const navigate = useNavigate()
 
   const handleLogout = () => {
-    // Call logout
-    navigate('/')
-    setIsOpen(false)
+    try {
+      dispatch(logOut())
+      navigate('/')
+      setIsOpen(false)
+    } catch (error) {
+      console.error('Logout failed:', error)
+    }
   }
 
   useEffect(() => {
