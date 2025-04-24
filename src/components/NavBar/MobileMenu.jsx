@@ -1,18 +1,30 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { LogIn, UserPlus } from 'lucide-react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { cn } from '~/lib/utils'
 import { Button } from '~/components/common/ui/Button'
-import { selectCurrentUser } from '~/store/slices/authSlice'
+import { logOut, selectCurrentUser } from '~/store/slices/authSlice'
 
 const MobileMenu = ({ isOpen, navLinks, userMenuLinks, onClose }) => {
   const location = useLocation()
   const userInfo = useSelector(selectCurrentUser)
   const isAuthenticated = !!userInfo
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   if (!isOpen) return null
+
+  const handleLogout = () => {
+    try {
+      dispatch(logOut())
+      navigate('/')
+      onClose()
+    } catch (error) {
+      console.error('Logout failed:', error)
+    }
+  }
+
 
   return (
     <div className='fixed inset-0 z-40 bg-background/95 backdrop-blur-sm sm:hidden pt-navbar-mobile animate-fade-in'>
@@ -51,10 +63,7 @@ const MobileMenu = ({ isOpen, navLinks, userMenuLinks, onClose }) => {
                 </div>
               </Link>
             ))}
-            <Button variant='destructive' onClick={() => {
-              navigate('/')
-              onClose()}}
-            >
+            <Button variant='destructive' onClick={handleLogout}>
               Đăng xuất
             </Button>
           </>
