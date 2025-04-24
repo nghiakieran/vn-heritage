@@ -1,5 +1,5 @@
 import { Users2 } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Button } from '~/components/common/ui/Button'
 import { UserStatus } from './UserStatus'
 import { cn } from '~/lib/utils'
@@ -9,13 +9,32 @@ export function UserList({
   activeUserId, 
   onSelectUser, 
   onSelectCommunity, 
-  isCommunityActive 
+  isCommunityActive,
+  onlineUsers = [] 
 }) {
   const [searchQuery, setSearchQuery] = useState('')
   
-  const filteredUsers = users.filter(user => 
-    user.name.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  // Cập nhật trạng thái online cho người dùng dựa trên socket
+  const enhancedUsers = useMemo(() => {
+    return users.map(user => {
+      // Kiểm tra xem người dùng có online trong phòng chat không
+      const isOnlineInRoom = onlineUsers.some(onlineUser => onlineUser.id === user.id);
+      
+      // Nếu người dùng có trong danh sách online từ socket, luôn đánh dấu là online
+      return isOnlineInRoom 
+        ? { ...user, status: 'online' } 
+        : user;
+    });
+  }, [users, onlineUsers]);
+  
+  const filteredUsers = useMemo(() => {
+    return enhancedUsers.filter(user => 
+      user.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [enhancedUsers, searchQuery]);
+
+  // Đếm số người dùng online trong phòng community
+  const onlineCount = onlineUsers.length;
 
   return (
     <div className='h-full flex flex-col bg-sidebar border-r border-border'>
@@ -43,8 +62,14 @@ export function UserList({
             onClick={onSelectCommunity}
           >
             <Users2 className='h-5 w-5 mr-2' />
-            Community Chat
-            {!isCommunityActive && <span className='ml-auto bg-primary text-primary-foreground text-xs rounded-full px-2 py-1'>12</span>}
+            <div className='flex-1 flex justify-between items-center'>
+              <span>Community Chat</span>
+              {onlineCount > 0 && (
+                <span className='text-xs font-normal text-muted-foreground'>
+                  {onlineCount} online
+                </span>
+              )}
+            </div>
           </Button>
           
           <div className='mt-4'>

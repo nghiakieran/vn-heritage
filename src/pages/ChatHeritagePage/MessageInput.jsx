@@ -4,7 +4,7 @@ import { cn } from '~/lib/utils'
 import { Button } from '~/components/common/ui/Button'
 
 
-export function MessageInput({ onSendMessage, placeholder = 'Type a message...' }) {
+export function MessageInput({ onSendMessage, onInputChange, placeholder = 'Type a message...' }) {
   const [message, setMessage] = useState('')
   
   const handleSend = () => {
@@ -20,12 +20,20 @@ export function MessageInput({ onSendMessage, placeholder = 'Type a message...' 
       handleSend()
     }
   }
+
+  const handleChange = (e) => {
+    setMessage(e.target.value);
+    // Gọi callback khi người dùng đang nhập
+    if (onInputChange) {
+      onInputChange();
+    }
+  };
   
   return (
     <div className='flex items-center gap-2 p-4 bg-card rounded-lg border border-border animate-fade-in'>
       <textarea
         value={message}
-        onChange={(e) => setMessage(e.target.value)}
+        onChange={handleChange}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         className='flex-1 bg-background border border-input rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary resize-none transition-all'
