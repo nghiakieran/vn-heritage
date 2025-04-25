@@ -4,21 +4,24 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%; 
-    --foreground: 220 10% 15%;
+    --background: 210 20% 98%;
+    --foreground: 224 71% 4%;
     --card: 0 0% 100%;
-    --card-foreground: 220 10% 15%;
-    --primary: 215 25% 27%;
+    --card-foreground: 224 71% 4%;
+    --primary: 222 47% 31%;
     --primary-foreground: 210 40% 98%;
     --secondary: 210 20% 96%;
-    --secondary-foreground: 215 25% 27%;
-    --muted: 210 20% 96%;          /* Màu nền nhẹ */
-    --muted-foreground: 220 10% 45%;
-    --accent: 210 30% 95%;        /* Màu điểm nhấn */
-    --accent-foreground: 215 25% 27%;
+    --secondary-foreground: 222 47% 31%;
+    --muted: 210 20% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 222 47% 96%;
+    --accent-foreground: 222 47% 31%;
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 215 25% 65%;    /* Hiệu ứng focus */
+    --ring: 222 47% 31%;
+    --sidebar: 223 47% 11%;
+    --sidebar-accent: 222 47% 17%;
+
     --destructive: 0 85% 60%;
     --destructive-foreground: 210 40% 98%;
 
@@ -26,22 +29,25 @@
     --heritage-light: 30 75% 93%;
     --heritage-dark: 25 80% 25%;
   }
-   .dark {
-    --background: 220 10% 10%;
+  .dark {
+    --background: 224 71% 4%;
     --foreground: 210 40% 98%;
-    --card: 220 10% 10%;
+    --card: 224 71% 4%;
     --card-foreground: 210 40% 98%;
     --primary: 210 40% 98%;
-    --primary-foreground: 220 10% 10%;
-    --secondary: 215 25% 15%;
+    --primary-foreground: 222 47% 11%;
+    --secondary: 217 33% 17%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 215 25% 15%;
-    --muted-foreground: 220 10% 70%;
-    --accent: 215 25% 15%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 33% 17%;
     --accent-foreground: 210 40% 98%;
-    --border: 215 25% 20%;
-    --input: 215 25% 20%;
-    --ring: 215 25% 65%;
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 224 71% 4%;
+    --sidebar: 222 47% 11%;
+    --sidebar-accent: 222 47% 17%;
+
     --destructive: 0 60% 40%;
     --destructive-foreground: 210 40% 98%;
 
@@ -53,7 +59,7 @@
 
 @layer base {
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground font-sans antialiased;
   }
 
   .lcn-container {
@@ -67,4 +73,91 @@
   .lcn-heritage-detail-title {
     @apply text-xl font-medium text-heritage-dark
   }
+}
+
+@layer components {
+  .message-bubble {
+    @apply p-3 rounded-2xl shadow-message transition-all duration-200 hover:shadow-message-hover;
+  }
+  
+  .message-bubble-user {
+    @apply bg-primary text-primary-foreground rounded-tr-none;
+  }
+  
+  .message-bubble-other {
+    @apply bg-card text-card-foreground rounded-tl-none border border-border;
+  }
+  
+  .message-time {
+    @apply text-xs opacity-70 mt-1;
+  }
+  
+  .typing-dot {
+    @apply w-2 h-2 rounded-full bg-primary animate-bounce;
+  }
+  
+  .user-status-indicator {
+    @apply absolute bottom-0 right-0 rounded-full border-2 border-background;
+  }
+  
+  .scrollbar-custom {
+   @apply overflow-auto;
+  }
+  
+  .sidebar-item {
+    @apply flex items-center gap-2 p-2 rounded-lg transition-all duration-200 hover:bg-sidebar-accent;
+  }
+  
+  .sidebar-item-active {
+    @apply bg-sidebar-accent;
+  }
+  
+  .chat-input {
+    @apply w-full resize-none bg-background border border-input rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary 
+    focus:border-primary transition-all overflow-hidden;
+  }
+}
+
+/* Custom scrollbar - Thay thế cho plugin tailwind-scrollbar */
+.scrollbar-custom::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--muted));
+  border-radius: 10px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--primary) / 0.5);
+}
+
+/* Custom scrollbar cho toàn trang */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Đảm bảo tin nhắn dài xuống dòng đúng cách */
+.message-bubble p {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  max-width: 100%;
 }
