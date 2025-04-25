@@ -1,23 +1,24 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { BASE_URL } from '~/constants/fe.constant'
 
 export const knowledgeTestApi = createApi({
   reducerPath: 'knowledgeTestApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8017/v1/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
   tagTypes: ['KnowledgeTests'],
   endpoints: (builder) => ({
     getKnowledgeTests: builder.query({
-      query: () => 'knowledge-tests/',
+      query: () => '/knowledge-tests/',
       providesTags: ['KnowledgeTests'],
     }),
 
     getKnowledgeTestById: builder.query({
-      query: (testId) => `knowledge-tests/${testId}`,
+      query: (testId) => `/knowledge-tests/${testId}`,
       providesTags: (_, __, id) => [{ type: 'KnowledgeTests', id }],
     }),
 
     submitKnowledgeTestAttempt: builder.mutation({
       query: ({ testId, answers }) => ({
-        url: `knowledge-tests/${testId}/attempt`,
+        url: `/knowledge-tests/${testId}/attempt`,
         method: 'POST',
         body: { answers },
       }),
