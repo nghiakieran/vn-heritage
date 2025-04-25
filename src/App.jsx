@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import AppRoutes from './routes'
 import { useDispatch } from 'react-redux'
 import { setCredentials } from './store/slices/authSlice'
+import ToastProvider from './components/ToastProvider/ToastProvider'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -41,7 +42,12 @@ const App = () => {
     checkAuth()
   }, [dispatch])
 
-  return <AppRoutes />
+  return (
+    <>
+      <AppRoutes />
+      <ToastProvider />
+    </>
+  )
 }
 
 export default App
