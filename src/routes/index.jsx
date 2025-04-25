@@ -12,7 +12,7 @@ const PublicRoutes = ({ children, restricted }) => {
   // Fake auth
   const user = useSelector(selectCurrentUser)
   const isAuthenticated = !!user
-  if (isAuthenticated && restricted) return <Navigate to='/' replace />
+  // if (isAuthenticated && restricted) return <Navigate to='/' replace />
   return children
 }
 
