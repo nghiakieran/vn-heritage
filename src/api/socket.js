@@ -17,6 +17,12 @@ export const SOCKET_EVENTS = {
     TYPING: 'typing',
     USER_TYPING: 'user-typing',
     ROOM_MESSAGES: 'room-messages',
+    JOIN_DM: 'join-dm',
+    JOIN_DM_SUCCESS: 'join-dm',
+    SEND_DM: 'send-dm',
+    NEW_DM: 'new-dm',
+    GET_DM_MESSAGES: 'get-dm-messages',
+    DM_MESSAGES: 'dm-messages',
 }
 
 /**
@@ -27,6 +33,7 @@ class SocketService {
         this.socket = null
         this.isConnected = false
         this.activeRooms = new Set()
+        this.activeDirectRooms = new Set()
     }
 
     connect(userData) {
@@ -50,6 +57,7 @@ class SocketService {
             console.log('Socket disconnected')
             this.isConnected = false
             this.activeRooms.clear()
+            this.activeDirectRooms.clear()
         })
 
         this.socket.on('error', (error) => {
@@ -65,6 +73,7 @@ class SocketService {
             this.socket = null
             this.isConnected = false
             this.activeRooms.clear()
+            this.activeDirectRooms.clear()
         }
     }
 
@@ -88,9 +97,26 @@ class SocketService {
         this.activeRooms.delete(heritageId)
     }
 
+    joinDirectRoom(userId1, userId2, userData) {
+        if (!this.socket || !this.isConnected) return
+
+        const roomKey = [userId1, userId2].sort().join('-')
+        if (this.activeDirectRooms.has(roomKey)) return
+
+        console.log('Emitting join-dm:', { userId1, userId2, userData })
+        this.socket.emit(SOCKET_EVENTS.JOIN_DM, { userId1, userId2, userData })
+        this.activeDirectRooms.add(roomKey)
+    }
+
     sendMessage(roomId, message) {
         if (!this.socket || !this.isConnected) return
         this.socket.emit(SOCKET_EVENTS.NEW_MESSAGE, { roomId, message })
+    }
+
+    sendDirectMessage(dmRoomId, userId, message) {
+        if (!this.socket || !this.isConnected) return
+        console.log('Emitting send-dm:', { dmRoomId, userId, message })
+        this.socket.emit(SOCKET_EVENTS.SEND_DM, { dmRoomId, userId, message })
     }
 
     startTyping(roomId) {
@@ -107,6 +133,12 @@ class SocketService {
         if (!this.socket || !this.isConnected) return
         console.log('Fetching messages:', { roomId, limit, lastMessageTimestamp })
         this.socket.emit('get-messages', { roomId, limit, lastMessageTimestamp })
+    }
+
+    getDirectMessages(dmRoomId, limit = 50) {
+        if (!this.socket || !this.isConnected) return
+        console.log('Fetching DM messages:', { dmRoomId, limit })
+        this.socket.emit(SOCKET_EVENTS.GET_DM_MESSAGES, { dmRoomId, limit })
     }
 
     on(event, callback) {

@@ -14,6 +14,32 @@ export const userApi = createApi({
       providesTags: ['User'],
     }),
 
+    getAllActiveUsers: builder.query({
+      async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
+        let allUsers = []
+        let page = 1
+        const limit = 10 // Hoặc giá trị phù hợp
+        let hasMore = true
+
+        while (hasMore) {
+          const result = await fetchWithBQ(`/users?page=${page}&limit=${limit}`)
+          if (result.error) return { error: result.error }
+
+          allUsers = [...allUsers, ...result.data.users]
+          hasMore = page < result.data.pagination.totalPages
+          page++
+        }
+
+        // Lọc tất cả người dùng có isActive = true
+        const activeUsers = allUsers.filter(user =>
+          user.account && user.account.isActive === true
+        )
+
+        return { data: { users: activeUsers } }
+      },
+      providesTags: ['User'],
+    }),
+
     updateUser: builder.mutation({
       query: ({ id, ...data }) => ({
         url: `/users/${id}`,
@@ -33,4 +59,4 @@ export const userApi = createApi({
   }),
 })
 
-export const { useGetAllUsersQuery, useUpdateUserMutation, useDeleteUserMutation } = userApi
+export const { useGetAllUsersQuery, useGetAllActiveUsersQuery, useUpdateUserMutation, useDeleteUserMutation } = userApi
