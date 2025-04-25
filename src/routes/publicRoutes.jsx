@@ -5,6 +5,7 @@ import HeritageDetail from '~/pages/HeritageDetail/HeritageDetail'
 import Heritages from '~/pages/Heritages'
 import Home from '~/pages/Home'
 import Login from '~/pages/Login'
+import Profile from '~/pages/Profile'
 import Register from '~/pages/Register'
 
 const publicRoutes = [
@@ -15,7 +16,8 @@ const publicRoutes = [
   { path: '/login', element: <Login />, restricted: true },
   { path: '/register', element: <Register />, restricted: true },
   { path: '/authen-confirm', element: <EmailVerification />, restricted: true },
-  { path: '/chat/heritage/:id', element: <ChatHeritagePage />}
+  { path: '/chat/heritage/:id', element: <ChatHeritagePage />},
+  { path: '/profile', element: <Profile />}
 
 ]
 

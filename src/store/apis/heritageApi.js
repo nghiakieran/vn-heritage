@@ -1,8 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { BASE_URL } from '~/constants/fe.constant'
 
 export const heritageApi = createApi({
   reducerPath: 'heritageApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8017/v1/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
   tagTypes: ['Heritages'],
   endpoints: (builder) => ({
     getHeritages: builder.query({
@@ -17,7 +18,7 @@ export const heritageApi = createApi({
         if (sort) params.append('sort', sort)
         if (order) params.append('order', order)
         
-        return `heritages?${params.toString()}`
+        return `/heritages?${params.toString()}`
       },
       providesTags: (result) => 
         result
@@ -28,7 +29,7 @@ export const heritageApi = createApi({
           : [{ type: 'Heritages', id: 'LIST' }]
     }),
     getHeritagesById: builder.query({
-      query: (heritageId) => `heritages/${heritageId}`,
+      query: (heritageId) => `/heritages/${heritageId}`,
       providesTags: (id) => [{ type: 'Heritages', id }]
     })
   })
