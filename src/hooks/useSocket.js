@@ -14,12 +14,14 @@ const useSocket = (userData, heritageId) => {
     const [privateMessages, setPrivateMessages] = useState({})
     const [usersInRoom, setUsersInRoom] = useState([])
     const [roomId, setRoomId] = useState(null)
-    const [dmRoomIds, setDmRoomIds] = useState({}) // Lưu dmRoomId theo recipientId
+    const [dmRoomIds, setDmRoomIds] = useState({})
     const [socketError, setSocketError] = useState(null)
     const [isLoadingMessages, setIsLoadingMessages] = useState(false)
     const [hasMoreMessages, setHasMoreMessages] = useState(true)
     const hasJoinedRef = useRef(false)
     const hasFetchedMessagesRef = useRef(false)
+    const fetchedDmMessagesRef = useRef(new Map())
+    const currentRecipientIdRef = useRef(null)
     const navigate = useNavigate()
     const limit = 50
 
@@ -50,6 +52,8 @@ const useSocket = (userData, heritageId) => {
             setHasMoreMessages(true)
             hasJoinedRef.current = false
             hasFetchedMessagesRef.current = false
+            fetchedDmMessagesRef.current.clear()
+            currentRecipientIdRef.current = null
         }
 
         const handleError = (data) => {
@@ -212,12 +216,26 @@ const useSocket = (userData, heritageId) => {
         const handleJoinDm = (data) => {
             console.log('Received join-dm:', data)
             const { dmRoomId } = data
-            // Lưu dmRoomId theo recipientId
+            const recipientId = currentRecipientIdRef.current
+
+            if (!recipientId) {
+                console.log('No recipientId set, cannot handle join-dm')
+                return
+            }
+
+            if (fetchedDmMessagesRef.current.has(recipientId)) {
+                console.log(`Đã lấy tin nhắn cho recipientId ${recipientId}, bỏ qua`)
+                return
+            }
+
             setDmRoomIds((prev) => ({
                 ...prev,
-                [data.recipientId || userData.userId]: dmRoomId, // Lưu dmRoomId để dùng sau
+                [recipientId]: dmRoomId,
             }))
-            // Lấy lịch sử tin nhắn ngay sau khi tham gia phòng
+
+            fetchedDmMessagesRef.current.set(recipientId, dmRoomId)
+
+            console.log(`Fetching messages for dmRoomId ${dmRoomId} (recipientId: ${recipientId})`)
             socketService.getDirectMessages(dmRoomId, limit)
         }
 
@@ -235,34 +253,62 @@ const useSocket = (userData, heritageId) => {
                 isCurrentUser: data.userId === userData.userId,
             }
             const recipientId = data.userId === userData.userId ? data.recipientId : data.userId
-            setPrivateMessages((prev) => ({
-                ...prev,
-                [recipientId]: [...(prev[recipientId] || []), newMessage],
-            }))
+
+            setPrivateMessages((prev) => {
+                const currentMessages = prev[recipientId] || []
+                // Kiểm tra xem tin nhắn đã tồn tại chưa
+                if (currentMessages.some(msg => msg.id === newMessage.id)) {
+                    console.log(`Tin nhắn với id ${newMessage.id} đã tồn tại, bỏ qua`)
+                    return prev
+                }
+
+                // Kiểm tra xem có tin nhắn tạm (temp-id) với cùng nội dung không
+                const tempMessageIndex = currentMessages.findIndex(
+                    msg => msg.id.startsWith('temp-') && msg.content === newMessage.content && msg.sender.id === newMessage.sender.id
+                )
+                if (tempMessageIndex !== -1) {
+                    // Thay thế tin nhắn tạm bằng tin nhắn thực
+                    const updatedMessages = [...currentMessages]
+                    updatedMessages[tempMessageIndex] = newMessage
+                    console.log(`Thay thế tin nhắn tạm tại index ${tempMessageIndex} bằng tin nhắn thực`)
+                    return {
+                        ...prev,
+                        [recipientId]: updatedMessages,
+                    }
+                }
+
+                // Nếu không có tin nhắn tạm, thêm tin nhắn mới
+                console.log(`Thêm tin nhắn mới cho recipientId ${recipientId}:`, newMessage)
+                return {
+                    ...prev,
+                    [recipientId]: [...currentMessages, newMessage],
+                }
+            })
         }
 
         const handleDmMessages = (data) => {
             console.log('Received dm-messages:', data)
             const { dmRoomId, messages } = data
-            const formattedMessages = messages.map((msg) => ({
-                id: msg._id,
-                content: msg.content,
-                sender: {
-                    id: msg.userId,
-                    name: usersInRoom.find(user => user.id === msg.userId)?.name || 'Unknown',
-                },
-                timestamp: msg.createAt || new Date().toISOString(),
-                isCurrentUser: msg.userId === userData.userId,
-            }))
-            // Tìm recipientId tương ứng với dmRoomId
             const recipientId = Object.keys(dmRoomIds).find(
                 (key) => dmRoomIds[key] === dmRoomId
             )
             if (recipientId) {
+                const formattedMessages = messages.map((msg) => ({
+                    id: msg._id,
+                    content: msg.content,
+                    sender: {
+                        id: msg.userId,
+                        name: usersInRoom.find(user => user.id === msg.userId)?.name || 'Unknown',
+                    },
+                    timestamp: msg.createAt || new Date().toISOString(),
+                    isCurrentUser: msg.userId === userData.userId,
+                }))
                 setPrivateMessages((prev) => ({
                     ...prev,
                     [recipientId]: formattedMessages,
                 }))
+            } else {
+                console.log(`No recipientId found for dmRoomId ${dmRoomId}`)
             }
         }
 
@@ -349,9 +395,9 @@ const useSocket = (userData, heritageId) => {
         }
 
         console.log('Joining direct room with:', { userId1: userData.userId, userId2: recipientId })
+        currentRecipientIdRef.current = recipientId
         socketService.joinDirectRoom(userData.userId, recipientId, userData)
 
-        // Lưu recipientId để ánh xạ sau
         setDmRoomIds((prev) => ({
             ...prev,
             [recipientId]: prev[recipientId] || null,
@@ -387,10 +433,18 @@ const useSocket = (userData, heritageId) => {
             timestamp: new Date().toISOString(),
             isCurrentUser: true,
         }
-        setPrivateMessages((prev) => ({
-            ...prev,
-            [recipientId]: [...(prev[recipientId] || []), newMessage],
-        }))
+        setPrivateMessages((prev) => {
+            const currentMessages = prev[recipientId] || []
+            // Kiểm tra xem có tin nhắn tương tự (cùng nội dung, cùng sender) chưa
+            if (currentMessages.some(msg => msg.content === newMessage.content && msg.sender.id === newMessage.sender.id && msg.timestamp === newMessage.timestamp)) {
+                console.log(`Tin nhắn tạm với nội dung "${newMessage.content}" đã tồn tại, bỏ qua`)
+                return prev
+            }
+            return {
+                ...prev,
+                [recipientId]: [...currentMessages, newMessage],
+            }
+        })
     }, [isConnected, userData, dmRoomIds])
 
     return {

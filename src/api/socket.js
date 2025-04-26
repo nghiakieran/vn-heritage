@@ -37,7 +37,10 @@ class SocketService {
     }
 
     connect(userData) {
-        if (this.socket) return this.socket
+        if (this.socket && this.isConnected) {
+            console.log('Socket already connected, returning existing socket')
+            return this.socket
+        }
 
         this.socket = io(SOCKET_SERVER_URL, {
             query: {
@@ -78,7 +81,10 @@ class SocketService {
     }
 
     joinRoom(heritageId, userData) {
-        if (!this.socket || !this.isConnected || this.activeRooms.has(heritageId)) return
+        if (!this.socket || !this.isConnected || this.activeRooms.has(heritageId)) {
+            console.log('Cannot join room:', { socket: !!this.socket, isConnected: this.isConnected, alreadyJoined: this.activeRooms.has(heritageId) })
+            return
+        }
 
         const user = {
             userId: userData.userId,
@@ -98,10 +104,16 @@ class SocketService {
     }
 
     joinDirectRoom(userId1, userId2, userData) {
-        if (!this.socket || !this.isConnected) return
+        if (!this.socket || !this.isConnected) {
+            console.log('Cannot join direct room:', { socket: !!this.socket, isConnected: this.isConnected })
+            return
+        }
 
         const roomKey = [userId1, userId2].sort().join('-')
-        if (this.activeDirectRooms.has(roomKey)) return
+        if (this.activeDirectRooms.has(roomKey)) {
+            console.log(`Already joined direct room ${roomKey}, skipping`)
+            return
+        }
 
         console.log('Emitting join-dm:', { userId1, userId2, userData })
         this.socket.emit(SOCKET_EVENTS.JOIN_DM, { userId1, userId2, userData })

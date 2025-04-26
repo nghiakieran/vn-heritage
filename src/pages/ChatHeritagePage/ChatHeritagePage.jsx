@@ -24,11 +24,15 @@ const MOCK_COMMUNITY_MESSAGES = []
 const ChatHeritagePage = () => {
   // Gọi tất cả Hook trước bất kỳ lệnh return nào
   const { data: usersData, isLoading, isError } = useGetAllActiveUsersQuery()
+  console.log('usersData', usersData)
   const userInfo = useSelector(selectCurrentUser)
   const isMobile = useIsMobile()
   const chatContainerRef = useRef(null)
   const { id } = useParams()
-  const heritageIdParam = id // Đổi tên để tránh xung đột
+  const heritageIdParam = id
+
+  // Thêm useRef để theo dõi activeChat trước đó
+  const prevActiveChatRef = useRef(null)
 
   // Thông tin người dùng hiện tại
   const currentUser = useMemo(
@@ -58,7 +62,7 @@ const ChatHeritagePage = () => {
     loadMoreMessages,
   } = socketData
 
-  // Danh sách người dùng từ API
+  // Danh sách người dùng từ API (active users)
   const realUsers = useMemo(() => {
     if (!usersData?.users?.length) return []
     return usersData.users.map(user => ({
@@ -69,30 +73,39 @@ const ChatHeritagePage = () => {
     }))
   }, [usersData])
 
-  // Kết hợp realUsers với usersInRoom để hiển thị danh sách người dùng
+  // Kết hợp realUsers với usersInRoom để cập nhật trạng thái online/offline
   const enhancedUsers = useMemo(() => {
-    return usersInRoom.map(user => {
-      const apiUser = realUsers.find(u => u.id === user.id) || {}
+    return realUsers.map(user => {
+      const socketUser = usersInRoom.find(u => u.id === user.id) || {}
       return {
         id: user.id,
         name: user.name,
-        status: apiUser.status || 'online',
-        unreadCount: apiUser.unreadCount || 0,
+        status: socketUser.id ? 'online' : 'offline',
+        unreadCount: user.unreadCount || 0,
       }
     })
-  }, [usersInRoom, realUsers])
+  }, [realUsers, usersInRoom])
 
   // State quản lý giao diện và dữ liệu chat
   const [activeChat, setActiveChat] = useState('community')
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [showInfo, setShowInfo] = useState(false)
 
-  // Tham gia phòng chat riêng khi chọn user
+  // Tham gia phòng chat riêng khi chọn user, chỉ gọi joinDirectRoom khi cần
   const handleSelectUser = (userId) => {
     setActiveChat(userId)
     if (isMobile) setSidebarOpen(false)
-    joinDirectRoom(userId)
   }
+
+  // Sử dụng useEffect để kiểm soát việc gọi joinDirectRoom
+  useEffect(() => {
+    // Chỉ gọi joinDirectRoom nếu activeChat thay đổi và không phải là 'community'
+    if (activeChat !== 'community' && activeChat !== prevActiveChatRef.current) {
+      joinDirectRoom(activeChat)
+    }
+    // Cập nhật prevActiveChatRef
+    prevActiveChatRef.current = activeChat
+  }, [activeChat, joinDirectRoom])
 
   // Lấy tin nhắn cho cuộc trò chuyện hiện tại
   const messages = useMemo(() => {
