@@ -7,10 +7,10 @@ import {
     useGetApiResponseMutation,
     useGetChatHistoryQuery,
     useUploadDocumentMutation,
-    useUploadJsonMutation, // Added for landmark data
-} from '~/store/apis/chatSlice'; // Fixed import from chatSlice to chatApi
+    useUploadJsonMutation,
+} from '~/store/apis/chatSlice';
 
-const HeritageChat = ({ heritageId, heritageName, landmarkData, onClose }) => {
+const HeritageChat = ({ heritageName, landmarkData }) => {
     const [messages, setMessages] = useState([]);
     const [inputText, setInputText] = useState('');
     const [sessionId, setSessionId] = useState(null);
@@ -27,7 +27,7 @@ const HeritageChat = ({ heritageId, heritageName, landmarkData, onClose }) => {
 
     const [getApiResponse] = useGetApiResponseMutation();
     const [uploadDocument] = useUploadDocumentMutation();
-    const [uploadJson] = useUploadJsonMutation(); // Added for landmark data
+    const [uploadJson] = useUploadJsonMutation();
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -77,10 +77,12 @@ const HeritageChat = ({ heritageId, heritageName, landmarkData, onClose }) => {
             return;
         }
 
+        const currentInputText = inputText;
+
         const userMessage = {
             id: Date.now(),
             sender: 'user',
-            content: inputText,
+            content: currentInputText,
             timestamp: new Date().toLocaleTimeString('vi-VN'),
         };
 
@@ -88,17 +90,19 @@ const HeritageChat = ({ heritageId, heritageName, landmarkData, onClose }) => {
         setInputText('');
 
         try {
-            const context = `Dựa trên thông tin di tích ${heritageName} (ID: ${heritageId}): ${JSON.stringify(landmarkData, null, 2)}\nCâu hỏi: ${inputText}`;
             const response = await getApiResponse({
-                question: context,
+                question: currentInputText,
                 sessionId,
                 model: selectedModel,
+                heritageName, // Changed from heritageContext
             }).unwrap();
+
+            console.log('API Response:', response);
 
             const aiMessage = {
                 id: Date.now() + 1,
                 sender: 'ai',
-                content: response.response || 'AI: Đã nhận câu hỏi.',
+                content: response.answer || 'AI: Đã nhận câu hỏi.',
                 timestamp: new Date().toLocaleTimeString('vi-VN'),
             };
 
@@ -140,17 +144,19 @@ const HeritageChat = ({ heritageId, heritageName, landmarkData, onClose }) => {
                 setMessages((prev) => [...prev, fileMessage]);
                 toast.success(`Đã tải lên ${file.name}!`);
 
-                const context = `Người dùng đã tải lên tệp ${file.name} liên quan đến di tích ${heritageName}. Dựa trên thông tin di tích: ${JSON.stringify(landmarkData, null, 2)}.`;
+                const fileQuestion = `Tệp ${file.name}`;
                 const response = await getApiResponse({
-                    question: context,
+                    question: fileQuestion,
                     sessionId,
                     model: selectedModel,
+                    heritageName, // Changed from heritageContext
+                    fileUpload: true,
                 }).unwrap();
 
                 const aiMessage = {
                     id: Date.now() + 1,
                     sender: 'ai',
-                    content: response.response || `AI: Đã nhận tệp ${file.name}.`,
+                    content: response.answer || `AI: Đã nhận tệp ${file.name}.`,
                     timestamp: new Date().toLocaleTimeString('vi-VN'),
                 };
 

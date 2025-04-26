@@ -16,22 +16,35 @@ export const chatApi = createApi({
   tagTypes: ['Chat'],
   endpoints: (builder) => ({
     getApiResponse: builder.mutation({
-      query: ({ question, sessionId, model }) => ({
-        url: '/chat',
-        method: 'POST',
-        body: { question, session_id: sessionId, model },
-      }),
+      query: ({ question, sessionId, model, heritageName, fileUpload }) => {
+        const body = {
+          model,
+          question, // Send raw question
+        };
+
+        if (sessionId) {
+          body.session_id = sessionId;
+        }
+        if (heritageName) {
+          body.heritageName = heritageName; // Send heritageName for backend context
+        }
+
+        return {
+          url: '/chat',
+          method: 'POST',
+          body,
+        };
+      },
       invalidatesTags: (result, error, { sessionId }) =>
         sessionId ? [{ type: 'Chat', id: sessionId }] : [],
     }),
+
     getChatHistory: builder.query({
       query: (sessionId) => `/chat/history/${sessionId}`,
-      transformResponse: (response) => (Array.isArray(response) ? response : []),
       providesTags: (result, error, sessionId) =>
-        sessionId
-          ? [{ type: 'Chat', id: sessionId }, { type: 'Chat', id: 'LIST' }]
-          : [{ type: 'Chat', id: 'LIST' }],
+        sessionId ? [{ type: 'Chat', id: sessionId }] : [],
     }),
+
     uploadDocument: builder.mutation({
       query: (file) => {
         const formData = new FormData();
@@ -45,9 +58,10 @@ export const chatApi = createApi({
       },
       invalidatesTags: (result, error, file) => [{ type: 'Chat', id: 'LIST' }],
     }),
+
     uploadWebsite: builder.mutation({
       query: (payload) => {
-        console.log('RTK Query sending payload:', payload); // Debug payload
+        console.log('RTK Query sending payload:', payload);
         return {
           url: '/upload-website',
           method: 'POST',
@@ -75,5 +89,5 @@ export const {
   useGetChatHistoryQuery,
   useUploadDocumentMutation,
   useUploadWebsiteMutation,
-  useUploadJsonMutation
+  useUploadJsonMutation,
 } = chatApi;
