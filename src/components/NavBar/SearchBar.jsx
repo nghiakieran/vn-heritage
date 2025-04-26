@@ -3,15 +3,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Search, X, Loader2 } from 'lucide-react'
 
-import { selectSearchQuery } from '~/store/selectors/paginationSelectors'
-import { setSearchQuery } from '~/store/slices/paginationSlice'
+import { setHeritagesSearchQuery } from '~/store/slices/paginationSlice'
 import useDebounce from '~/hooks/useDebounce'
+import { selectHeritagesSearchQuery } from '~/store/selectors/paginationSelectors'
 
 const SearchBar = () => {
   const [isSearching, setIsSearching] = useState(false)
   const inputRef = useRef(null)
   const dispatch = useDispatch()
-  const searchQuery = useSelector(selectSearchQuery)
+  const searchQuery = useSelector(selectHeritagesSearchQuery)
   const [searchValue, setSearchValue] = useState(searchQuery)
   const debouncedValue = useDebounce(searchValue, 500)
   const navigate = useNavigate()
@@ -32,7 +32,7 @@ const SearchBar = () => {
 
   useEffect(() => {
     if (debouncedValue !== searchQuery) {
-      dispatch(setSearchQuery(debouncedValue))
+      dispatch(setHeritagesSearchQuery(debouncedValue))
       setIsSearching(false)
 
       if (debouncedValue.trim() && location.pathname !== '/heritages') {
