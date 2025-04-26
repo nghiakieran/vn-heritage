@@ -12,13 +12,12 @@ const publicRoutes = [
   { path: '/', element: <Home /> },
   { path: '/about', element: <About /> },
   { path: '/heritages', element: <Heritages /> },
-  { path: '/heritage/:id', element: <HeritageDetail /> },
+  { path: '/heritage/:nameSlug', element: <HeritageDetail /> },
   { path: '/login', element: <Login />, restricted: true },
   { path: '/register', element: <Register />, restricted: true },
   { path: '/authen-confirm', element: <EmailVerification />, restricted: true },
-  { path: '/chat/heritage/:id', element: <ChatHeritagePage />},
+  { path: '/chat/heritage/:nameSlug', element: <ChatHeritagePage />},
   { path: '/profile', element: <Profile />}
-
 ]
 
 export default publicRoutes
