@@ -74,7 +74,7 @@ const HeritageDetail = () => {
         <HeritageDetailSkeleton />
       ) : (
         <>
-          <HeritageHeader data={data} isAuthenticated={isAuthenticated} />
+          <HeritageHeader data={data} />
           <div className='lcn-container-x py-8'>
             <div className='grid grid-cols-1 sm:grid-cols-3 gap-8'>
               <div className='sm:col-span-2'>

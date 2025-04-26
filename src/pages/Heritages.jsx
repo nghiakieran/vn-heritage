@@ -3,21 +3,17 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 import { heritageApi, useLazyGetHeritagesQuery } from '~/store/apis/heritageApi'
-import { setCurrentPage } from '~/store/slices/paginationSlice'
 import HeritageList from '~/components/Heritage/HeritageList'
 import HeritageSkeleton from '~/components/Heritage/HeritageSkeleton'
-import {
-  selectCurrentPage,
-  selectItemsPerPage,
-  selectSearchQuery,
-} from '~/store/selectors/paginationSelectors'
+import { setHeritagesPage } from '~/store/slices/paginationSlice'
+import { selectHeritagesCurrentPage, selectHeritagesItemsPerPage, selectHeritagesSearchQuery } from '~/store/selectors/paginationSelectors'
 
 const Heritages = () => {
   const dispatch = useDispatch()
   
-  const currentPage = useSelector(selectCurrentPage)
-  const itemsPerPage = useSelector(selectItemsPerPage)
-  const searchQuery = useSelector(selectSearchQuery)
+  const currentPage = useSelector(selectHeritagesCurrentPage)
+  const itemsPerPage = useSelector(selectHeritagesItemsPerPage)
+  const searchQuery = useSelector(selectHeritagesSearchQuery)
 
   const queryParams = useMemo(() => ({
     page: currentPage,
@@ -42,7 +38,7 @@ const Heritages = () => {
   // Handle page change
   const handlePageChange = useCallback((page) => {
     if (page >= 1 && page <= totalPages) {
-      dispatch(setCurrentPage(page))
+      dispatch(setHeritagesPage(page))
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }, [dispatch, totalPages])

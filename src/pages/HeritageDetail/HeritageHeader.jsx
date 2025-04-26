@@ -1,9 +1,9 @@
-import { ArrowLeft, Heart, Share, Star } from 'lucide-react'
+import { ArrowLeft, Share, Star } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { Button } from '~/components/common/ui/Button'
 
-const HeritageHeader = ({ data, isAuthenticated }) => {
+const HeritageHeader = ({ data }) => {
   
   const handleShare = () => {
     if (navigator.share) {
@@ -54,18 +54,12 @@ const HeritageHeader = ({ data, isAuthenticated }) => {
               <span className='text-white/80 text-sm ml-1'>({data?.stats?.totalReviews || 0})</span>
             </div>
           </div>
-          <div className='flex space-x-2'>
-            {isAuthenticated && (
-              <Button variant='outline' className='backdrop-blur-sm hover:bg-white/30 text-white bg-white/20 border group'>
-                <Heart size={16}/>
-                <span>Yêu thích</span>
-              </Button>
-            )}
+          <div>
             <Button 
               variant='outline'
               className='backdrop-blur-sm hover:bg-white/30 text-white bg-white/20 border'
               onClick={handleShare}
-              >
+            >
               <Share size={16} />
               <span>Chia sẻ</span>
             </Button>

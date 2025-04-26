@@ -21,11 +21,9 @@ export function UserStatus({ name, status, avatar, className, showStatus = true,
   }
 
   return (
-    <div className={cn('flex items-center', className)}>
+    <div className={cn('flex items-center justify-between', className)}>
       <div className='relative'>
-        <div
-          className={cn('rounded-full flex items-center justify-center bg-primary/20 text-white', avatarSizes[size])}
-        >
+        <div className={cn('rounded-full flex items-center justify-center bg-primary/20 text-white', avatarSizes[size])}>
           {avatar ? (
             <img src={avatar || '/placeholder.svg'} alt={name} className='rounded-full object-cover w-full h-full' />
           ) : (
