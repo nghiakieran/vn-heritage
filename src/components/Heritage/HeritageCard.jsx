@@ -13,7 +13,8 @@ const HeritageCard = ({ item }) => {
     name = '', 
     location = '', 
     description = '', 
-    images = [] 
+    images = [],
+    nameSlug = '' 
   } = item || {}
   
   const userInfo = useSelector(selectCurrentUser)
@@ -28,7 +29,7 @@ const HeritageCard = ({ item }) => {
   if (!item) return null
   
   return (
-    <Link to={`/heritage/${_id}`} className='block group'>
+    <Link to={`/heritage/${nameSlug}`} className='block group'>
       <div className='shadow-sm border rounded-lg bg-card text-card-foreground overflow-hidden transition-all duration-300 hover:shadow-lg h-full flex flex-col'>
         {/* Image section */}
         <div className='relative overflow-hidden'>

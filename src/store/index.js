@@ -1,6 +1,5 @@
-import authSlice from './slices/authSlice';
-import { chatApi } from './apis/chatSlice';
 import authSlice from './slices/authSlice'
+import { chatApi } from './apis/chatSlice'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import { apiSlice } from './apis/apiSlice'
 import { configureStore } from '@reduxjs/toolkit'
@@ -24,9 +23,9 @@ export const store = configureStore({
   },
 
 
-  middleware: (getDefaultMiddleware) => 
-    getDefaultMiddleware().concat(heritageApi.middleware, leaderboardApi.middleware, 
-      knowledgeTestApi.middleware, apiSlice.middleware, userApi.middleware, chatApi.middleware // Added chatApi middleware),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(heritageApi.middleware, leaderboardApi.middleware,
+      knowledgeTestApi.middleware, apiSlice.middleware, userApi.middleware, chatApi.middleware),
 })
 
 
