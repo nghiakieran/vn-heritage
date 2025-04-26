@@ -2,14 +2,13 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import { useGetHeritagesByIdQuery } from '~/store/apis/heritageApi'
+import { useGetHeritagesBySlugQuery } from '~/store/apis/heritageApi'
 import HeritageCard from '~/components/Heritage/HeritageCard'
 import HeritageDetailSkeleton from './HeritageDetailSkeleton'
 import HeritageDetailTabs from './HeritageDetailTab'
 import HeritageFeatures from './HeritageFeatures'
 import HeritageHeader from './HeritageHeader'
 import HeritageInfo from './HeritageInfo'
-import { mockData } from '~/api/mock-data'
 import { Button } from '~/components/common/ui/Button'
 import { Dialog, DialogDescription, DialogHeader, DialogTitle } from '~/components/common/ui/Dialog'
 import LeaderboardTable from './LeaderboardTable/LeaderboardTable'
@@ -17,15 +16,17 @@ import HeritageKnowledgeTest from './HeritageKnowledgeTest/HeritageKnowledgeTest
 import { selectCurrentUser } from '~/store/slices/authSlice'
 
 const HeritageDetail = () => {
-  const { id } = useParams()
+  const { nameSlug } = useParams()
   const navigate = useNavigate()
-  const { data, isFetching, isLoading, isError } = useGetHeritagesByIdQuery(id)
+  const { data, isFetching, isLoading, isError } = useGetHeritagesBySlugQuery(nameSlug)
+
+  const id = data?._id
 
   const userInfo = useSelector(selectCurrentUser)
   const isAuthenticated = !!userInfo
-  // Fake data
-  const heritages = mockData.heritages
-  const relatedItems = heritages.filter(item => item._id !== id).slice(0, 3)
+  // // Fake data
+  // const heritages = mockData.heritages
+  // const relatedItems = heritages.filter(item => item._id !== id).slice(0, 3)
 
   const [activeFeature, setActiveFeature] = useState(null)
   
@@ -35,7 +36,7 @@ const HeritageDetail = () => {
       return
     }
     if (feature === 'chatroom') {
-      navigate(`/chat/heritage/${id}`, { 
+      navigate(`/chat/heritage/${nameSlug}`, { 
         state: { 
           heritageName: data?.name,
           heritageId: id
@@ -91,12 +92,12 @@ const HeritageDetail = () => {
                     )
                   }
                 {/* Related Item */}
-                <div className='mt-10'>
+                {/* <div className='mt-10'>
                   <h3 className='lcn-heritage-detail-title mb-4'>Di tích liên quan</h3>
                   <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
                     { relatedItems.map(item => ( <HeritageCard key={item._id} item={item}/> )) }
                   </div>
-                </div>
+                </div> */}
               </div>
               {/* Right Content */}
               <div className='space-y-8'>

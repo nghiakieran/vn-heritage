@@ -1,6 +1,6 @@
 import { ArrowLeft, Menu, ChevronDown, Users } from 'lucide-react'
 import { useEffect, useRef, useState, useMemo } from 'react'
-import { useParams } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import { selectCurrentUser } from '~/store/slices/authSlice'
@@ -56,7 +56,9 @@ const ChatHeritagePage = () => {
   const userInfo = useSelector(selectCurrentUser)
   const isMobile = useIsMobile()
   const chatContainerRef = useRef(null)
-  const { id } = useParams()
+  const location = useLocation()
+
+  const { heritageId: id, heritageName } = location.state || {}
   const heritageId = id
 
   // State quản lý giao diện và dữ liệu chat

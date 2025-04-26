@@ -1,24 +1,41 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-  currentPage: 1,
-  itemsPerPage: 9,
-  searchQuery: ''
+  heritages: {
+    currentPage: 1,
+    itemsPerPage: 9,
+    searchQuery: ''
+  },
+  favorites: {
+    currentPage: 1,
+    itemsPerPage: 9
+  }
 }
 
 export const paginationSlice = createSlice({
   name: 'pagination',
   initialState,
   reducers: {
-    setCurrentPage: (state, action) => {
-      state.currentPage = action.payload
+    // Actions cho Heritage pagination
+    setHeritagesPage: (state, action) => {
+      state.heritages.currentPage = action.payload
     },
-    setSearchQuery: (state, action) => {
-      state.searchQuery = action.payload
-      state.currentPage = 1
+    setHeritagesSearchQuery: (state, action) => {
+      state.heritages.searchQuery = action.payload
+      state.heritages.currentPage = 1
+    },
+    
+    // Actions cho Favorites pagination
+    setFavoritesPage: (state, action) => {
+      state.favorites.currentPage = action.payload
     }
   }
 })
 
-export const { setCurrentPage, setSearchQuery } = paginationSlice.actions
+export const { 
+  setHeritagesPage, 
+  setHeritagesSearchQuery, 
+  setFavoritesPage 
+} = paginationSlice.actions
+
 export default paginationSlice.reducer
