@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const knowledgeTestApi = createApi({
   reducerPath: 'knowledgeTestApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8017/v1/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://heritage.thuandev.id.vn/v1/' }),
   tagTypes: ['KnowledgeTests'],
   endpoints: (builder) => ({
     getKnowledgeTests: builder.query({

@@ -26,7 +26,7 @@ const teamMembers = [
     name: 'Phan Văn Thuận',
     role: 'Backend Developer',
     bio: 'Nhà nghiên cứu công nghệ với kinh nghiệm thiết kế database mạnh mẽ, sử dụng các công nghệ hiện đại.',
-    img: '/images/profile.jpg',
+    img: '/images/thuan.jpg',
     social: {
       facebook: 'https://www.facebook.com/',
       linkedin: 'https://www.linkedin.com/'

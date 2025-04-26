@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const leaderboardApi = createApi({
   reducerPath: 'leaderboardApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8017/v1/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://heritage.thuandev.id.vn/v1/' }),
   tagTypes: ['Leaderboards'],
   endpoints: (builder) => ({
     getLeaderboardByHeritageId: builder.query({

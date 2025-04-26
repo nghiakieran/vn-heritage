@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const heritageApi = createApi({
   reducerPath: 'heritageApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8017/v1/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://heritage.thuandev.id.vn/v1/' }),
   tagTypes: ['Heritages'],
   endpoints: (builder) => ({
     getHeritages: builder.query({
