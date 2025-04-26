@@ -13,46 +13,18 @@ import SystemMessage from './SystemMessage'
 import ChatMessage from './ChatMessage'
 import { UserList } from './UserList'
 import { cn } from '~/lib/utils'
-
-// Dữ liệu giả cho danh sách người dùng
-const MOCK_USERS = [
-  { id: '1', name: 'John Doe', status: 'online', unreadCount: 3 },
-  { id: '2', name: 'Jane Smith', status: 'online', unreadCount: 0 },
-  { id: '3', name: 'Robert Johnson', status: 'away', unreadCount: 0 },
-  { id: '4', name: 'Emily Wilson', status: 'offline', lastSeen: '3h trước', unreadCount: 0 },
-  { id: '5', name: 'Michael Brown', status: 'online', unreadCount: 1 },
-  { id: '6', name: 'Sarah Lee', status: 'online', unreadCount: 0 },
-  { id: '7', name: 'David Kim', status: 'away', unreadCount: 2 },
-  { id: '8', name: 'Amanda Chen', status: 'offline', lastSeen: '1 ngày trước', unreadCount: 0 },
-]
+import { useGetAllActiveUsersQuery } from '~/store/apis/userSlice.js'
 
 // Dữ liệu giả cho tin nhắn cộng đồng
 const MOCK_COMMUNITY_MESSAGES = []
 
 /**
- * Tạo tin nhắn giả cho trò chuyện riêng
- * @param {string} userId - ID của người dùng
- * @returns {Array} - Danh sách tin nhắn giả
- */
-const generateMockMessages = (userId) => {
-  const user = MOCK_USERS.find(u => u.id === userId)
-  if (!user) return []
-
-  return [
-    {
-      id: `${userId}-1`,
-      content: 'Chào bạn! Gần đây bạn đã khám phá di sản nào chưa?',
-      sender: { id: userId, name: user.name },
-      timestamp: new Date(Date.now() - 100000000).toISOString(),
-      isCurrentUser: false,
-    },
-  ]
-}
-
-/**
  * Component chính cho trang chat cộng đồng và riêng tư
  */
 const ChatHeritagePage = () => {
+  // Gọi tất cả Hook trước bất kỳ lệnh return nào
+  const { data: usersData, isLoading, isError } = useGetAllActiveUsersQuery()
+  console.log('usersData', usersData)
   const userInfo = useSelector(selectCurrentUser)
   const isMobile = useIsMobile()
   const chatContainerRef = useRef(null)
@@ -61,12 +33,11 @@ const ChatHeritagePage = () => {
   const { heritageId: id, heritageName } = location.state || {}
   const heritageId = id
 
-  // State quản lý giao diện và dữ liệu chat
-  const [activeChat, setActiveChat] = useState('community')
-  const [directMessages, setDirectMessages] = useState({})
-  const [sidebarOpen, setSidebarOpen] = useState(true)
-  const [isTyping, setIsTyping] = useState(false)
-  const [showInfo, setShowInfo] = useState(false)
+  const heritageIdParam = id
+
+  // Thêm useRef để theo dõi activeChat trước đó
+  const prevActiveChatRef = useRef(null)
+
   // Thông tin người dùng hiện tại
   const currentUser = useMemo(
     () => ({
@@ -76,34 +47,69 @@ const ChatHeritagePage = () => {
     [userInfo?._id, userInfo?.displayname]
   )
 
-  // Hook socket cho phòng chat (chỉ dùng khi activeChat là 'community')
-  const socketData = useSocket(currentUser, heritageId)
+  // Hook socket cho phòng chat
+  const socketData = useSocket(currentUser, heritageIdParam)
 
   const {
     isConnected,
     messages: communityMessages,
-    typingUsers,
+    privateMessages,
     usersInRoom,
     sendMessage: sendCommunityMessage,
+    joinDirectRoom,
+    sendDirectMessage,
     handleTyping: handleCommunityTyping,
     roomId,
     socketError: error,
     isLoadingMessages,
     hasMoreMessages,
     loadMoreMessages,
-  } = activeChat === 'community' ? socketData : {
-    isConnected: false,
-    messages: [],
-    typingUsers: [],
-    usersInRoom: [],
-    sendMessage: () => {},
-    handleTyping: () => {},
-    roomId: null,
-    socketError: null,
-    isLoadingMessages: false,
-    hasMoreMessages: false,
-    loadMoreMessages: () => {},
+  } = socketData
+
+  // Danh sách người dùng từ API (active users)
+  const realUsers = useMemo(() => {
+    if (!usersData?.users?.length) return []
+    return usersData.users.map(user => ({
+      id: user._id,
+      name: user.displayname,
+      status: user.account.isActive ? 'online' : 'offline',
+      unreadCount: 0,
+    }))
+  }, [usersData])
+
+  // Kết hợp realUsers với usersInRoom để cập nhật trạng thái online/offline
+  const enhancedUsers = useMemo(() => {
+    return realUsers.map(user => {
+      const socketUser = usersInRoom.find(u => u.id === user.id) || {}
+      return {
+        id: user.id,
+        name: user.name,
+        status: socketUser.id ? 'online' : 'offline',
+        unreadCount: user.unreadCount || 0,
+      }
+    })
+  }, [realUsers, usersInRoom])
+
+  // State quản lý giao diện và dữ liệu chat
+  const [activeChat, setActiveChat] = useState('community')
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [showInfo, setShowInfo] = useState(false)
+
+  // Tham gia phòng chat riêng khi chọn user, chỉ gọi joinDirectRoom khi cần
+  const handleSelectUser = (userId) => {
+    setActiveChat(userId)
+    if (isMobile) setSidebarOpen(false)
   }
+
+  // Sử dụng useEffect để kiểm soát việc gọi joinDirectRoom
+  useEffect(() => {
+    // Chỉ gọi joinDirectRoom nếu activeChat thay đổi và không phải là 'community'
+    if (activeChat !== 'community' && activeChat !== prevActiveChatRef.current) {
+      joinDirectRoom(activeChat)
+    }
+    // Cập nhật prevActiveChatRef
+    prevActiveChatRef.current = activeChat
+  }, [activeChat, joinDirectRoom])
 
   // Lấy tin nhắn cho cuộc trò chuyện hiện tại
   const messages = useMemo(() => {
@@ -111,8 +117,8 @@ const ChatHeritagePage = () => {
       console.log('Community messages:', communityMessages)
       return communityMessages.length > 0 ? communityMessages : MOCK_COMMUNITY_MESSAGES
     }
-    return directMessages[activeChat] || generateMockMessages(activeChat)
-  }, [activeChat, communityMessages, directMessages])
+    return privateMessages[activeChat] || []
+  }, [activeChat, communityMessages, privateMessages])
 
   // Điều chỉnh sidebar dựa trên thiết bị
   useEffect(() => {
@@ -140,46 +146,14 @@ const ChatHeritagePage = () => {
     if (activeChat === 'community') {
       sendCommunityMessage(content)
     } else {
-      const newMessage = {
-        id: `new-${Date.now()}`,
-        content,
-        sender: currentUser,
-        timestamp: new Date().toISOString(),
-        isCurrentUser: true,
-      }
-
-      setDirectMessages((prev) => ({
-        ...prev,
-        [activeChat]: [...(prev[activeChat] || generateMockMessages(activeChat)), newMessage],
-      }))
-
-      const user = MOCK_USERS.find((u) => u.id === activeChat)
-      if (user) {
-        setIsTyping(true)
-        setTimeout(() => {
-          setIsTyping(false)
-          const responseMessage = {
-            id: `response-${Date.now()}`,
-            content: 'Cảm ơn bạn đã chia sẻ! Mình sẽ phản hồi sớm nhé.',
-            sender: { id: user.id, name: user.name },
-            timestamp: new Date().toISOString(),
-            isCurrentUser: false,
-          }
-          setDirectMessages((prev) => ({
-            ...prev,
-            [activeChat]: [...(prev[activeChat] || []), responseMessage],
-          }))
-        }, 1500 + Math.random() * 2000)
-      }
+      sendDirectMessage(activeChat, content)
     }
   }
 
   // Xử lý sự kiện nhập tin nhắn
   const handleInputChange = () => {
-    // Bỏ gọi handleCommunityTyping vì không cần emit typing nữa
     if (activeChat === 'community') {
       handleCommunityTyping(true)
-      // Thêm debounce để giảm số lượng sự kiện gửi đi
       clearTimeout(window.typingTimeout)
       window.typingTimeout = setTimeout(() => {
         handleCommunityTyping(false)
@@ -190,7 +164,7 @@ const ChatHeritagePage = () => {
   // Lấy tiêu đề cuộc trò chuyện
   const getChatTitle = () => {
     if (activeChat === 'community') return 'Phòng Trò Chuyện Cộng Đồng'
-    const user = MOCK_USERS.find((u) => u.id === activeChat)
+    const user = enhancedUsers.find((u) => u.id === activeChat)
     return user ? user.name : 'Trò chuyện'
   }
 
@@ -208,18 +182,34 @@ const ChatHeritagePage = () => {
       prev.sender.id !== message.sender.id ||
       message.isCurrentUser !== prev.isCurrentUser
 
-    // Thêm thông tin về thời gian hiển thị
     const showTimestamp =
       !messages[index + 1] ||
       messages[index + 1].isSystemMessage ||
       messages[index + 1].sender.id !== message.sender.id ||
       new Date(messages[index + 1].timestamp).getTime() - new Date(message.timestamp).getTime() > 5 * 60 * 1000
 
-      acc.push({ ...message, showAvatar, showTimestamp })
-      return acc
-    }, [])
+    acc.push({ ...message, showAvatar, showTimestamp })
+    return acc
+  }, [])
 
   console.log('Grouped messages:', groupedMessages)
+
+  // Xử lý trạng thái loading và error sau khi gọi hết Hook
+  if (isLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        Đang tải...
+      </div>
+    )
+  }
+
+  if (isError) {
+    return (
+      <div className="h-screen flex items-center justify-center text-destructive">
+        Lỗi khi tải dữ liệu
+      </div>
+    )
+  }
 
   return (
     <div className='h-screen flex flex-col pt-navbar-mobile sm:pt-navbar bg-background'>
@@ -233,12 +223,9 @@ const ChatHeritagePage = () => {
           )}
         >
           <UserList
-            users={MOCK_USERS}
+            users={enhancedUsers}
             activeUserId={activeChat !== 'community' ? activeChat : null}
-            onSelectUser={(userId) => {
-              setActiveChat(userId)
-              if (isMobile) setSidebarOpen(false)
-            }}
+            onSelectUser={handleSelectUser}
             onSelectCommunity={() => {
               setActiveChat('community')
               if (isMobile) setSidebarOpen(false)
@@ -280,17 +267,13 @@ const ChatHeritagePage = () => {
                 </Button>
               )}
               <div className='max-w-none'>
-                {' '}
-                {/* Giới hạn chiều rộng trên mobile */}
                 <h1 className='text-lg sm:text-xl font-semibold'>{getChatTitle()}</h1>
                 <p className='text-xs sm:text-sm text-muted-foreground truncate'>
-                {activeChat === 'community'
+                  {activeChat === 'community'
                     ? `${usersInRoom.length} người đang tham gia thảo luận`
                     : 'Trò chuyện riêng tư'}
                 </p>
               </div>
-            </div>
-            { (
               <div className='flex items-center gap-1'>
                 {activeChat === 'community' && (
                   <Button
@@ -305,7 +288,7 @@ const ChatHeritagePage = () => {
                   </Button>
                 )}
               </div>
-            )}
+            </div>
           </div>
 
           {/* Danh sách người dùng trong phòng (hiển thị khi nhấn vào nút Users) */}
@@ -327,6 +310,7 @@ const ChatHeritagePage = () => {
               </div>
             </div>
           )}
+
           {/* Hiển thị lỗi nếu có */}
           {error && (
             <div className='p-4 bg-destructive/10 text-destructive text-center animate-fade-in'>
@@ -382,10 +366,6 @@ const ChatHeritagePage = () => {
                 />
               )
             )}
-            {isTyping && <TypingIndicator />}
-            {typingUsers && typingUsers.length > 0 && (
-              <TypingIndicator message={`${typingUsers.map((u) => u.username).join(', ')} đang nhập...`} />
-            )}
           </div>
 
           {/* Input soạn tin nhắn */}
@@ -393,13 +373,8 @@ const ChatHeritagePage = () => {
             <MessageInput
               onSendMessage={handleSendMessage}
               onInputChange={handleInputChange}
-              // placeholder={`Gửi tin nhắn đến ${
-              //   activeChat === 'community'
-              //     ? 'cộng đồng'
-              //     : MOCK_USERS.find((u) => u.id === activeChat)?.name
-              // }...`}
               placeholder='Gửi tin nhắn...'
-              disabled={!!error} // Vô hiệu hóa input nếu có lỗi
+              disabled={!!error}
             />
           </div>
         </div>
