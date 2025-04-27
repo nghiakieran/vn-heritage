@@ -17,8 +17,12 @@ import {
   selectIsFavoriteInitialized
 } from '~/store/slices/favoriteSlice'
 
+const CONFIG = {
+  placeholderImage: '/images/placeholder.webp',
+  fallbackImage: '/images/placeholder.webp'
+}
+
 const HeritageCard = ({ item, isFavorited: propIsFavorited, onFavoriteChange }) => {
-  // fallback
   const { 
     _id, 
     name = '', 
@@ -37,11 +41,12 @@ const HeritageCard = ({ item, isFavorited: propIsFavorited, onFavoriteChange }) 
   
   // State để theo dõi trạng thái yêu thích
   const [isFavorited, setIsFavorited] = useState(propIsFavorited || false)
+  const [imgSrc, setImgSrc] = useState(images[0] || CONFIG.placeholderImage)
   
   const [addToFavorites, { isLoading: isAdding }] = useAddToFavoritesMutation()
   const [removeFromFavorites, { isLoading: isRemoving }] = useRemoveFromFavoritesMutation()
   
-  // Cập nhật trạng thái yêu thích từ props hoặc store
+  // Đồng bộ trạng thái yêu thích
   useEffect(() => {
     if (propIsFavorited !== undefined) {
       setIsFavorited(propIsFavorited)
@@ -60,10 +65,8 @@ const HeritageCard = ({ item, isFavorited: propIsFavorited, onFavoriteChange }) 
     }
     
     try {
-
       const newFavoritedState = !isFavorited
       setIsFavorited(newFavoritedState)
-      
       dispatch(setFavoriteStatus({ 
         heritageId: _id, 
         isFavorited: newFavoritedState 
@@ -76,7 +79,6 @@ const HeritageCard = ({ item, isFavorited: propIsFavorited, onFavoriteChange }) 
         }).unwrap()
 
         toast.success('Đã thêm vào danh sách yêu thích')
-
       } else {
         await removeFromFavorites({ 
           userId: userInfo._id, 
@@ -102,23 +104,29 @@ const HeritageCard = ({ item, isFavorited: propIsFavorited, onFavoriteChange }) 
     }
   }
   
+  const handleImageError = (e) => {
+    e.currentTarget.onerror = null
+    setImgSrc(CONFIG.fallbackImage)
+  }
+
   if (!item) return null
   
   const isLoading = isAdding || isRemoving
   
   return (
-    <Link to={`/heritage/${nameSlug}`} className='block group'>
-      <div className='shadow-sm border rounded-lg bg-card text-card-foreground overflow-hidden transition-all duration-300 hover:shadow-lg h-full flex flex-col'>
+    <Link to={`/heritage/${nameSlug}`} className='block group' aria-label={`Xem chi tiết ${name}`}>
+        <div className='flex flex-col h-full overflow-hidden rounded-lg border bg-card shadow-sm transition-all duration-300 hover:shadow-lg'>
         {/* Image section */}
         <div className='relative overflow-hidden'>
-          {images[0] && (
-            <img 
-              src={images[0] || 'https://placehold.co/600x400?text=Di+t%C3%ADch+L%E1%BB%8Bch+s%E1%BB%AD&font=roboto'} 
-              alt={name} 
-              className='aspect-[3/2] w-full object-cover transition-transform duration-700 group-hover:scale-105' 
-              loading='lazy'
-            />
-          )}
+          <img 
+            src={imgSrc}
+            alt={`Hình ảnh của ${name}`}
+            className='aspect-[3/2] w-full object-cover transition-transform duration-700 group-hover:scale-105' 
+            loading='lazy'
+            width='600'
+            height='400'
+            onError={handleImageError}
+          />
           
           {/* Favorite button */}
           {isAuthenticated && (
@@ -129,6 +137,7 @@ const HeritageCard = ({ item, isFavorited: propIsFavorited, onFavoriteChange }) 
               disabled={isLoading}
               className='absolute top-2 right-2 bg-white/80 backdrop-blur-sm hover:bg-white/90'
               aria-label={isFavorited ? 'Bỏ yêu thích' : 'Yêu thích'}
+              aria-live='polite'
             >
               <Heart 
                 size={20} 
@@ -139,18 +148,16 @@ const HeritageCard = ({ item, isFavorited: propIsFavorited, onFavoriteChange }) 
               />
             </Button>
           )}
-          
-          {/* Gradient overlay */}
-          <div className='absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent h-1/3 pointer-events-none'></div>
+          <div className='absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/60 to-transparent pointer-events-none'></div>
         </div>
         
         {/* Content section */}
-        <div className='p-4 flex flex-col flex-grow'>
-          <h3 className='text-lg font-medium group-hover:text-heritage transition-colors line-clamp-1 mb-1'>
+        <div className='flex flex-col flex-grow p-4'>
+          <h3 className='mb-1 text-lg font-medium line-clamp-1 group-hover:text-heritage transition-colors'>
             {name}
           </h3>
           {location && (
-            <p className='text-muted-foreground text-sm mb-2'>{location}</p>
+            <p className='mb-2 text-sm text-muted-foreground truncate'>{location}</p>
           )}
           {description && (
             <p className='text-sm text-foreground/80 line-clamp-2'>{description}</p>

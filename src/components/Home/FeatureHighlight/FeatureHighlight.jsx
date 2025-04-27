@@ -1,42 +1,23 @@
-import { Sparkles, MessageSquare, Brain, Theater } from 'lucide-react'
+import { lazy, Suspense } from 'react'
+import { Sparkles } from 'lucide-react'
 
 import Title from '~/components/common/Title'
-import FeatureItem from './FeatureItem'
+import { featuredData } from './featuredData'
 
-const featuredData = [
-  {
-    _id: 1,
-    icon: Brain,
-    title: 'Kiểm tra kiến thức',
-    description: 'Thử thách bản thân với các câu hỏi trắc nghiệm và học hỏi thêm về di sản văn hóa.',
-    to: '/heritages'
-  },
-  {
-    _id: 2,
-    icon: Theater,
-    title: 'Trải nghiệm nhập vai',
-    description: 'Khám phá lịch sử qua góc nhìn của các nhân vật lịch sử trong các sự kiện quan trọng.',
-    to: '/heritages'
-  },
-  {
-    _id: 3,
-    icon: MessageSquare,
-    title: 'Chat với AI',
-    description: 'Trò chuyện với trợ lý AI để tìm hiểu về di tích lịch sử và văn hóa Việt Nam.',
-    to: '/chatbot'
-  }
-]
+const FeatureItem = lazy(() => import('./FeatureItem'))
 
 const FeatureHighlight = () => {
   return (
     <section>
-      <Title icon={Sparkles} title={'Tính năng nổi bật'}/>
+      <Title icon={Sparkles} title={'Tính năng nổi bật'} />
       <div className='grid grid-cols-1 sm:grid-cols-3 gap-6 mt-10'>
-        {
-          featuredData.map(item => (
-            <FeatureItem key={item._id} item={item} />
-          ))
-        }
+        {featuredData?.map((item) => (
+          <div key={item._id} className='h-full'>
+            <Suspense fallback={<div className='animate-pulse bg-gray-200 rounded-lg h-[300px] w-full' />}>
+              <FeatureItem item={item} className='h-full'/>
+            </Suspense>
+          </div>   
+        ))}
       </div>
     </section>
   )

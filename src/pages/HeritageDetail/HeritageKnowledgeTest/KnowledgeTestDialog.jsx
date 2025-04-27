@@ -3,6 +3,7 @@ import { Clock, ChevronLeft, ChevronRight, Loader2, AlertTriangle } from 'lucide
 import { cn } from '~/lib/utils'
 import { useLazyGetKnowledgeTestByIdQuery, useSubmitKnowledgeTestAttemptMutation } from '~/store/apis/knowledgeTestApi'
 import { Dialog, DialogDescription, DialogHeader, DialogTitle } from '~/components/common/ui/Dialog'
+import { toast } from 'react-toastify'
 
 // Constants
 const DEFAULT_TIME_PER_QUESTION = 120 // 2 minutes per question
@@ -261,6 +262,7 @@ const KnowledgeTestDialog = ({ open, onClose, testId, testInfo }) => {
       }).unwrap()
 
       setResults(result)
+      toast.success(`Chúc mừng! Bạn đã hoàn thành bài kiểm tra với số điểm ${result?.score || 0}/100`)
       
       // Clear timer when test is submitted
       if (timerRef.current) {
@@ -269,6 +271,7 @@ const KnowledgeTestDialog = ({ open, onClose, testId, testInfo }) => {
       }
     } catch (err) {
       console.error('Error submitting test:', err)
+      toast.error('Có lỗi xảy ra khi nộp bài. Vui lòng thử lại.')
     }
   }, [isSubmitting, test, selectedAnswers, submitAttempt])
 
@@ -300,8 +303,12 @@ const KnowledgeTestDialog = ({ open, onClose, testId, testInfo }) => {
       setTimeLeft(prev => {
         if (prev <= 1) {
           clearInterval(timerRef.current)
+          toast.warning('Hết thời gian làm bài!')
           handleSubmitTest()
           return 0
+        }
+        if (prev === 60) {
+          toast.warning('Còn 1 phút nữa!')
         }
         return prev - 1
       })

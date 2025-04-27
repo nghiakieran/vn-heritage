@@ -1,5 +1,3 @@
-import React from 'react';
-
 const inputVariants = {
     variant: {
         default: 'border-input bg-background text-foreground focus:ring-2 focus:ring-heritage focus:border-heritage',
@@ -13,20 +11,20 @@ const inputVariants = {
         lg: 'h-11 px-6 py-3 text-base',
         icon: 'h-10 w-10 p-2',
     },
-};
+}
 
 const Input = ({ className, variant = 'default', size = 'default', ...props }) => {
-    const variantClasses = inputVariants.variant[variant] || inputVariants.variant.default;
-    const sizeClasses = inputVariants.size[size] || inputVariants.size.default;
+    const variantClasses = inputVariants.variant[variant] || inputVariants.variant.default
+    const sizeClasses = inputVariants.size[size] || inputVariants.size.default
 
     return (
         <input
             className={`${variantClasses} ${sizeClasses} w-full rounded-md text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
             {...props}
         />
-    );
-};
+    )
+}
 
-Input.displayName = 'Input';
+Input.displayName = 'Input'
 
-export { Input };
+export { Input }

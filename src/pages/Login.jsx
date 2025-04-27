@@ -2,6 +2,7 @@ import { Eye, EyeOff, LogIn } from 'lucide-react'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { Button } from '~/components/common/ui/Button'
 import { useLoginMutation } from '~/store/apis/authSlice'
 import { setCredentials } from '~/store/slices/authSlice'
@@ -34,14 +35,16 @@ const Login = () => {
       const { userInfo, accessToken } = response
       console.log('response', response)
 
+      toast.success('Đăng nhập thành công!')
       dispatch(setCredentials({ user: userInfo, accessToken }))
 
       // Example: Redirect to a dashboard or home page
       window.location.href = '/'
     } catch (err) {
       // Handle error
-      setError(err?.data?.message || 'Đăng nhập thất bại. Vui lòng thử lại.')
-      console.error('Login error:', err)
+      const errorMessage = err?.data?.message || 'Đăng nhập thất bại. Vui lòng thử lại.'
+      setError(errorMessage)
+      toast.error(errorMessage)
     } finally {
       setIsLoading(false)
     }
