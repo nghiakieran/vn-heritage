@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate, Outlet } from 'react-router-dom';
-import { selectCurrentUser } from '~/store/slices/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, Outlet, Link } from 'react-router-dom';
+import { logOut, selectCurrentUser } from '~/store/slices/authSlice';
 import { Button } from '~/components/common/ui/Button';
 import {
   Menu,
@@ -11,11 +11,13 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
+  Home,
 } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const AdminLayout = () => {
   const navigate = useNavigate();
-  //   const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const userInfo = useSelector(selectCurrentUser);
   const isAuthenticated = !!userInfo;
 
@@ -27,9 +29,15 @@ const AdminLayout = () => {
   }
 
   const handleLogout = () => {
-    // dispatch(logout());
-    navigate('/login');
-  };
+    try {
+      dispatch(logOut())
+      toast.success('Đăng xuất thành công!')
+      navigate('/')
+    } catch (error) {
+      console.error('Logout failed:', error)
+      toast.error('Đăng xuất thất bại. Vui lòng thử lại!')
+    }
+  }
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -56,6 +64,14 @@ const AdminLayout = () => {
         </div>
         <nav className='flex-1 p-4'>
           <ul>
+            <li className='mb-2'>
+              <Link to='/'>
+                <Button variant='ghost' className='w-full justify-start'>
+                  <Home className='w-5 h-5 mr-2' />
+                  {isSidebarOpen && <span>Trang chủ</span>}
+                </Button>
+              </Link>
+            </li>
             {navItems.map((item) => (
               <li key={item.name} className='mb-2'>
                 <Button
@@ -88,9 +104,15 @@ const AdminLayout = () => {
             <h1 className='text-xl font-semibold'>Quản trị hệ thống</h1>
           </div>
           <div className='flex items-center space-x-4'>
+            <Link to='/'>
+              <Button variant='ghost' size='sm'>
+                <Home className='w-5 h-5 mr-2' />
+                <span>Trang chủ</span>
+              </Button>
+            </Link>
             <span className='text-sm'>{userInfo?.name || 'Admin'}</span>
             <img
-              src={userInfo?.avatar || 'https://via.placeholder.com/40'}
+              src='/images/profile.jpg'
               alt='Avatar'
               className='w-10 h-10 rounded-full'
             />

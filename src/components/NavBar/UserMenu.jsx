@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Heart } from 'lucide-react'
+import { Heart, Settings } from 'lucide-react'
 import { toast } from 'react-toastify'
 import { selectCurrentUser } from '~/store/slices/authSlice'
 
@@ -10,6 +10,7 @@ import { logOut } from '~/store/slices/authSlice'
 
 const UserMenu = ({ userMenuLinks }) => {
   const currentUser = useSelector(selectCurrentUser)
+  const isAdmin = currentUser?.role === 'admin'
   
   const [isOpen, setIsOpen] = useState(false)
   const dropDownRef = useRef(null)
@@ -45,11 +46,19 @@ const UserMenu = ({ userMenuLinks }) => {
           <span>Favorites</span>
         </Button>
       </Link>
+      {isAdmin && (
+        <Link to='/admin'>
+          <Button variant='ghost'>
+            <Settings size={20} />
+            <span>Admin</span>
+          </Button>
+        </Link>
+      )}
       <div className='relative'>
          <Button onClick={() => setIsOpen(!isOpen)} variant='ghost' size='icon' className='hover:bg-transparent'>
           {
             currentUser?.avatar ? (
-              <img src={currentUser?.avatar} alt='profile' className='h-9 w-9 rounded-full object-cover hover:opacity-80 transition-opacity' />
+              <img src='/images/profile.jpg' alt='profile' className='h-9 w-9 rounded-full object-cover hover:opacity-80 transition-opacity' />
             ) : (
               <span className='text-white bg-heritage hover:opacity-80 h-9 w-9 rounded-full flex items-center justify-center text-sm font-medium'>{currentUser?.displayname?.slice(0, 2).toUpperCase() || 'UN'}</span>
             )
@@ -60,6 +69,9 @@ const UserMenu = ({ userMenuLinks }) => {
             <div className='absolute right-0 mt-2 w-56 border rounded-md shadow-lg bg-background'>
               <div className='px-4 py-2'>
                 <p className='text-sm font-medium truncate'>{currentUser?.displayname}</p>
+                {isAdmin && (
+                  <p className='text-xs text-heritage'>Quản trị viên</p>
+                )}
               </div>
               <hr className='border-gray-100'/>
               {
