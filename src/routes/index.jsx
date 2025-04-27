@@ -1,9 +1,10 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { lazy } from 'react';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '~/store/slices/authSlice';
 import MainLayout from '~/layout/MainLayout';
 import ScrollToTop from '~/components/common/ScrollToTop';
+import publicRoutes from './publicRoutes';
 import privateRoutes from './privateRoutes';
 
 // Lazy load public pages
@@ -20,10 +21,41 @@ const Profile = lazy(() => import('~/pages/Profile'));
 const Register = lazy(() => import('~/pages/Register'));
 const NotFound = lazy(() => import('~/pages/NotFound'));
 
+// Map route paths to lazy-loaded components
+const routeComponents = {
+  '/': <Home />,
+  '/about': <About />,
+  '/heritages': <Heritages />,
+  '/heritage/:nameSlug': <HeritageDetail />,
+  '/login': <Login />,
+  '/register': <Register />,
+  '/authen-confirm': <EmailVerification />,
+  '/chat/heritage/:nameSlug': <ChatHeritagePage />,
+  '/profile': <Profile />,
+  '/favorites': <Favorites />,
+  '/explore': <GenericMapExplorer />,
+};
+
 const PublicRoutes = ({ children, restricted }) => {
   const user = useSelector(selectCurrentUser);
   const isAuthenticated = !!user;
-  if (isAuthenticated && restricted) return <Navigate to="/" replace />;
+  const isAdmin = user?.role === 'admin';
+
+  if (isAuthenticated && restricted) {
+    window.location.href = isAdmin ? '/admin' : '/';
+    return null; // Return null to prevent rendering children after redirect
+  }
+  return children;
+};
+
+const UserPrivateRoutes = ({ children }) => {
+  const user = useSelector(selectCurrentUser);
+  const isAuthenticated = !!user;
+
+  if (!isAuthenticated) {
+    window.location.href = '/login';
+    return null;
+  }
   return children;
 };
 
@@ -34,8 +66,14 @@ const PrivateRoutes = ({ children }) => {
 
   console.log('PrivateRoutes:', { isAuthenticated, isAdmin, user }); // Debug
 
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
-  if (!isAdmin) return <Navigate to="/" replace />;
+  if (!isAuthenticated) {
+    window.location.href = '/login';
+    return null;
+  }
+  if (!isAdmin) {
+    window.location.href = '/';
+    return null;
+  }
   return children;
 };
 
@@ -46,59 +84,23 @@ const AppRoutes = () => {
       <Routes>
         {/* Public Routes with MainLayout */}
         <Route path="/" element={<MainLayout />}>
-          {/* Public Routes */}
-          <Route index element={<Home />} />
-          <Route path="about" element={<About />} />
-          <Route path="heritages" element={<Heritages />} />
-          <Route path="heritage/:nameSlug" element={<HeritageDetail />} />
-          <Route path="chat/heritage/:nameSlug" element={<ChatHeritagePage />} />
-          <Route path="explore" element={<GenericMapExplorer />} />
-
-          {/* Restricted Routes */}
-          <Route
-            path="login"
-            element={
-              <PublicRoutes restricted={true}>
-                <Login />
-              </PublicRoutes>
-            }
-          />
-          <Route
-            path="register"
-            element={
-              <PublicRoutes restricted={true}>
-                <Register />
-              </PublicRoutes>
-            }
-          />
-          <Route
-            path="authen-confirm"
-            element={
-              <PublicRoutes restricted={true}>
-                <EmailVerification />
-              </PublicRoutes>
-            }
-          />
-
-          {/* Private Routes (User) */}
-          <Route
-            path="profile"
-            element={
-              <PrivateRoutes>
-                <Profile />
-              </PrivateRoutes>
-            }
-          />
-          <Route
-            path="favorites"
-            element={
-              <PrivateRoutes>
-                <Favorites />
-              </PrivateRoutes>
-            }
-          />
-
-          {/* Not Found */}
+          {publicRoutes.map(({ path, restricted }) => (
+            <Route
+              key={path}
+              path={path}
+              element={
+                path === '/profile' || path === '/favorites' ? (
+                  <UserPrivateRoutes>
+                    {routeComponents[path] || <NotFound />}
+                  </UserPrivateRoutes>
+                ) : (
+                  <PublicRoutes restricted={restricted}>
+                    {routeComponents[path] || <NotFound />}
+                  </PublicRoutes>
+                )
+              }
+            />
+          ))}
           <Route path="*" element={<NotFound />} />
         </Route>
 

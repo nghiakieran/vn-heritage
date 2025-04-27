@@ -195,7 +195,7 @@ const UserProfile = () => {
             <div className='relative group'>
               <div className='w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-white shadow-sm'>
                 <img
-                  src={avatarPreview || DEFAULT_AVATAR}
+                  src='/images/profile.jpg'
                   alt={formData.displayname || 'User'}
                   loading='lazy'
                   className='w-full h-full object-cover'
