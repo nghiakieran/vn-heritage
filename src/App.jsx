@@ -3,6 +3,7 @@ import AppRoutes from './routes'
 import { useDispatch } from 'react-redux'
 import { setCredentials } from './store/slices/authSlice'
 import ToastProvider from './components/ToastProvider/ToastProvider'
+import { useFavoriteInitializer } from './hooks/useFavoriteInitializer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -41,7 +42,10 @@ const App = () => {
 
     checkAuth()
   }, [dispatch])
-
+  
+  // Hook load favorites
+  useFavoriteInitializer()
+  
   return (
     <>
       <AppRoutes />

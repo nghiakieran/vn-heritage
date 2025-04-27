@@ -13,6 +13,7 @@ export const heritageSlice = apiSlice.injectEndpoints({
         if (sort) params.append('sort', sort);
         if (order) params.append('order', order);
         return `${BASE_URL}/heritages?${params.toString()}`;
+
       },
       providesTags: (result) =>
         result
@@ -21,13 +22,20 @@ export const heritageSlice = apiSlice.injectEndpoints({
               { type: 'Heritages', id: 'LIST' },
             ]
           : [{ type: 'Heritages', id: 'LIST' }],
+
     }),
 
-    getHeritagesById: builder.query({
       query: (heritageId) => `${BASE_URL}/heritages/${heritageId}`,
       providesTags: (result, error, id) => [{ type: 'Heritages', id }],
     }),
   }),
 });
 
-export const { useLazyGetHeritagesQuery, useGetHeritagesByIdQuery } = heritageSlice
+    getHeritagesBySlug: builder.query({
+      query: (nameSlug) => `${BASE_URL}/heritages/${nameSlug}`,
+      providesTags: (id) => [{ type: 'Heritages', id }]
+    })
+  })
+})
+
+export const { useLazyGetHeritagesQuery, useGetHeritagesByIdQuery, useGetHeritagesBySlugQuery } = heritageSlice

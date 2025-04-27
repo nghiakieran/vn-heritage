@@ -1,34 +1,113 @@
 import { Heart } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { useState, useEffect } from 'react'
+import { toast } from 'react-toastify'
 
 import { cn } from '~/lib/utils'
 import { Button } from '~/components/common/ui/Button'
 import { selectCurrentUser } from '~/store/slices/authSlice'
+import { 
+  useAddToFavoritesMutation,
+  useRemoveFromFavoritesMutation
+} from '~/store/apis/favoriteApi'
+import { 
+  selectIsFavorited, 
+  setFavoriteStatus,
+  selectIsFavoriteInitialized
+} from '~/store/slices/favoriteSlice'
 
-const HeritageCard = ({ item }) => {
+const HeritageCard = ({ item, isFavorited: propIsFavorited, onFavoriteChange }) => {
   // fallback
   const { 
     _id, 
     name = '', 
     location = '', 
     description = '', 
-    images = [] 
+    images = [],
+    nameSlug = '' 
   } = item || {}
-  
+
+  const dispatch = useDispatch()
   const userInfo = useSelector(selectCurrentUser)
   const isAuthenticated = !!userInfo
-  const favorite = true
   
-  const handleFavoriteClick = (e) => {
+  const isFavoritedFromStore = useSelector(selectIsFavorited(_id))
+  const isFavoriteInitialized = useSelector(selectIsFavoriteInitialized)
+  
+  // State để theo dõi trạng thái yêu thích
+  const [isFavorited, setIsFavorited] = useState(propIsFavorited || false)
+  
+  const [addToFavorites, { isLoading: isAdding }] = useAddToFavoritesMutation()
+  const [removeFromFavorites, { isLoading: isRemoving }] = useRemoveFromFavoritesMutation()
+  
+  // Cập nhật trạng thái yêu thích từ props hoặc store
+  useEffect(() => {
+    if (propIsFavorited !== undefined) {
+      setIsFavorited(propIsFavorited)
+    } else if (isFavoriteInitialized) {
+      setIsFavorited(isFavoritedFromStore)
+    }
+  }, [propIsFavorited, isFavoritedFromStore, isFavoriteInitialized])
+  
+  const handleFavoriteClick = async (e) => {
     e.preventDefault()
-    // Xử lý logic yêu thích
+    e.stopPropagation()
+    
+    if (!isAuthenticated) {
+      toast.error('Vui lòng đăng nhập để thực hiện chức năng này')
+      return
+    }
+    
+    try {
+
+      const newFavoritedState = !isFavorited
+      setIsFavorited(newFavoritedState)
+      
+      dispatch(setFavoriteStatus({ 
+        heritageId: _id, 
+        isFavorited: newFavoritedState 
+      }))
+      
+      if (newFavoritedState) {
+        await addToFavorites({ 
+          userId: userInfo._id, 
+          heritageId: _id 
+        }).unwrap()
+
+        toast.success('Đã thêm vào danh sách yêu thích')
+
+      } else {
+        await removeFromFavorites({ 
+          userId: userInfo._id, 
+          heritageId: _id 
+        }).unwrap()
+        
+        toast.success('Đã xóa khỏi danh sách yêu thích')
+      }
+      
+      if (onFavoriteChange) {
+        onFavoriteChange(newFavoritedState)
+      }
+    } catch (error) {
+      // Rollback
+      setIsFavorited(!isFavorited)
+      dispatch(setFavoriteStatus({ 
+        heritageId: _id, 
+        isFavorited: !isFavorited 
+      }))
+      console.log(error)
+
+      toast.error('Có lỗi xảy ra, vui lòng thử lại sau.')
+    }
   }
   
   if (!item) return null
   
+  const isLoading = isAdding || isRemoving
+  
   return (
-    <Link to={`/heritage/${_id}`} className='block group'>
+    <Link to={`/heritage/${nameSlug}`} className='block group'>
       <div className='shadow-sm border rounded-lg bg-card text-card-foreground overflow-hidden transition-all duration-300 hover:shadow-lg h-full flex flex-col'>
         {/* Image section */}
         <div className='relative overflow-hidden'>
@@ -47,13 +126,16 @@ const HeritageCard = ({ item }) => {
               variant='ghost'
               size='icon'
               onClick={handleFavoriteClick}
+              disabled={isLoading}
               className='absolute top-2 right-2 bg-white/80 backdrop-blur-sm hover:bg-white/90'
-              aria-label={favorite ? 'Bỏ yêu thích' : 'Yêu thích'}
+              aria-label={isFavorited ? 'Bỏ yêu thích' : 'Yêu thích'}
             >
               <Heart 
                 size={20} 
                 className={cn('transition-colors', 
-                  favorite ? 'fill-heritage text-heritage' : 'text-gray-500')} 
+                  isFavorited ? 'fill-heritage text-heritage' : 'text-gray-500',
+                  isLoading && 'opacity-50'
+                )} 
               />
             </Button>
           )}
