@@ -83,7 +83,7 @@ npm run build
 
 ## Environment Variables (.env)
 ```env
-VITE_APP_API_URL=http://localhost:8017/v1
+APP_BACKEND_URL=http://localhost:8017
 ```
 
 ## Scripts
