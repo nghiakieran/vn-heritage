@@ -32,11 +32,18 @@ export const heritageSlice = apiSlice.injectEndpoints({
       query: (nameSlug) => `${BASE_URL}/heritages/${nameSlug}`,
       providesTags: (result, error, id) => [{ type: 'Heritages', id }],
     }),
+
+    getNearestHeritages: builder.query({
+      query: ({ latitude, longitude, limit }) =>
+        `${BASE_URL}/heritages/explore?latitude=${latitude}&longitude=${longitude}&limit=${limit}`,
+      providesTags: (result, error, id) => [{ type: 'Heritages', id }],
+    }),
   }),
 })
 
 export const {
   useLazyGetHeritagesQuery,
   useGetHeritagesByIdQuery,
-  useGetHeritagesBySlugQuery
+  useGetHeritagesBySlugQuery,
+  useLazyGetNearestHeritagesQuery
 } = heritageSlice
