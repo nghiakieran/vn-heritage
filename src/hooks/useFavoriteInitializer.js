@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 import { selectCurrentUser } from '~/store/slices/authSlice'
-import { useGetFavoritesByUserIdQuery } from '~/store/apis/favoriteApi'
+import { useGetFavoritesByUserIdQuery } from '~/store/apis/favoritesSlice'
 import { selectIsFavoriteInitialized } from '~/store/slices/favoriteSlice'
 
 /**
