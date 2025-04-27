@@ -1,40 +1,36 @@
 import { useState, useEffect, useMemo } from 'react'
-import { useSelector } from 'react-redux'
-import { useUpdateUserMutation } from '../store/apis/userSlice'
-import { selectCurrentUser } from '../store/slices/authSlice'
+import { useGetUserProfileQuery, useUpdateUserMutation, useUploadAvatarMutation } from '../store/apis/userSlice'
 import { toast } from 'react-toastify'
 import { Button } from '~/components/common/ui/Button'
 import Title from '~/components/common/Title'
 import { Camera, Check, Loader2, X } from 'lucide-react'
 import { toDateInputFormat } from '~/utils/dateHelpers'
-
 const DEFAULT_AVATAR = '/images/avatar-default.jpg'
 
-const UserProfile = () => {
-  const user = useSelector(selectCurrentUser)
-  const [updateUser, { isLoading }] = useUpdateUserMutation()
 
+const UserProfile = () => {
+  const { data: user } = useGetUserProfileQuery()
+  const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation()
+  const [uploadAvatar, { isLoading: isUploadingAvatar }] = useUploadAvatarMutation()
   const initialFormData = useMemo(
     () => ({
       displayname: user?.displayname || '',
       phone: user?.phone || '',
       gender: user?.gender || '',
-      dateOfBirth: toDateInputFormat(user?.dateOfBirth),
+      dateOfBirth: user?.dateOfBirth || toDateInputFormat(user?.dateOfBirth),
       avatar: user?.avatar || DEFAULT_AVATAR,
     }),
     [user]
   )
 
   const [isEditing, setIsEditing] = useState(false)
-  console.log(user);
   const [formData, setFormData] = useState(initialFormData)
-
   const [avatarPreview, setAvatarPreview] = useState(user?.avatar || DEFAULT_AVATAR)
   const [isAvatarChanged, setIsAvatarChanged] = useState(false)
-
+  const [avatarFile, setAvatarFile] = useState(null)
   const [errors, setErrors] = useState({})
 
-  // Xử lý thay đổi input
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({
@@ -42,7 +38,6 @@ const UserProfile = () => {
       [name]: value,
     }))
 
-    // Xóa lỗi khi trường được chỉnh sửa
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -51,6 +46,7 @@ const UserProfile = () => {
     }
   }
 
+  // Handle avatar file selection
   const handleAvatarChange = (e) => {
     const file = e.target.files[0]
     if (file) {
@@ -63,15 +59,12 @@ const UserProfile = () => {
         toast.error('Chỉ chấp nhận file ảnh định dạng JPEG, PNG hoặc GIF')
         return
       }
-      // Đọc file và chuyển đổi thành data URL
+
       const reader = new FileReader()
       reader.onload = () => {
         const dataUrl = reader.result
         setAvatarPreview(dataUrl)
-        setFormData((prev) => ({
-          ...prev,
-          avatar: dataUrl,
-        }))
+        setAvatarFile(file)
         setIsAvatarChanged(true)
         toast.info('Ảnh đại diện sẽ được cập nhật khi bạn lưu thay đổi')
       }
@@ -82,6 +75,7 @@ const UserProfile = () => {
     }
   }
 
+  // Validate form data
   const validateForm = () => {
     const newErrors = {}
 
@@ -98,36 +92,41 @@ const UserProfile = () => {
     setErrors(newErrors)
 
     if (Object.keys(newErrors).length > 0) {
-      // Focus vào trường lỗi đầu tiên
       const firstErrorField = Object.keys(newErrors)[0]
       const errorElement = document.getElementById(firstErrorField)
       if (errorElement) errorElement.focus()
-
       toast.error('Vui lòng kiểm tra lại thông tin nhập vào')
     }
 
     return Object.keys(newErrors).length === 0
   }
 
+  // Handle form submission with avatar upload
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!validateForm()) return
+
     const toastId = toast.loading('Đang cập nhật thông tin...')
 
     try {
-      const updateData = { ...formData }
-      // Chỉ cập nhật avatar nếu nó đã thay đổi
-      if (updateData.avatar === DEFAULT_AVATAR && !isAvatarChanged) {
-        updateData.avatar = null
+      let avatarUrl = null
+      // Upload new avatar if changed
+      if (isAvatarChanged && avatarFile) {
+        const formDataUpload = new FormData()
+        formDataUpload.append('image', avatarFile)
+        const avatar = await uploadAvatar(formDataUpload).unwrap()
+        avatarUrl = avatar?.imageUrl
       }
-
-      await updateUser({
-        id: user._id,
-        ...updateData,
-      }).unwrap()
-
+      // Update user profile
+      const updateData = {
+        ...formData,
+        avatar: avatarUrl || formData?.avatar,
+        dateOfBirth: formData.dateOfBirth === '' ? null : formData.dateOfBirth,
+      }
+      await updateUser(updateData)
       setIsEditing(false)
       setIsAvatarChanged(false)
+      setAvatarFile(null)
 
       toast.update(toastId, {
         render: 'Cập nhật thông tin thành công!',
@@ -145,16 +144,18 @@ const UserProfile = () => {
     }
   }
 
+  // Handle cancel editing
   const handleCancel = () => {
     setIsEditing(false)
     setFormData(initialFormData)
     setAvatarPreview(user?.avatar || DEFAULT_AVATAR)
     setIsAvatarChanged(false)
+    setAvatarFile(null)
     setErrors({})
-
     toast.info('Đã hủy các thay đổi')
   }
 
+  // Update form data when user changes
   useEffect(() => {
     if (user) {
       setFormData(initialFormData)
@@ -176,10 +177,9 @@ const UserProfile = () => {
         {/* Header */}
         <div className='relative bg-gradient-to-r from-heritage-light to-accent p-6 sm:p-8 flex flex-col sm:flex-row justify-between'>
           <div>
-            <Title title='Thông tin cá nhân'/>
+            <Title title='Thông tin cá nhân' />
             <p className='text-muted-foreground mt-2'>Quản lý thông tin cá nhân của bạn</p>
           </div>
-
           <div className='mt-4 sm:mt-0'>
             {!isEditing && (
               <Button onClick={() => setIsEditing(true)}>Chỉnh sửa</Button>
@@ -200,13 +200,12 @@ const UserProfile = () => {
                   className='w-full h-full object-cover'
                 />
               </div>
-
               {isEditing && (
                 <label
                   htmlFor='avatar-upload'
                   className='absolute inset-0 flex items-center justify-center bg-black/50 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200'
                 >
-                  <Camera size={32} className='text-white'/>
+                  <Camera size={32} className='text-white' />
                   <input
                     id='avatar-upload'
                     type='file'
@@ -217,14 +216,12 @@ const UserProfile = () => {
                   />
                 </label>
               )}
-
               {isAvatarChanged && isEditing && (
                 <div className='absolute -top-2 -right-2 bg-heritage text-white rounded-full w-6 h-6 flex items-center justify-center'>
                   <Check size={14} />
                 </div>
               )}
             </div>
-
             <h3 className='text-xl font-semibold'>{user.displayname || 'User'}</h3>
           </div>
 
@@ -256,7 +253,6 @@ const UserProfile = () => {
                   </p>
                 )}
               </div>
-
               <div className='space-y-2'>
                 <label htmlFor='gender' className='block text-sm font-medium text-foreground'>
                   Giới tính
@@ -271,13 +267,11 @@ const UserProfile = () => {
                   focus:outline-none focus:ring-2 focus:ring-ring transition-colors'
                   aria-label='Chọn giới tính'
                 >
-                  <option value=''>Chưa xác định</option>
-                  <option value='male'>Nam</option>
-                  <option value='female'>Nữ</option>
                   <option value='other'>Khác</option>
+                  <option value='men'>Nam</option>
+                  <option value='woman'>Nữ</option>
                 </select>
               </div>
-
               <div className='space-y-2'>
                 <label htmlFor='phone' className='block text-sm font-medium text-foreground'>
                   Số điện thoại
@@ -289,7 +283,7 @@ const UserProfile = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   disabled={!isEditing}
-                   className={`w-full px-3 py-2 bg-background border ${errors.phone ? "border-destructive" : "border-input"} rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-70 disabled:cursor-not-allowed transition-colors`}
+                  className={`w-full px-3 py-2 bg-background border ${errors.phone ? "border-destructive" : "border-input"} rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-70 disabled:cursor-not-allowed transition-colors`}
                   placeholder='Nhập số điện thoại'
                   aria-invalid={!!errors.phone}
                   aria-describedby={errors.phone ? 'phone-error' : undefined}
@@ -300,7 +294,6 @@ const UserProfile = () => {
                   </p>
                 )}
               </div>
-
               <div className='space-y-2'>
                 <label htmlFor='dateOfBirth' className='block text-sm font-medium text-foreground'>
                   Ngày sinh
@@ -328,10 +321,10 @@ const UserProfile = () => {
               </Button>
               <Button
                 type='submit'
-                disabled={isLoading}
+                disabled={isUpdating || isUploadingAvatar}
                 className='flex items-center gap-2'
               >
-                {isLoading ? (
+                {(isUpdating || isUploadingAvatar) ? (
                   <>
                     <Loader2 className='h-4 w-4 animate-spin' />
                     <span>Đang lưu...</span>

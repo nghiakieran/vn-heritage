@@ -1,13 +1,7 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { BASE_URL } from '~/constants/fe.constant'
+import { BASE_URL } from "~/constants/fe.constant";
+import { apiSlice } from "./apiSlice";
 
-export const userApi = createApi({
-  reducerPath: 'userApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: BASE_URL,
-    // timeout: 30000,
-  }),
-  tagTypes: ['User'],
+export const userSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllUsers: builder.query({
       query: () => '/users',
@@ -16,34 +10,52 @@ export const userApi = createApi({
 
     getAllActiveUsers: builder.query({
       async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
-        let allUsers = []
-        let page = 1
-        const limit = 10 // Hoặc giá trị phù hợp
-        let hasMore = true
+        let allUsers = [];
+        let page = 1;
+        const limit = 10;
+        let hasMore = true;
 
         while (hasMore) {
-          const result = await fetchWithBQ(`/users?page=${page}&limit=${limit}`)
-          if (result.error) return { error: result.error }
+          const result = await fetchWithBQ(`/users?page=${page}&limit=${limit}`);
+          if (result.error) return { error: result.error };
 
-          allUsers = [...allUsers, ...result.data.users]
-          hasMore = page < result.data.pagination.totalPages
-          page++
+          allUsers = [...allUsers, ...result.data.users];
+          hasMore = page < result.data.pagination.totalPages;
+          page++;
         }
 
-        // Lọc tất cả người dùng có isActive = true
-        const activeUsers = allUsers.filter(user =>
-          user.account && user.account.isActive === true
-        )
+        const activeUsers = allUsers.filter(
+          (user) => user.account && user.account.isActive === true
+        );
 
-        return { data: { users: activeUsers } }
+        return { data: { users: activeUsers } };
       },
       providesTags: ['User'],
     }),
 
     updateUser: builder.mutation({
-      query: ({ id, ...data }) => ({
-        url: `/users/${id}`,
+      query: (data) => ({
+        url: `${BASE_URL}/users/profile`,
         method: 'PUT',
+        body: data,
+      }),
+      invalidatesTags: (result, error, { id }) => [{ type: 'User', id }],
+
+    }),
+
+    getUserProfile: builder.query({
+      query: () => ({
+        url: `${BASE_URL}/users/profile`,
+        method: 'GET',
+      }),
+      providesTags: ['User'],
+    }),
+
+
+    uploadAvatar: builder.mutation({
+      query: (data) => ({
+        url: `${BASE_URL}/users/upload`,
+        method: 'POST',
         body: data,
       }),
       invalidatesTags: (result, error, { id }) => [{ type: 'User', id }],
@@ -51,12 +63,11 @@ export const userApi = createApi({
 
     deleteUser: builder.mutation({
       query: (id) => ({
-        url: `/users/${id}`,
+        url: `${BASE_URL}/users/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['User'],
     }),
   }),
-})
-
-export const { useGetAllUsersQuery, useGetAllActiveUsersQuery, useUpdateUserMutation, useDeleteUserMutation } = userApi
+});
+export const { useGetAllUsersQuery, useGetAllActiveUsersQuery, useUpdateUserMutation, useDeleteUserMutation, useUploadAvatarMutation, useGetUserProfileQuery } = userSlice
