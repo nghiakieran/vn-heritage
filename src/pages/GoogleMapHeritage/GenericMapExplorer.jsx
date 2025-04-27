@@ -218,8 +218,6 @@ function GenericMapExplorer({
                             </>
                         ) : (
                             <>
-                                <h2 className="text-xl font-medium text-heritage-dark">Các ${itemName} nổi bật</h2>
-                                <HeritageList heritages={displayedItems?.heritages} />
                             </>
                         )}
                     </div>
