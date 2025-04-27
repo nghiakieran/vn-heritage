@@ -21,40 +21,42 @@ export function UserStatus({ name, status, avatar, className, showStatus = true,
   }
 
   return (
-    <div className={cn('flex items-center justify-between', className)}>
-      <div className='relative'>
-        <div className={cn('rounded-full flex items-center justify-center bg-primary/20 text-white', avatarSizes[size])}>
-          {avatar ? (
-            <img src={avatar || '/placeholder.svg'} alt={name} className='rounded-full object-cover w-full h-full' />
-          ) : (
-            <User className={cn(size === 'sm' ? 'h-4 w-4' : size === 'md' ? 'h-5 w-5' : 'h-6 w-6')} />
+    <div className={cn('flex items-center justify-between w-full', className)}>
+      <div className='flex items-center gap-3'>
+        <div className='relative'>
+          <div className={cn('rounded-full flex items-center justify-center bg-primary/20 text-white', avatarSizes[size])}>
+            {avatar ? (
+              <img src={avatar || '/images/avatar-default.jpg'} loading='lazy' alt={name} className='rounded-full object-cover w-full h-full' />
+            ) : (
+              <User className={cn(size === 'sm' ? 'h-4 w-4' : size === 'md' ? 'h-5 w-5' : 'h-6 w-6')} />
+            )}
+          </div>
+          {showStatus && (
+            <span
+              className={cn(
+                'absolute bottom-0 right-0 rounded-full border-2 border-sidebar',
+                statusColors[status],
+                statusSizes[size],
+                status === 'online' && 'animate-pulse-dot',
+              )}
+            />
           )}
         </div>
-        {showStatus && (
+        <div className='overflow-hidden'>
           <span
             className={cn(
-              'absolute bottom-0 right-0 rounded-full border-2 border-sidebar',
-              statusColors[status],
-              statusSizes[size],
-              status === 'online' && 'animate-pulse-dot',
+              size === 'sm' ? 'text-sm' : size === 'md' ? 'text-base' : 'text-lg',
+              'font-medium truncate block',
             )}
-          />
-        )}
-      </div>
-      <div className='ml-3 overflow-hidden'>
-        <span
-          className={cn(
-            size === 'sm' ? 'text-sm' : size === 'md' ? 'text-base' : 'text-lg',
-            'font-medium truncate block',
+          >
+            {name}
+          </span>
+          {showStatus && (
+            <div className={cn('flex items-center', size === 'sm' ? 'text-xs' : 'text-sm', 'text-white/60')}>
+              <span className='capitalize'>{status}</span>
+            </div>
           )}
-        >
-          {name}
-        </span>
-        {showStatus && (
-          <div className={cn('flex items-center', size === 'sm' ? 'text-xs' : 'text-sm', 'text-white/60')}>
-            <span className='capitalize'>{status}</span>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   )

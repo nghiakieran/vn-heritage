@@ -12,6 +12,7 @@ export function UserList({
   isCommunityActive,
   onlineUsers = [],
   isOpen = true,
+  // hasNewMessage = () => false,
 }) {
   const [searchQuery, setSearchQuery] = useState('')
   const [searchFocused, setSearchFocused] = useState(false)
