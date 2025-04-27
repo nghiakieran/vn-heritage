@@ -2,6 +2,7 @@ import About from '~/pages/About/About'
 import ChatHeritagePage from '~/pages/ChatHeritagePage/ChatHeritagePage'
 import EmailVerification from '~/pages/EmailVerification'
 import Favorites from '~/pages/Favorites'
+import GenericMapExplorer from '~/pages/GoogleMapHeritage/GenericMapExplorer'
 import HeritageDetail from '~/pages/HeritageDetail/HeritageDetail'
 import Heritages from '~/pages/Heritages'
 import Home from '~/pages/Home'
@@ -17,9 +18,10 @@ const publicRoutes = [
   { path: '/login', element: <Login />, restricted: true },
   { path: '/register', element: <Register />, restricted: true },
   { path: '/authen-confirm', element: <EmailVerification />, restricted: true },
-  { path: '/chat/heritage/:nameSlug', element: <ChatHeritagePage />},
-  { path: '/profile', element: <Profile />},
-  { path: '/favorites', element: <Favorites />}
+  { path: '/chat/heritage/:nameSlug', element: <ChatHeritagePage /> },
+  { path: '/profile', element: <Profile /> },
+  { path: '/favorites', element: <Favorites /> },
+  { path: '/explore', element: <GenericMapExplorer /> }
 ]
 
 export default publicRoutes
