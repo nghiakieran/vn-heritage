@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { favoriteApi } from '~/store/apis/favoriteApi'
+import { favoriteSlice as favoriteApi } from '~/store/apis/favoritesSlice'
 
 const initialState = {
   favoriteMap: {},
-  isInitialized: false
+  isInitialized: false,
 }
 
-const favoriteSlice = createSlice({
+const favoritesSlice = createSlice({
   name: 'favorites',
   initialState,
   reducers: {
@@ -21,10 +21,9 @@ const favoriteSlice = createSlice({
     resetFavorites: (state) => {
       state.favoriteMap = {}
       state.isInitialized = false
-    }
+    },
   },
   extraReducers: (builder) => {
-    // Khi lấy danh sách yêu thích thành công, cập nhật favoriteMap
     builder.addMatcher(
       favoriteApi.endpoints.getFavoritesByUserId.matchFulfilled,
       (state, { payload }) => {
@@ -34,13 +33,13 @@ const favoriteSlice = createSlice({
         }
       }
     )
-  }
+  },
 })
 
-export const { setFavoriteStatus, resetFavorites } = favoriteSlice.actions
+export const { setFavoriteStatus, resetFavorites } = favoritesSlice.actions
 
 export const selectFavoriteMap = (state) => state.favorites.favoriteMap
 export const selectIsFavoriteInitialized = (state) => state.favorites.isInitialized
 export const selectIsFavorited = (heritageId) => (state) => !!state.favorites.favoriteMap[heritageId]
 
-export default favoriteSlice.reducer
+export default favoritesSlice.reducer

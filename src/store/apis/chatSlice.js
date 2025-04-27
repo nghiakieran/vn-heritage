@@ -64,4 +64,4 @@ export const {
   useUploadDocumentMutation,
   useUploadWebsiteMutation,
   useUploadJsonMutation
-} = chatSlice;
+} = chatSlice

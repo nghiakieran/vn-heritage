@@ -10,7 +10,7 @@ import { selectCurrentUser } from '~/store/slices/authSlice'
 import { 
   useAddToFavoritesMutation,
   useRemoveFromFavoritesMutation
-} from '~/store/apis/favoriteApi'
+} from '~/store/apis/favoritesSlice'
 import { 
   selectIsFavorited, 
   setFavoriteStatus,

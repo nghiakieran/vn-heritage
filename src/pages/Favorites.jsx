@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 
 import { selectCurrentUser } from '~/store/slices/authSlice'
-import { useGetFavoritesByUserIdQuery } from '~/store/apis/favoriteApi'
+import { useGetFavoritesByUserIdQuery } from '~/store/apis/favoritesSlice'
 import HeritageCard from '~/components/Heritage/HeritageCard'
 import { Button } from '~/components/common/ui/Button'
 import HeritageSkeleton from '~/components/Heritage/HeritageSkeleton'
