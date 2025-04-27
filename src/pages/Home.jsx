@@ -13,7 +13,7 @@ const Home = () => {
         <HowItWork />
       </div>
     </>
-  );
-};
+  )
+}
 
 export default Home

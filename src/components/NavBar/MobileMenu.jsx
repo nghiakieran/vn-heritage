@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { LogIn, UserPlus } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
 
 import { cn } from '~/lib/utils'
 import { Button } from '~/components/common/ui/Button'
@@ -18,10 +19,12 @@ const MobileMenu = ({ isOpen, navLinks, userMenuLinks, onClose }) => {
   const handleLogout = () => {
     try {
       dispatch(logOut())
+      toast.success('Đăng xuất thành công!')
       navigate('/')
       onClose()
     } catch (error) {
       console.error('Logout failed:', error)
+      toast.error('Đăng xuất thất bại. Vui lòng thử lại!')
     }
   }
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { BookOpen, Headset, Heart, House, Map, Menu, UserPlus, X} from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 
 import { cn } from '~/lib/utils'
@@ -11,18 +11,7 @@ import { Button } from '~/components/common/ui/Button'
 import SearchBar from './SearchBar'
 import { useSelector } from 'react-redux'
 import { selectCurrentUser } from '~/store/slices/authSlice'
-
-const navLinks = [
-  { name: 'Trang chủ', to: '/', icon: <House className='h-5 w-5' /> },
-  { name: 'Di tích', to: '/heritages', icon: <BookOpen className='h-5 w-5' /> },
-  { name: 'Khám phá', to: '/explore', icon: <Map className='h-5 w-5' /> },
-  { name: 'Giới thiệu', to: '/about', icon: <Headset className='h-5 w-5' /> },
-]
-
-const userMenuLinks = [
-  { name: 'Favorites', to: '/favorites', icon: <Heart className='h-5 w-5' /> },
-  { name: 'Profile', to: '/profile', icon: <UserPlus className='h-5 w-5' /> },
-]
+import { navLinks, userMenuLinks } from './navData'
 
 const NavBar = () => {
   
@@ -42,7 +31,6 @@ const NavBar = () => {
   useEffect(() => {
     // Off menu
     setShowMobileMenu(false)
-
   }, [location.pathname])
 
   const navbarClasses = cn(
@@ -52,6 +40,7 @@ const NavBar = () => {
       'bg-transparent': !isScrolled
     }
   )
+
   // Handle off scroll
   useEffect(() => {
     document.body.style.overflow = showMobileMenu ? 'hidden' : 'auto'

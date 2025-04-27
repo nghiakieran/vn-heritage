@@ -1,21 +1,23 @@
 import { useNavigate, useParams } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { useSelector } from 'react-redux'
 import { useGetHeritagesBySlugQuery } from '~/store/apis/heritageApi'
 import HeritageCard from '~/components/Heritage/HeritageCard'
 import HeritageDetailSkeleton from './HeritageDetailSkeleton'
-import HeritageDetailTabs from './HeritageDetailTab'
-import HeritageFeatures from './HeritageFeatures'
-import HeritageHeader from './HeritageHeader'
-import HeritageInfo from './HeritageInfo'
 import { mockData } from '~/api/mock-data'
 import { Button } from '~/components/common/ui/Button'
-import HeritageChat from './HeritageChat'
-import LeaderboardTable from './LeaderboardTable/LeaderboardTable'
-import HeritageKnowledgeTest from './HeritageKnowledgeTest/HeritageKnowledgeTest'
 import { selectCurrentUser } from '~/store/slices/authSlice'
 import { MessageCircle, X } from 'lucide-react'
 import { Dialog, DialogDescription, DialogHeader, DialogTitle } from '~/components/common/ui/Dialog'
+import { 
+  HeritageChat, 
+  LeaderboardTable, 
+  HeritageKnowledgeTest, 
+  HeritageDetailTabs, 
+  HeritageFeatures, 
+  HeritageInfo, 
+  HeritageHeader 
+} from '~/components/lazyComponents'
 
 const HeritageDetail = () => {
   const { nameSlug } = useParams()
@@ -74,14 +76,20 @@ const HeritageDetail = () => {
         <HeritageDetailSkeleton />
       ) : (
         <>
-          <HeritageHeader data={data} />
+          <Suspense fallback={<HeritageDetailSkeleton />}>
+            <HeritageHeader data={data} />
+          </Suspense>
           <div className='lcn-container-x py-8'>
             <div className='grid grid-cols-1 sm:grid-cols-3 gap-8'>
               <div className='sm:col-span-2'>
-                <HeritageDetailTabs data={data} isAuthenticated={isAuthenticated} navigate={navigate} />
+                <Suspense fallback={<div>Đang tải...</div>}>
+                  <HeritageDetailTabs data={data} isAuthenticated={isAuthenticated} navigate={navigate} />
+                </Suspense>
                 <div className='mt-10'>
                   <h3 className='lcn-heritage-detail-title mb-4'>Tính năng tương tác</h3>
-                  <HeritageFeatures handleFeatureClick={handleFeatureClick} />
+                  <Suspense fallback={<div>Đang tải...</div>}>
+                    <HeritageFeatures handleFeatureClick={handleFeatureClick} />
+                  </Suspense>
                 </div>
                 {!isAuthenticated && (
                   <div className='p-6 bg-heritage-light/30 rounded-md border border-heritage-light text-center mt-6'>
@@ -102,7 +110,9 @@ const HeritageDetail = () => {
                 </div>
               </div>
               <div className='space-y-8'>
-                <HeritageInfo data={data} />
+                <Suspense fallback={<div>Đang tải...</div>}>
+                  <HeritageInfo data={data} />
+                </Suspense>
               </div>
             </div>
           </div>
@@ -125,12 +135,14 @@ const HeritageDetail = () => {
                   <X className='w-4 h-4' />
                 </Button>
               </div>
-              <HeritageChat
-                heritageId={id}
-                heritageName={data?.name}
-                landmarkData={data} // Pass data as landmarkData
-                onClose={toggleChat}
-              />
+              <Suspense fallback={<div>Đang tải...</div>}>
+                <HeritageChat
+                  heritageId={id}
+                  heritageName={data?.name}
+                  landmarkData={data}
+                  onClose={toggleChat}
+                />
+              </Suspense>
             </div>
           )}
           <Dialog open={activeFeature === 'leaderboard'} onClose={closeFeatureDialog}>
@@ -141,20 +153,24 @@ const HeritageDetail = () => {
               </DialogDescription>
             </DialogHeader>
             <div className='py-4'>
-              <LeaderboardTable
-                heritageId={id}
-                heritageName={data?.name}
-                isOpen={activeFeature === 'leaderboard'}
-              />
+              <Suspense fallback={<div>Đang tải...</div>}>
+                <LeaderboardTable
+                  heritageId={id}
+                  heritageName={data?.name}
+                  isOpen={activeFeature === 'leaderboard'}
+                />
+              </Suspense>
             </div>
           </Dialog>
-          <Dialog open={activeFeature === 'knowledge-test'} onClose={closeFeatureDialog} className='max-h-[90vh] overflow-hidden'>
+          <Dialog open={activeFeature === 'knowledge-test'} onClose={closeFeatureDialog} className='max-h-[90vh]'>
             <DialogHeader>
               <DialogTitle>Kiểm tra kiến thức</DialogTitle>
               <DialogDescription>Thử thách hiểu biết của bạn về {data?.name}</DialogDescription>
             </DialogHeader>
             <div className='py-4 overflow-auto'>
-              <HeritageKnowledgeTest heritageId={id} heritageName={data?.name} />
+              <Suspense fallback={<div>Đang tải...</div>}>
+                <HeritageKnowledgeTest heritageId={id} heritageName={data?.name} />
+              </Suspense>
             </div>
           </Dialog>
         </>

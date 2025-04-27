@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Heart } from 'lucide-react'
+import { toast } from 'react-toastify'
 import { selectCurrentUser } from '~/store/slices/authSlice'
 
 import { Button } from '~/components/common/ui/Button'
@@ -18,10 +19,12 @@ const UserMenu = ({ userMenuLinks }) => {
   const handleLogout = () => {
     try {
       dispatch(logOut())
+      toast.success('Đăng xuất thành công!')
       navigate('/')
       setIsOpen(false)
     } catch (error) {
       console.error('Logout failed:', error)
+      toast.error('Đăng xuất thất bại. Vui lòng thử lại!')
     }
   }
 

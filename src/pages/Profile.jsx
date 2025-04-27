@@ -116,6 +116,7 @@ const UserProfile = () => {
         formDataUpload.append('image', avatarFile)
         const avatar = await uploadAvatar(formDataUpload).unwrap()
         avatarUrl = avatar?.imageUrl
+        toast.success('Cập nhật ảnh đại diện thành công!')
       }
       // Update user profile
       const updateData = {
