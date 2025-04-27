@@ -12,18 +12,47 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
     const [currentAddress, setCurrentAddress] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const [searchError, setSearchError] = useState(null);
+    const [suggestions, setSuggestions] = useState([]);
 
     // Fetch address from coordinates
     const fetchAddress = useCallback(async (lng, lat) => {
         try {
             const response = await fetch(
-                `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${mapboxgl.accessToken}`
+                `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${mapboxgl.accessToken}&country=vn`
             );
             const data = await response.json();
             setCurrentAddress(data.features?.[0]?.place_name || 'Không tìm thấy địa chỉ');
         } catch (error) {
             setCurrentAddress('Lỗi khi lấy địa chỉ');
             console.error('Error fetching address:', error);
+        }
+    }, []);
+
+    // Fetch suggestions from Mapbox Geocoding API (Vietnam only)
+    const fetchSuggestions = useCallback(async (query) => {
+        if (!query.trim()) {
+            setSuggestions([]);
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+                    query
+                )}.json?access_token=${mapboxgl.accessToken}&country=vn&bbox=102.144,8.182,109.469,23.393&limit=5`
+            );
+            const data = await response.json();
+            setSuggestions(
+                data.features?.map((feature) => ({
+                    place_name: feature.place_name,
+                    coordinates: feature.center, // [lng, lat]
+                    context: feature.context || [],
+                    place_type: feature.place_type?.[0] || 'unknown',
+                })) || []
+            );
+        } catch (error) {
+            console.error('Error fetching suggestions:', error);
+            setSuggestions([]);
         }
     }, []);
 
@@ -38,8 +67,6 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
         }
     }, [currentCoordinates, onSelectCoordinates]);
 
-
-
     // Initialize map
     const initializeMap = useCallback(() => {
         if (!mapContainer.current) return;
@@ -48,12 +75,21 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
 
         map.current = new mapboxgl.Map({
             container: mapContainer.current,
-            style: 'mapbox://styles/mapbox/light-v11',
+            style: 'mapbox://styles/mapbox/streets-v12',
             center: [center.lng, center.lat],
-            zoom: 5,
+            zoom: 7,
         });
 
         map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+        map.current.addControl(new mapboxgl.ScaleControl(), 'bottom-right');
+        map.current.addControl(
+            new mapboxgl.GeolocateControl({
+                positionOptions: { enableHighAccuracy: true },
+                trackUserLocation: false,
+                showUserHeading: true,
+            }),
+            'top-right'
+        );
 
         // Add map click handler
         map.current.on('click', (e) => {
@@ -73,6 +109,7 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
 
             setCurrentMarker(newMarker);
             setCurrentCoordinates({ lat, lng });
+            setSuggestions([]); // Clear suggestions on map click
             fetchAddress(lng, lat);
 
             newMarker.on('dragend', () => {
@@ -91,16 +128,9 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
     const updateInitialMarkers = useCallback(() => {
         if (!map.current) return;
 
-        // Remove existing markers
+        // Remove existing markers (except currentMarker)
         markersRef.current.forEach((marker) => marker.remove());
         markersRef.current = [];
-
-        if (currentMarker) {
-            currentMarker.remove();
-            setCurrentMarker(null);
-            setCurrentAddress('');
-            setCurrentCoordinates(null);
-        }
 
         // Add initial markers
         initialMarkers.forEach(({ lat, lng, title }) => {
@@ -119,6 +149,7 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
                     onMarkerClick({ lat, lng, title });
                 }
                 setCurrentCoordinates({ lat, lng });
+                setSuggestions([]); // Clear suggestions on marker click
                 fetchAddress(lng, lat);
             });
 
@@ -139,64 +170,110 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
         }
     }, [center]);
 
-    // Handle search
+    // Handle search submission
     const handleSearch = useCallback(
-        async (e) => {
+        async (e, selectedPlace = null) => {
             e.preventDefault();
-            if (!searchQuery.trim()) return;
+            let lng, lat, placeName, placeType, context;
 
-            setSearchError(null);
-
-            try {
-                const response = await fetch(
-                    `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-                        searchQuery
-                    )}.json?access_token=${mapboxgl.accessToken}`
-                );
-                const data = await response.json();
-
-                if (data.features && data.features.length > 0) {
-                    const [lng, lat] = data.features[0].center;
-                    if (typeof lat !== 'number' || typeof lng !== 'number') {
-                        console.log('Tọa độ tìm kiếm không hợp lệ:', { lat, lng });
-                        setSearchError('Tọa độ không hợp lệ.');
+            if (selectedPlace) {
+                [lng, lat] = selectedPlace.coordinates;
+                placeName = selectedPlace.place_name;
+                placeType = selectedPlace.place_type;
+                context = selectedPlace.context;
+                setSearchQuery(placeName);
+            } else if (!searchQuery.trim()) {
+                return;
+            } else {
+                try {
+                    const response = await fetch(
+                        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+                            searchQuery
+                        )}.json?access_token=${mapboxgl.accessToken}&country=vn&bbox=102.144,8.182,109.469,23.393`
+                    );
+                    const data = await response.json();
+                    if (data.features && data.features.length > 0) {
+                        [lng, lat] = data.features[0].center;
+                        placeName = data.features[0].place_name;
+                        placeType = data.features[0].place_type?.[0] || 'unknown';
+                        context = data.features[0].context || [];
+                    } else {
+                        setSearchError('Không tìm thấy địa điểm.');
                         return;
                     }
-
-                    map.current.setCenter([lng, lat]);
-                    map.current.setZoom(10);
-
-                    if (currentMarker) {
-                        currentMarker.remove();
-                    }
-
-                    const newMarker = new mapboxgl.Marker({ color: 'red', draggable: true })
-                        .setLngLat([lng, lat])
-                        .setPopup(new mapboxgl.Popup().setHTML(`<h3 class="font-medium">${data.features[0].place_name}</h3>`))
-                        .addTo(map.current);
-
-                    setCurrentMarker(newMarker);
-                    setCurrentCoordinates({ lat, lng });
-                    setCurrentAddress(data.features[0].place_name);
-
-                    newMarker.on('dragend', () => {
-                        const newLngLat = newMarker.getLngLat();
-                        if (typeof newLngLat.lat !== 'number' || typeof newLngLat.lng !== 'number') {
-                            console.log('Tọa độ drag không hợp lệ:', newLngLat);
-                            return;
-                        }
-                        setCurrentCoordinates({ lat: newLngLat.lat, lng: newLngLat.lng });
-                        fetchAddress(newLngLat.lng, newLngLat.lat);
-                    });
-                } else {
-                    setSearchError('Không tìm thấy địa điểm.');
+                } catch (error) {
+                    setSearchError('Lỗi khi tìm kiếm địa điểm.');
+                    console.error('Search error:', error);
+                    return;
                 }
-            } catch (error) {
-                setSearchError('Lỗi khi tìm kiếm địa điểm.');
-                console.error('Search error:', error);
             }
+
+            if (typeof lat !== 'number' || typeof lng !== 'number') {
+                console.log('Tọa độ tìm kiếm không hợp lệ:', { lat, lng });
+                setSearchError('Tọa độ không hợp lệ.');
+                return;
+            }
+
+            map.current.setCenter([lng, lat]);
+            map.current.setZoom(10);
+
+            if (currentMarker) {
+                currentMarker.remove();
+            }
+
+            // Create detailed popup
+            const popupContent = `
+                <div class="p-2">
+                    <h3 class="font-medium">${placeName}</h3>
+                    <p class="text-sm">Loại: ${placeType}</p>
+                    <p class="text-sm">Khu vực: ${context.find((c) => c.id.includes('region'))?.text || 'Không xác định'
+                }</p>
+                </div>
+            `;
+
+            const newMarker = new mapboxgl.Marker({ color: 'red', draggable: true })
+                .setLngLat([lng, lat])
+                .setPopup(new mapboxgl.Popup().setHTML(popupContent))
+                .addTo(map.current);
+
+            setCurrentMarker(newMarker);
+            setCurrentCoordinates({ lat, lng });
+            setCurrentAddress(placeName);
+            setSuggestions([]); // Clear suggestions after search
+            setSearchError(null);
+
+            newMarker.on('dragend', () => {
+                const newLngLat = newMarker.getLngLat();
+                if (typeof newLngLat.lat !== 'number' || typeof newLngLat.lng !== 'number') {
+                    console.log('Tọa độ drag không hợp lệ:', newLngLat);
+                    return;
+                }
+                setCurrentCoordinates({ lat: newLngLat.lat, lng: newLngLat.lng });
+                fetchAddress(newLngLat.lng, newLngLat.lat);
+            });
         },
         [searchQuery, fetchAddress]
+    );
+
+    // Handle input change to fetch suggestions
+    const handleInputChange = useCallback(
+        (e) => {
+            const query = e.target.value;
+            setSearchQuery(query);
+            fetchSuggestions(query);
+        },
+        [fetchSuggestions]
+    );
+
+    // Handle suggestion selection
+    const handleSuggestionSelect = useCallback(
+        (e) => {
+            const selectedPlace = suggestions.find((s) => s.place_name === e.target.value);
+            if (selectedPlace) {
+                handleSearch({ preventDefault: () => { } }, selectedPlace);
+            }
+        },
+        [suggestions, handleSearch]
     );
 
     // Initialize map
@@ -223,22 +300,38 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
     return (
         <div className="w-full h-full relative" role="region" aria-label="Bản đồ di sản">
             <div className="absolute top-4 left-4 z-10 w-80">
-                <form onSubmit={handleSearch} className="flex gap-2">
-                    <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Tìm kiếm địa điểm..."
-                        className="flex-1 p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        aria-label="Tìm kiếm địa điểm"
-                    />
-                    <button
-                        type="submit"
-                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                        aria-label="Tìm kiếm"
-                    >
-                        Tìm
-                    </button>
+                <form onSubmit={handleSearch} className="flex flex-col gap-2">
+                    <div className="flex gap-2">
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={handleInputChange}
+                            placeholder="Tìm kiếm địa điểm ở Việt Nam..."
+                            className="flex-1 p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            aria-label="Tìm kiếm địa điểm"
+                        />
+                        <button
+                            type="submit"
+                            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                            aria-label="Tìm kiếm"
+                        >
+                            Tìm
+                        </button>
+                    </div>
+                    {suggestions.length > 0 && (
+                        <select
+                            size={Math.min(suggestions.length, 5)}
+                            onChange={handleSuggestionSelect}
+                            className="w-full p-2 rounded border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            aria-label="Gợi ý địa điểm"
+                        >
+                            {suggestions.map((suggestion, index) => (
+                                <option key={index} value={suggestion.place_name}>
+                                    {suggestion.place_name}
+                                </option>
+                            ))}
+                        </select>
+                    )}
                 </form>
                 {searchError && <div className="mt-2 text-red-500 text-sm">{searchError}</div>}
             </div>
