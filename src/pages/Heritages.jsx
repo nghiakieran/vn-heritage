@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
-import { heritageApi, useLazyGetHeritagesQuery } from '~/store/apis/heritageApi'
+import { heritageSlice, useLazyGetHeritagesQuery } from '~/store/apis/heritageApi'
 import { setCurrentPage } from '~/store/slices/paginationSlice'
 import HeritageList from '~/components/Heritage/HeritageList'
 import HeritageSkeleton from '~/components/Heritage/HeritageSkeleton'
@@ -14,7 +14,7 @@ import {
 
 const Heritages = () => {
   const dispatch = useDispatch()
-  
+
   const currentPage = useSelector(selectCurrentPage)
   const itemsPerPage = useSelector(selectItemsPerPage)
   const searchQuery = useSelector(selectSearchQuery)
@@ -24,7 +24,7 @@ const Heritages = () => {
     limit: itemsPerPage,
     name: searchQuery || undefined
   }), [currentPage, itemsPerPage, searchQuery])
-  
+
 
   const [trigger, { data: response, isLoading, isFetching, error }] = useLazyGetHeritagesQuery()
 
@@ -55,7 +55,7 @@ const Heritages = () => {
         limit: itemsPerPage,
         name: searchQuery || undefined
       }
-      dispatch(heritageApi.util.prefetch('getHeritages', nextPageParams, { force: false } ))
+      dispatch(heritageSlice.util.prefetch('getHeritages', nextPageParams, { force: false }))
     }
   }, [currentPage, totalPages, itemsPerPage, searchQuery, heritages.length, error, dispatch])
 
@@ -69,7 +69,7 @@ const Heritages = () => {
   // Pagination UI generator
   const paginationButtons = useMemo(() => {
     if (totalPages <= 1) return null
-    
+
     const pages = []
     const maxPagesToShow = 5
     const half = Math.floor(maxPagesToShow / 2)
@@ -94,9 +94,8 @@ const Heritages = () => {
           key={page}
           onClick={() => handlePageChange(page)}
           disabled={isFetching}
-          className={`px-4 py-2 border rounded ${
-            currentPage === page ? 'bg-heritage-dark text-white' : ''
-          }`}
+          className={`px-4 py-2 border rounded ${currentPage === page ? 'bg-heritage-dark text-white' : ''
+            }`}
         >
           {page}
         </button>
@@ -123,7 +122,7 @@ const Heritages = () => {
   // Render pagination
   const renderPagination = () => {
     if (totalPages <= 1) return null
-    
+
     return (
       <div className='mt-8 flex justify-center gap-2'>
         <button
@@ -134,9 +133,9 @@ const Heritages = () => {
         >
           <ChevronLeft size={20} />
         </button>
-        
+
         {paginationButtons}
-        
+
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages || isFetching}
@@ -158,7 +157,7 @@ const Heritages = () => {
       <p className='text-muted-foreground mt-2'>
         {error?.data?.message || 'Vui lòng thử lại sau'}
       </p>
-      <button 
+      <button
         onClick={() => trigger(queryParams)}
         className='mt-4 px-4 py-2 bg-heritage-dark text-white rounded hover:bg-heritage-dark/90 transition-colors'
       >
@@ -180,7 +179,7 @@ const Heritages = () => {
             Nam, nơi đã định hình nền văn minh của dân tộc.
           </p>
         </div>
-        
+
         {/* Content */}
         <div>
           {isLoading || isFetching ? (
