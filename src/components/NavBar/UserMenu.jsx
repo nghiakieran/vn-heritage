@@ -1,25 +1,31 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import { Heart } from 'lucide-react'
+import { toast } from 'react-toastify'
+import { selectCurrentUser } from '~/store/slices/authSlice'
 
 import { Button } from '~/components/common/ui/Button'
+import { logOut } from '~/store/slices/authSlice'
 
 const UserMenu = ({ userMenuLinks }) => {
-  // Fake user
-  const user = {
-    profileImage: 'https://images.unsplash.com/photo-1742268351424-e845eb0c99a2?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    name: 'Nghia',
-    email: 'lechinghia202@gmail.com'
-  }
+  const currentUser = useSelector(selectCurrentUser)
   
   const [isOpen, setIsOpen] = useState(false)
   const dropDownRef = useRef(null)
+  const dispatch = useDispatch()
   const navigate = useNavigate()
 
   const handleLogout = () => {
-    // Call logout
-    navigate('/')
-    setIsOpen(false)
+    try {
+      dispatch(logOut())
+      toast.success('Đăng xuất thành công!')
+      navigate('/')
+      setIsOpen(false)
+    } catch (error) {
+      console.error('Logout failed:', error)
+      toast.error('Đăng xuất thất bại. Vui lòng thử lại!')
+    }
   }
 
   useEffect(() => {
@@ -42,10 +48,10 @@ const UserMenu = ({ userMenuLinks }) => {
       <div className='relative'>
          <Button onClick={() => setIsOpen(!isOpen)} variant='ghost' size='icon' className='hover:bg-transparent'>
           {
-            user?.profileImage ? (
-              <img src={user?.profileImage} alt='profile' className='h-9 w-9 rounded-full object-cover hover:opacity-80 transition-opacity' />
+            currentUser?.avatar ? (
+              <img src={currentUser?.avatar} alt='profile' className='h-9 w-9 rounded-full object-cover hover:opacity-80 transition-opacity' />
             ) : (
-              <span className='text-white bg-heritage hover:opacity-80 h-9 w-9 rounded-full flex items-center justify-center text-sm font-medium'>{user?.name?.slice(0, 2).toUpperCase() || 'UN'}</span>
+              <span className='text-white bg-heritage hover:opacity-80 h-9 w-9 rounded-full flex items-center justify-center text-sm font-medium'>{currentUser?.displayname?.slice(0, 2).toUpperCase() || 'UN'}</span>
             )
           }
         </Button>
@@ -53,8 +59,7 @@ const UserMenu = ({ userMenuLinks }) => {
           isOpen && (
             <div className='absolute right-0 mt-2 w-56 border rounded-md shadow-lg bg-background'>
               <div className='px-4 py-2'>
-                <p className='text-sm font-medium truncate'>{user?.name}</p>
-                <p className='text-xs text-muted-foreground truncate'>{user?.email}</p>
+                <p className='text-sm font-medium truncate'>{currentUser?.displayname}</p>
               </div>
               <hr className='border-gray-100'/>
               {

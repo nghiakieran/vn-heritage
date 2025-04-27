@@ -1,4 +1,4 @@
-import { MessageSquare, Rocket, Telescope, UserPlus } from 'lucide-react'
+import { Map, MessageSquare, Rocket, Telescope, UserPlus } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { lazy, Suspense, useCallback, useEffect, useState } from 'react'
 
@@ -13,7 +13,6 @@ const TeamMembers = lazy(() => import('./TeamMembers'))
 const ContactInfo = lazy(() => import('./ContactInfo'))
 const CoreValues = lazy(() => import('./CoreValues'))
 const Timeline = lazy(() => import('./Timeline'))
-
 
 const About = () => {
   const [activeSection, setActiveSection] = useState('vision')
@@ -141,14 +140,14 @@ const About = () => {
                   Đăng ký ngay
                 </Button>
               </Link>
-              <Link to='/chatbot'>
+              <Link to='/explore'>
                 <Button 
                   size='lg'
                   variant='outline'
-                  className='bg-white/10 backdrop-blur-sm text-white border-white hover:bg-white/20 w-52'
+                  className='bg-white/10 backdrop-blur-sm text-white border-white hover:bg-white/20 w-62'
                 >
-                  <MessageSquare className='mr-2' size={20} />
-                  Trợ lý AI
+                  <Map className='mr-2' size={20} />
+                  Khám phá bản đồ
                 </Button>
               </Link>
             </div>

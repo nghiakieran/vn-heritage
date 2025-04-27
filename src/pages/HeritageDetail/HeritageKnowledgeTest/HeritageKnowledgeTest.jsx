@@ -2,6 +2,7 @@ import { BookOpen, Loader2 } from 'lucide-react'
 import { useState, useMemo} from 'react'
 import { useGetKnowledgeTestsQuery } from '~/store/apis/knowledgeTestApi'
 import KnowledgeTestDialog from './KnowledgeTestDialog'
+import { toast } from 'react-toastify'
 
 const KnowledgeTestItem = ({ test, onClick }) => (
   <div
@@ -62,8 +63,15 @@ const HeritageKnowledgeTest = ({ heritageId, heritageName }) => {
     refetchOnMountOrArgChange: true
   })
 
-  const openTest = (test) => setActiveTest(test)
-  const closeTest = () => setActiveTest(null)
+  const openTest = (test) => {
+    setActiveTest(test)
+    toast.info(`Bắt đầu làm bài kiểm tra: ${test?.title}`)
+  }
+  
+  const closeTest = () => {
+    setActiveTest(null)
+    toast.info('Đã đóng bài kiểm tra')
+  }
 
   // Memoized filtering to avoid unnecessary recalculations
   const availableTests = useMemo(() => (
@@ -72,6 +80,7 @@ const HeritageKnowledgeTest = ({ heritageId, heritageName }) => {
 
   if (error) {
     const errorMessage = error?.data?.message || error?.error || 'Đã xảy ra lỗi.'
+    toast.error(errorMessage)
     return <ErrorMessage message={errorMessage} onRetry={refetch} />
   }
 

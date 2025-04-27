@@ -1,74 +1,62 @@
 import { User } from 'lucide-react'
-
-import { Avatar } from '~/components/common/ui/Avatar'
 import { cn } from '~/lib/utils'
 
-
-export function UserStatus({ 
-  name, 
-  status, 
-  avatar, 
-  className,
-  showStatus = true,
-  size = 'md' 
-}) {
+export function UserStatus({ name, status, avatar, className, showStatus = true, size = 'md' }) {
   const avatarSizes = {
-    sm: 'h-6 w-6',
-    md: 'h-8 w-8',
-    lg: 'h-10 w-10'
+    sm: 'h-8 w-8',
+    md: 'h-9 w-9',
+    lg: 'h-12 w-12',
   }
 
   const statusSizes = {
-    sm: 'h-1.5 w-1.5',
-    md: 'h-2 w-2',
-    lg: 'h-2.5 w-2.5'
+    sm: 'h-2.5 w-2.5',
+    md: 'h-3 w-3',
+    lg: 'h-3.5 w-3.5',
   }
 
   const statusColors = {
     online: 'bg-green-500',
     away: 'bg-yellow-500',
-    offline: 'bg-gray-500'
+    offline: 'bg-gray-400',
   }
 
   return (
-    <div className={cn('flex items-center', className)}>
-      <div className='relative'>
-        <Avatar className={cn(avatarSizes[size])}>
-          {avatar ? (
-            <img src={avatar} alt={name} />
-          ) : (
-            <User className={cn(size === 'sm' ? 'h-3 w-3' : size === 'md' ? 'h-4 w-4' : 'h-5 w-5')} />
-          )}
-        </Avatar>
-        {showStatus && (
-          <span 
-            className={cn(
-              'absolute bottom-0 right-0 rounded-full border border-background',
-              statusColors[status],
-              statusSizes[size]
+    <div className={cn('flex items-center justify-between w-full', className)}>
+      <div className='flex items-center gap-3'>
+        <div className='relative'>
+          <div className={cn('rounded-full flex items-center justify-center bg-primary/20 text-white', avatarSizes[size])}>
+            {avatar ? (
+              <img src={avatar || '/images/avatar-default.jpg'} loading='lazy' alt={name} className='rounded-full object-cover w-full h-full' />
+            ) : (
+              <User className={cn(size === 'sm' ? 'h-4 w-4' : size === 'md' ? 'h-5 w-5' : 'h-6 w-6')} />
             )}
-          />
-        )}
-      </div>
-      <div className='ml-2'>
-        <span className={cn(
-          size === 'sm' ? 'text-xs' : size === 'md' ? 'text-sm' : 'text-base',
-          'font-medium'
-        )}>{name}</span>
-        {showStatus && (
-          <div className={cn(
-            'flex items-center',
-            size === 'sm' ? 'text-[10px]' : 'text-xs',
-            'text-muted-foreground'
-          )}>
-            <span className={cn(
-              'mr-1 rounded-full',
-              statusColors[status],
-              size === 'sm' ? 'h-1 w-1' : 'h-1.5 w-1.5'
-            )}></span>
-            <span className='capitalize'>{status}</span>
           </div>
-        )}
+          {showStatus && (
+            <span
+              className={cn(
+                'absolute bottom-0 right-0 rounded-full border-2 border-sidebar',
+                statusColors[status],
+                statusSizes[size],
+                status === 'online' && 'animate-pulse-dot',
+              )}
+            />
+          )}
+        </div>
+        <div className='overflow-hidden'>
+          <span
+            className={cn(
+              size === 'sm' ? 'text-sm' : size === 'md' ? 'text-base' : 'text-lg',
+              'font-medium truncate block',
+            )}
+          >
+            {name}
+          </span>
+          {showStatus && (
+            <div className={cn('flex items-center', size === 'sm' ? 'text-xs' : 'text-sm', 'text-white/60')}>
+              <span className='capitalize'>{status}</span>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

@@ -1,9 +1,9 @@
 import { Star } from 'lucide-react'
+import { Suspense } from 'react'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/common/ui/Tabs'
 import { Button } from '~/components/common/ui/Button'
-import HistoryTab from './tabs/HistoryTab'
-import GalleryTab from './tabs/GalleryTab'
+import { HistoryTab, GalleryTab } from '~/components/lazyComponents'
 
 const HeritageDetailTabs = ({ data, isAuthenticated, navigate }) => {
 
@@ -32,13 +32,17 @@ const HeritageDetailTabs = ({ data, isAuthenticated, navigate }) => {
       {/* History Tab */}
       <TabsContent value='history' className='space-y-6'>
         <h3 className='lcn-heritage-detail-title'>Các sự kiện lịch sử</h3>
-        <HistoryTab historicalEvents={data?.additionalInfo?.historicalEvents} />
+        <Suspense fallback={<div>Đang tải...</div>}>
+          <HistoryTab historicalEvents={data?.additionalInfo?.historicalEvents} />
+        </Suspense>
       </TabsContent>
 
       {/* Gallery Tab */}
       <TabsContent value='gallery' className='space-y-6'>
         <h3 className='lcn-heritage-detail-title'>Hình ảnh</h3>
-        <GalleryTab images={data?.images} name={data?.name} />
+        <Suspense fallback={<div>Đang tải...</div>}>
+          <GalleryTab images={data?.images} name={data?.name} />
+        </Suspense>
       </TabsContent>
 
       {/* Review Tab */}

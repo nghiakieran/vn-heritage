@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { Button } from '~/components/common/ui/Button'
 import { useSendVerificationEmailMutation, useVerifyEmailMutation } from '~/store/apis/mailSlice'
 
@@ -34,17 +35,19 @@ const AuthenConfirm = () => {
 
     if (!/^\d{8}$/.test(code)) {
       setError('Mã xác nhận phải là 8 chữ số.')
+      toast.error('Mã xác nhận phải là 8 chữ số.')
       setIsLoading(false)
       return
     }
 
     try {
       await verifyEmail({ email, code }).unwrap()
-      navigate('/login', {
-        state: { message: 'Email đã được xác nhận. Vui lòng đăng nhập.' },
-      })
+      toast.success('Xác thực email thành công! Vui lòng đăng nhập.')
+      navigate('/login')
     } catch (err) {
-      setError(err?.data?.message || 'Xác nhận thất bại. Vui lòng thử lại.')
+      const errorMessage = err?.data?.message || 'Xác nhận thất bại. Vui lòng thử lại.'
+      setError(errorMessage)
+      toast.error(errorMessage)
       console.error('Verify email error:', err)
     } finally {
       setIsLoading(false)
@@ -61,9 +64,12 @@ const AuthenConfirm = () => {
     try {
       await sendVerificationEmail({ email }).unwrap()
       setResendMessage('Mã xác nhận mới đã được gửi.')
+      toast.success('Mã xác nhận mới đã được gửi đến email của bạn.')
       setResendCooldown(60)
     } catch (err) {
-      setError(err?.data?.message || 'Gửi lại mã thất bại. Vui lòng thử lại.')
+      const errorMessage = err?.data?.message || 'Gửi lại mã thất bại. Vui lòng thử lại.'
+      setError(errorMessage)
+      toast.error(errorMessage)
       console.error('Resend code error:', err)
     } finally {
       setIsLoading(false)

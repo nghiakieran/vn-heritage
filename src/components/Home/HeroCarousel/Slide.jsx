@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { BookOpen, MessageSquare } from 'lucide-react'
+import { BookOpen, Map } from 'lucide-react'
 
 import { Button } from '~/components/common/ui/Button'
 
@@ -35,9 +35,9 @@ const Slide = ({ slide, index, activeIndex }) => {
               <Button 
                 size='lg'
                 variant='outline'
-                className='bg-primary-foreground/10 backdrop-blur-sm text-primary-foreground border hover:bg-primary-foreground/20 w-52'>
-                <MessageSquare className='mr-2' size={20} />
-                Trợ lý AI
+                className='bg-primary-foreground/10 backdrop-blur-sm text-primary-foreground border hover:bg-primary-foreground/20 w-62'>
+                <Map className='mr-2' size={20} />
+                Khám phá bản đồ
               </Button>
             </Link>
           </div>

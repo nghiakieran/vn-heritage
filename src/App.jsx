@@ -1,7 +1,10 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, Suspense } from 'react'
 import AppRoutes from './routes'
 import { useDispatch } from 'react-redux'
 import { setCredentials } from './store/slices/authSlice'
+import ToastProvider from './components/ToastProvider/ToastProvider'
+import { useFavoriteInitializer } from './hooks/useFavoriteInitializer'
+import LoadingScreen from './components/common/LoadingScreen'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -40,8 +43,16 @@ const App = () => {
 
     checkAuth()
   }, [dispatch])
-
-  return <AppRoutes />
+  
+  // Hook load favorites
+  useFavoriteInitializer()
+  
+  return (
+    <Suspense fallback={<LoadingScreen />}>
+      <AppRoutes />
+      <ToastProvider />
+    </Suspense>
+  )
 }
 
 export default App

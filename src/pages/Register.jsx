@@ -1,6 +1,7 @@
 import { Eye, EyeOff, UserPlus } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { Button } from '~/components/common/ui/Button'
 import { useRegisterMutation } from '~/store/apis/authSlice'
 
@@ -51,6 +52,7 @@ const Register = () => {
     const validationError = validateForm()
     if (validationError) {
       setError(validationError)
+      toast.error(validationError)
       setIsLoading(false)
       return
     }
@@ -63,11 +65,12 @@ const Register = () => {
         password: formData.password,
       }).unwrap()
 
-      // Navigate to /authen-confirm with email
+      toast.success('Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.')
       navigate('/authen-confirm', { state: { email: formData.email } })
     } catch (err) {
-      setError(err?.data?.message || 'Đăng ký thất bại. Vui lòng thử lại.')
-      console.error('Register error:', err)
+      const errorMessage = err?.data?.message || 'Đăng ký thất bại. Vui lòng thử lại.'
+      setError(errorMessage)
+      toast.error(errorMessage)
     } finally {
       setIsLoading(false)
     }
