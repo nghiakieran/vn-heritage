@@ -1,17 +1,42 @@
 import { ArrowRight, Landmark, MoveRight } from 'lucide-react'
-import React from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
 import Title from '~/components/common/Title'
-import { mockData } from '~/api/mock-data'
 import HeritageList from '~/components/Heritage/HeritageList'
 import HeritageSkeleton from '~/components/Heritage/HeritageSkeleton'
 import { Button } from '~/components/common/ui/Button'
+import { useGetHeritagesQuery } from '~/store/apis/heritageApi'
 
 const PopularHeritage = () => {
-  const heritages = mockData.heritages.slice(0, 6)
-  // Fake loading
-  const isLoading = false
+  const [randomHeritages, setRandomHeritages] = useState([])
+  
+  // Fetch tất cả di tích
+  const { data: response, isLoading, error } = useGetHeritagesQuery({
+    page: 1,
+    limit: 50
+  })
+
+  useEffect(() => {
+    if (response?.heritages) {
+      // Logic để random di tích
+      const shuffleArray = (array) => {
+        const newArray = [...array]
+        for (let i = newArray.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [newArray[i], newArray[j]] = [newArray[j], newArray[i]]
+        }
+        return newArray
+      }
+
+      // Random và lấy 6 di tích
+      const shuffledHeritages = shuffleArray(response.heritages)
+      const selectedHeritages = shuffledHeritages.slice(0, 6)
+      
+      setRandomHeritages(selectedHeritages)
+    }
+  }, [response])
+
   return (
     <section>
       <div className='flex justify-between mb-10'>
@@ -24,15 +49,19 @@ const PopularHeritage = () => {
       {
         isLoading ? (
           <HeritageSkeleton count={6} />
+        ) : error ? (
+          <div className='text-center py-12 text-destructive'>
+            Có lỗi xảy ra khi tải dữ liệu
+          </div>
         ) : (
           <>
-            <HeritageList heritages={heritages}/>
-              <Link to='/heritages' className='sm:hidden w-full'>
-                <Button className='w-full mt-8'>
-                  Xem tất cả di tích
-                  <MoveRight className='ml-2' size={16} />
-                </Button>
-              </Link>
+            <HeritageList heritages={randomHeritages} />
+            <Link to='/heritages' className='sm:hidden w-full'>
+              <Button className='w-full mt-8'>
+                Xem tất cả di tích
+                <MoveRight className='ml-2' size={16} />
+              </Button>
+            </Link>
           </>
         )
       }

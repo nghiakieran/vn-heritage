@@ -1,10 +1,9 @@
 import { useNavigate, useParams } from 'react-router-dom'
-import { useState, Suspense } from 'react'
+import { useState, Suspense, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { useGetHeritagesBySlugQuery } from '~/store/apis/heritageApi'
+import { useGetHeritagesBySlugQuery, useGetHeritagesQuery } from '~/store/apis/heritageApi'
 import HeritageCard from '~/components/Heritage/HeritageCard'
 import HeritageDetailSkeleton from './HeritageDetailSkeleton'
-import { mockData } from '~/api/mock-data'
 import { Button } from '~/components/common/ui/Button'
 import { selectCurrentUser } from '~/store/slices/authSlice'
 import { MessageCircle, X } from 'lucide-react'
@@ -27,8 +26,24 @@ const HeritageDetail = () => {
   console.log(id);
   const userInfo = useSelector(selectCurrentUser)
   const isAuthenticated = !!userInfo
-  const heritages = mockData.heritages
-  const relatedItems = heritages.filter((item) => item._id !== id).slice(0, 3)
+  const { data: allHeritages } = useGetHeritagesQuery({
+    page: 1,
+    limit: 50
+  })
+
+  // Logic để random 3 di tích liên quan
+  const getRandomRelatedHeritages = useMemo(() => {
+    if (!allHeritages?.heritages || !id) return []
+    
+    // Lọc bỏ di tích hiện tại
+    const otherHeritages = allHeritages.heritages.filter(item => item._id !== id)
+    
+    // Trộn ngẫu nhiên mảng
+    const shuffled = [...otherHeritages].sort(() => Math.random() - 0.5)
+    
+    // Lấy 3 di tích đầu tiên
+    return shuffled.slice(0, 3)
+  }, [allHeritages, id])
 
   const [activeFeature, setActiveFeature] = useState(null)
   const [isChatOpen, setIsChatOpen] = useState(false)
@@ -103,7 +118,7 @@ const HeritageDetail = () => {
                 <div className='mt-10'>
                   <h3 className='lcn-heritage-detail-title mb-4'>Di tích liên quan</h3>
                   <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
-                    {relatedItems.map((item) => (
+                    {getRandomRelatedHeritages.map((item) => (
                       <HeritageCard key={item._id} item={item} />
                     ))}
                   </div>
