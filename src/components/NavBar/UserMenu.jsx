@@ -58,7 +58,7 @@ const UserMenu = ({ userMenuLinks }) => {
          <Button onClick={() => setIsOpen(!isOpen)} variant='ghost' size='icon' className='hover:bg-transparent'>
           {
             currentUser?.avatar ? (
-              <img src='/images/profile.jpg' alt='profile' className='h-9 w-9 rounded-full object-cover hover:opacity-80 transition-opacity' />
+              <img src={currentUser?.avatar} alt='profile' className='h-9 w-9 rounded-full object-cover hover:opacity-80 transition-opacity' />
             ) : (
               <span className='text-white bg-heritage hover:opacity-80 h-9 w-9 rounded-full flex items-center justify-center text-sm font-medium'>{currentUser?.displayname?.slice(0, 2).toUpperCase() || 'UN'}</span>
             )

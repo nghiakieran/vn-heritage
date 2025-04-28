@@ -1,16 +1,20 @@
 import { useState, useEffect, useMemo } from 'react'
-import { useGetUserProfileQuery, useUpdateUserMutation, useUploadAvatarMutation } from '../store/apis/userSlice'
+import { useGetUserProfileQuery, useUpdateUserProfileMutation, useUploadAvatarMutation } from '../store/apis/userSlice'
 import { toast } from 'react-toastify'
 import { Button } from '~/components/common/ui/Button'
 import Title from '~/components/common/Title'
 import { Camera, Check, Loader2, X } from 'lucide-react'
 import { toDateInputFormat } from '~/utils/dateHelpers'
+import { useDispatch } from 'react-redux'
+import { setUser } from '~/store/slices/authSlice'
 const DEFAULT_AVATAR = '/images/avatar-default.jpg'
 
 
 const UserProfile = () => {
+  const dispatch = useDispatch()
   const { data: user } = useGetUserProfileQuery()
-  const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation()
+  
+  const [updateUserProfile, { isLoading: isUpdating }] = useUpdateUserProfileMutation()
   const [uploadAvatar, { isLoading: isUploadingAvatar }] = useUploadAvatarMutation()
   const initialFormData = useMemo(
     () => ({
@@ -66,7 +70,9 @@ const UserProfile = () => {
         setAvatarPreview(dataUrl)
         setAvatarFile(file)
         setIsAvatarChanged(true)
-        toast.info('Ảnh đại diện sẽ được cập nhật khi bạn lưu thay đổi')
+        toast.info('Ảnh đại diện sẽ được cập nhật khi bạn lưu thay đổi', {
+          position: "top-right"
+          })
       }
       reader.onerror = () => {
         toast.error('Không thể đọc file ảnh')
@@ -116,7 +122,6 @@ const UserProfile = () => {
         formDataUpload.append('image', avatarFile)
         const avatar = await uploadAvatar(formDataUpload).unwrap()
         avatarUrl = avatar?.imageUrl
-        toast.success('Cập nhật ảnh đại diện thành công!')
       }
       // Update user profile
       const updateData = {
@@ -124,7 +129,11 @@ const UserProfile = () => {
         avatar: avatarUrl || formData?.avatar,
         dateOfBirth: formData.dateOfBirth === '' ? null : formData.dateOfBirth,
       }
-      await updateUser(updateData)
+      // Unwrap để lấy data trả về từ API
+      const updatedUser = await updateUserProfile(updateData).unwrap()
+      
+      // Dispatch action để update Redux store
+      dispatch(setUser(updatedUser))
       setIsEditing(false)
       setIsAvatarChanged(false)
       setAvatarFile(null)
@@ -134,6 +143,7 @@ const UserProfile = () => {
         type: 'success',
         isLoading: false,
         autoClose: 3000,
+        position: 'top-right'
       })
     } catch (err) {
       toast.update(toastId, {
@@ -153,7 +163,9 @@ const UserProfile = () => {
     setIsAvatarChanged(false)
     setAvatarFile(null)
     setErrors({})
-    toast.info('Đã hủy các thay đổi')
+    toast.info('Đã hủy các thay đổi', {
+      position: "top-right"
+    })
   }
 
   // Update form data when user changes
@@ -190,43 +202,54 @@ const UserProfile = () => {
 
         {/* Content */}
         <form onSubmit={handleSubmit} className='p-6 sm:p-8 space-y-8'>
-          {/* Avatar */}
-          <div className='flex flex-col sm:flex-row items-center gap-6 pb-6 border-b'>
-            <div className='relative group'>
-              <div className='w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-white shadow-sm'>
-                <img
-                  src='/images/profile.jpg'
-                  alt={formData.displayname || 'User'}
-                  loading='lazy'
-                  className='w-full h-full object-cover'
-                />
-              </div>
-              {isEditing && (
-                <label
-                  htmlFor='avatar-upload'
-                  className='absolute inset-0 flex items-center justify-center bg-black/50 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200'
-                >
-                  <Camera size={32} className='text-white' />
-                  <input
+                <div className='flex flex-col sm:flex-row items-center gap-6 pb-6 border-b'>
+                <div className='relative group'>
+                  <div className='w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-white shadow-sm'>
+                  {formData.avatar ? (
+                    <img
+                    src={formData.avatar}
+                    alt={formData.displayname || 'User'}
+                    loading='lazy'
+                    className='w-full h-full object-cover'
+                    />
+                  ) : (
+                    <div className='w-full h-full bg-gray-300 flex items-center justify-center text-white text-2xl font-bold'>
+                    {formData.displayname
+                      ? formData.displayname
+                        .split(' ')
+                        .slice(0, 2)
+                        .map((word) => word[0].toUpperCase())
+                        .join('')
+                      : 'NA'}
+                    </div>
+                  )}
+                  </div>
+                  {isEditing && (
+                  <label
+                    htmlFor='avatar-upload'
+                    className='absolute inset-0 flex items-center justify-center bg-black/50 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200'
+                  >
+                    <Camera size={32} className='text-white' />
+                    <input
                     id='avatar-upload'
                     type='file'
                     accept='image/*'
                     className='hidden'
                     onChange={handleAvatarChange}
                     aria-label='Tải lên ảnh đại diện'
-                  />
-                </label>
-              )}
-              {isAvatarChanged && isEditing && (
-                <div className='absolute -top-2 -right-2 bg-heritage text-white rounded-full w-6 h-6 flex items-center justify-center'>
-                  <Check size={14} />
+                    />
+                  </label>
+                  )}
+                  {isAvatarChanged && isEditing && (
+                  <div className='absolute -top-2 -right-2 bg-heritage text-white rounded-full w-6 h-6 flex items-center justify-center'>
+                    <Check size={14} />
+                  </div>
+                  )}
                 </div>
-              )}
-            </div>
-            <h3 className='text-xl font-semibold'>{user.displayname || 'User'}</h3>
-          </div>
+                <h3 className='text-xl font-semibold'>{user.displayname || 'User'}</h3>
+                </div>
 
-          {/* Personal Info */}
+                {/* Personal Info */}
           <div className='space-y-6'>
             <h3 className='text-lg font-medium text-heritage-dark'>Thông tin cá nhân</h3>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
