@@ -15,6 +15,7 @@ const UserDetail = () => {
         role: '',
         phone: '',
         gender: '',
+        isActive: false, // Add isActive field
     });
 
     useEffect(() => {
@@ -24,6 +25,7 @@ const UserDetail = () => {
                 role: user.role || 'member',
                 phone: user.phone || '',
                 gender: user.gender || 'other',
+                isActive: user.account?.isActive || false, // Initialize isActive
             });
         }
     }, [user]);
@@ -42,6 +44,10 @@ const UserDetail = () => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
+    };
+
+    const handleStatusChange = (e) => {
+        setFormData({ ...formData, isActive: e.target.checked });
     };
 
     const handleUpdate = () => {
@@ -109,7 +115,57 @@ const UserDetail = () => {
                             <option value="other">Khác</option>
                         </select>
                     </div>
+
+                    {/* Add Account Status field */}
+                    <div className="col-span-2">
+                        <Label htmlFor="accountStatus">Trạng thái tài khoản</Label>
+                        <div className="flex items-center space-x-2 mt-2">
+                            <input
+                                type="checkbox"
+                                id="accountStatus"
+                                checked={formData.isActive}
+                                onChange={handleStatusChange}
+                                className="w-4 h-4 text-heritage border-gray-300 rounded focus:ring-heritage"
+                            />
+                            <span className={`px-2 py-1 rounded-full text-xs ${
+                                formData.isActive 
+                                    ? 'bg-green-100 text-green-800' 
+                                    : 'bg-red-100 text-red-800'
+                            }`}>
+                                {formData.isActive ? 'Hoạt động' : 'Bị khóa'}
+                            </span>
+                        </div>
+                        <p className="text-sm text-gray-500 mt-1">
+                            {formData.isActive 
+                                ? 'Tài khoản đang hoạt động bình thường' 
+                                : 'Tài khoản đang bị khóa và không thể đăng nhập'
+                            }
+                        </p>
+                    </div>
+
+                    {/* Verification Status - Read Only */}
+                    <div className="col-span-2">
+                        <Label>Trạng thái xác thực</Label>
+                        <div className="mt-2">
+                            <span className={`px-2 py-1 rounded-full text-xs ${
+                                user?.account?.isVerified 
+                                    ? 'bg-blue-100 text-blue-800' 
+                                    : 'bg-yellow-100 text-yellow-800'
+                            }`}>
+                                {user?.account?.isVerified ? 'Đã xác thực' : 'Chưa xác thực'}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Creation and Update Info */}
+                    <div className="col-span-2 pt-4 border-t">
+                        <div className="flex flex-col space-y-2 text-sm text-gray-500">
+                            <p>Ngày tạo: {new Date(user?.createAt).toLocaleString('vi-VN')}</p>
+                            <p>Cập nhật lần cuối: {new Date(user?.updatedAt).toLocaleString('vi-VN')}</p>
+                        </div>
+                    </div>
                 </div>
+
                 <div className="mt-6 flex space-x-4">
                     <Button onClick={handleUpdate} disabled={isUpdating}>
                         {isUpdating ? 'Đang cập nhật...' : 'Cập nhật'}

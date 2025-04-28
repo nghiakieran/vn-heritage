@@ -31,7 +31,7 @@ const Slide = ({ slide, index, activeIndex }) => {
                 Khám phá di tích
               </Button>
             </Link>
-            <Link to='/chatbot'>
+            <Link to='/explore'>
               <Button 
                 size='lg'
                 variant='outline'

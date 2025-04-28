@@ -13,7 +13,7 @@ const TableRow = ({ children, minHeight = '50px', maxHeight = '50px' }) => (
 );
 
 const TableHead = ({ children }) => (
-  <th className="border p-2 text-left">{children}</th>
+  <th className="border p-2">{children}</th>
 );
 
 const TableCell = ({ children, maxWidth = 'none' }) => (

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, Outlet, Link } from 'react-router-dom';
+import { useNavigate, Outlet, Link, useLocation } from 'react-router-dom';
 import { logOut, selectCurrentUser } from '~/store/slices/authSlice';
 import { Button } from '~/components/common/ui/Button';
 import {
@@ -20,7 +20,8 @@ const AdminLayout = () => {
   const dispatch = useDispatch();
   const userInfo = useSelector(selectCurrentUser);
   const isAuthenticated = !!userInfo;
-
+  const location = useLocation();
+  
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   if (!isAuthenticated) {
@@ -50,11 +51,14 @@ const AdminLayout = () => {
     { name: 'Cài đặt', path: '/admin/settings', icon: <Settings className='w-5 h-5' /> },
   ];
 
+  const isActiveRoute = (path) => {
+    return location.pathname === path;
+  };
+
   return (
     <div className='flex h-screen bg-gray-100'>
       <aside
-        className={`${isSidebarOpen ? 'w-64' : 'w-16'
-          } bg-white shadow-md transition-all duration-300 flex flex-col`}
+        className={`${isSidebarOpen ? 'w-64' : 'w-16'} bg-white shadow-md transition-all duration-300 flex flex-col`}
       >
         <div className='flex items-center justify-between p-4 border-b'>
           {isSidebarOpen && <h2 className='text-xl font-semibold'>Admin Dashboard</h2>}
@@ -63,20 +67,23 @@ const AdminLayout = () => {
           </Button>
         </div>
         <nav className='flex-1 p-4'>
-          <ul>
-            <li className='mb-2'>
+          <ul className='space-y-1'>
+            <li>
               <Link to='/'>
-                <Button variant='ghost' className='w-full justify-start'>
+                <Button 
+                  variant={isActiveRoute('/') ? 'secondary' : 'ghost'}
+                  className={`w-full text-left !justify-start ${isActiveRoute('/') ? 'bg-gray-100' : ''}`}
+                >
                   <Home className='w-5 h-5 mr-2' />
                   {isSidebarOpen && <span>Trang chủ</span>}
                 </Button>
               </Link>
             </li>
             {navItems.map((item) => (
-              <li key={item.name} className='mb-2'>
+              <li key={item.name}>
                 <Button
-                  variant='ghost'
-                  className='w-full justify-start'
+                  variant={isActiveRoute(item.path) ? 'secondary' : 'ghost'}
+                  className={`w-full text-left !justify-start ${isActiveRoute(item.path) ? 'bg-gray-100' : ''}`}
                   onClick={() => navigate(item.path)}
                 >
                   <span className='mr-2'>{item.icon}</span>

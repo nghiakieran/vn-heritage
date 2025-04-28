@@ -3,58 +3,58 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '~/components/common/ui/Button';
 import { Input } from '~/components/common/ui/Input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/common/ui/Table';
-import { Search, Trash2, Edit } from 'lucide-react';
-import { useDeleteHeritageMutation, useGetHeritagesQuery, } from '~/store/apis/heritageApi';
+import { Search, Trash2, Edit, UserCog } from 'lucide-react';
+import { useGetAllQuery, useDeleteUserMutation } from '~/store/apis/userSlice'
+import { toast } from 'react-toastify';
 
-const HeritageManagement = () => {
+const UserManagement = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('ALL');
+  const [roleFilter, setRoleFilter] = useState('ALL');
   const [page, setPage] = useState(1);
-  const limit = 9;
+  const limit = 10;
 
-  const { data, isLoading, isError, error } = useGetHeritagesQuery({
+  const { data, isLoading, isError, error } = useGetAllQuery({
     page,
     limit,
-    name: searchTerm,
-    status: statusFilter,
+    search: searchTerm,
+    role: roleFilter !== 'ALL' ? roleFilter : undefined,
   });
 
-  console.log(data);
+  const [deleteUser] = useDeleteUserMutation();
 
-  const [deleteHeritage] = useDeleteHeritageMutation();
-
-  const heritages = data?.heritages || [];
-  const totalCount = data?.pagination?.totalItems || 0;
-  const totalPages = Math.ceil(totalCount / limit);
+  const users = data?.users || [];
+  const pagination = data?.pagination || {};
+  const totalItems = pagination.totalItems || 0;
+  const currentPage = pagination.currentPage || page;
+  const totalPages = pagination.totalPages || 1;
 
   const handleDelete = async (id) => {
-    if (window.confirm('Bạn có chắc muốn xóa di tích này?')) {
+    if (window.confirm('Bạn có chắc muốn xóa người dùng này?')) {
       try {
-        await deleteHeritage(id).unwrap();
-        // toast.success('Xóa di tích thành công!');
+        await deleteUser(id).unwrap();
+        toast.success('Xóa người dùng thành công!');
       } catch (err) {
-        console.error('Lỗi khi xóa di tích:', err);
-        // toast.error(`Xóa di tích thất bại: ${err?.data?.message || 'Lỗi không xác định'}`);
+        console.error('Lỗi khi xóa người dùng:', err);
+        toast.error('Xóa người dùng thất bại!');
       }
     }
   };
 
   if (isLoading) return <div className="text-center">Đang tải...</div>;
-  if (isError)
-    return (
-      <div className="text-center text-red-500">
-        Lỗi: {error?.data?.message || 'Không thể tải danh sách di tích'}
-      </div>
-    );
+  if (isError) return <div className="text-center text-red-500">Lỗi: {error?.data?.message || 'Không thể tải danh sách người dùng'}</div>;
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-semibold">Quản lý Di tích Lịch sử</h2>
+      <div className="flex items-center gap-2">
+        <UserCog className="w-8 h-8" />
+        <h2 className="text-2xl font-semibold">Quản lý Người dùng</h2>
+      </div>
+
       <div className="flex justify-between items-center">
         <div className="relative w-64">
           <Input
-            placeholder="Tìm kiếm theo tên"
+            placeholder="Tìm kiếm theo tên/email"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
@@ -64,50 +64,68 @@ const HeritageManagement = () => {
         <div className="flex space-x-4">
           <select
             className="p-2 border rounded"
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            value={roleFilter}
+            onChange={(e) => setRoleFilter(e.target.value)}
           >
             <option value="ALL">Tất cả</option>
-            <option value="ACTIVE">Hoạt động</option>
-            <option value="INACTIVE">Không hoạt động</option>
+            <option value="user">Người dùng</option>
+            <option value="admin">Quản trị viên</option>
           </select>
-          <Button onClick={() => navigate('/admin/heritages/new')}>
-            Thêm Di tích
-          </Button>
         </div>
       </div>
 
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Tên Di tích</TableHead>
-            <TableHead>Địa điểm</TableHead>
+            <TableHead>Tên hiển thị</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Vai trò</TableHead>
             <TableHead>Trạng thái</TableHead>
             <TableHead>Ngày tạo</TableHead>
             <TableHead>Hành động</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {heritages.map((heritage) => (
-            <TableRow key={heritage._id}>
-              <TableCell>{heritage.name}</TableCell>
-              <TableCell>{heritage.location}</TableCell>
-              <TableCell>{heritage.status === 'ACTIVE' ? 'Hoạt động' : 'Không hoạt động'}</TableCell>
-              <TableCell>
-                {new Date(heritage.createdAt).toLocaleDateString('vi-VN')}
+          {users.map((user) => (
+            <TableRow key={user._id}>
+              <TableCell className="flex items-center gap-2">
+                {user.avatar ? (
+                  <img src={user.avatar} alt="" className="w-8 h-8 rounded-full object-cover" />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                    {user.displayname?.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                {user.displayname}
               </TableCell>
+              <TableCell>{user.account.email}</TableCell>
+              <TableCell>
+                <span className={`px-2 py-1 rounded-full text-xs ${
+                  user.role === 'admin' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100'
+                }`}>
+                  {user.role === 'admin' ? 'Quản trị viên' : 'Người dùng'}
+                </span>
+              </TableCell>
+              <TableCell>
+                <span className={`px-2 py-1 rounded-full text-xs ${
+                  user.account.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                }`}>
+                  {user.account.isActive ? 'Hoạt động' : 'Bị khóa'}
+                </span>
+              </TableCell>
+              <TableCell>{new Date(user.createAt).toLocaleDateString('vi-VN')}</TableCell>
               <TableCell className="flex space-x-2">
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => navigate(`/admin/heritages/${heritage._id}`)}
+                  onClick={() => navigate(`/admin/users/${user._id}`)}
                 >
                   <Edit className="w-4 h-4" />
                 </Button>
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => handleDelete(heritage._id)}
+                  onClick={() => handleDelete(user._id)}
                 >
                   <Trash2 className="w-4 h-4 text-red-500" />
                 </Button>
@@ -118,20 +136,22 @@ const HeritageManagement = () => {
       </Table>
 
       <div className="flex justify-between items-center">
-        <p>Tổng: {totalCount} di tích</p>
+        <div className="flex items-center space-x-4">
+          <p>Tổng: {totalItems} người dùng</p>
+        </div>
         <div className="flex items-center space-x-4">
           <Button
-            disabled={page === 1}
-            onClick={() => setPage(page - 1)}
+            disabled={currentPage === 1}
+            onClick={() => setPage(currentPage - 1)}
           >
             Trước
           </Button>
           {totalPages > 0 && (
-            <span>Trang {page} / {totalPages}</span>
+            <span>Trang {currentPage} / {totalPages}</span>
           )}
           <Button
-            disabled={page * limit >= totalCount}
-            onClick={() => setPage(page + 1)}
+            disabled={currentPage >= totalPages}
+            onClick={() => setPage(currentPage + 1)}
           >
             Sau
           </Button>
@@ -141,4 +161,4 @@ const HeritageManagement = () => {
   );
 };
 
-export default HeritageManagement;
+export default UserManagement;
