@@ -110,12 +110,20 @@ const AdminLayout = () => {
                 <span>Trang chủ</span>
               </Button>
             </Link>
-            <span className='text-sm'>{userInfo?.name || 'Admin'}</span>
-            <img
-              src='/images/profile.jpg'
-              alt='Avatar'
-              className='w-10 h-10 rounded-full'
-            />
+            <span className='text-sm'>{userInfo?.displayname || 'Admin'}</span>
+            {
+              userInfo?.avatar ? (
+                <img 
+                  src={userInfo.avatar} 
+                  alt='Avatar'
+                  className='w-10 h-10 rounded-full object-cover'
+                />
+              ) : (
+                <span className='text-white bg-heritage w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium'>
+                  {userInfo?.displayname?.slice(0, 2).toUpperCase() || 'UN'}
+                </span>
+              )
+            }
           </div>
         </header>
 
