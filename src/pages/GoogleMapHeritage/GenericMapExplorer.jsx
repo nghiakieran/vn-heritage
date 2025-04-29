@@ -40,7 +40,7 @@ function GenericMapExplorer({
 
             try {
                 const { data } = await triggerGetNearestHeritages({ latitude: lat, longitude: lng, limit: 6 })
-                console.log('Dữ liệu từ getNearestHeritages (marker click):', data || 'Không có dữ liệu')
+                // console.log('Dữ liệu từ getNearestHeritages (marker click):', data || 'Không có dữ liệu')
                 setNearbyItems(data || [])
             } catch (err) {
                 console.error('Lỗi khi gọi getNearestHeritages (marker):', err)
@@ -53,12 +53,12 @@ function GenericMapExplorer({
     const handleSelectCoordinates = useCallback(
         async (coordinates) => {
             if (!coordinates || typeof coordinates.lat !== 'number' || typeof coordinates.lng !== 'number') {
-                console.log('Tọa độ không hợp lệ từ "Chọn" button:', coordinates)
+                // console.log('Tọa độ không hợp lệ từ "Chọn" button:', coordinates)
                 return
             }
 
             const { lat, lng } = coordinates
-            console.log('Chuẩn bị fetch API với tọa độ:', { lat, lng })
+            // console.log('Chuẩn bị fetch API với tọa độ:', { lat, lng })
 
             const newLocation = { lat, lng }
             setSelectedLocation(newLocation)
@@ -66,7 +66,7 @@ function GenericMapExplorer({
 
             try {
                 const { data } = await triggerGetNearestHeritages({ latitude: lat, longitude: lng, limit: 6 })
-                console.log('Dữ liệu từ getNearestHeritages (select button):', data || 'Không có dữ liệu')
+                // console.log('Dữ liệu từ getNearestHeritages (select button):', data || 'Không có dữ liệu')
                 setNearbyItems(data || [])
             } catch (err) {
                 console.error('Lỗi khi gọi getNearestHeritages (select):', err)
@@ -78,7 +78,7 @@ function GenericMapExplorer({
     // Handle print coordinates
     const handlePrintCoordinates = useCallback((coordinates) => {
         if (coordinates && typeof coordinates.lat === 'number' && typeof coordinates.lng === 'number') {
-            console.log(`Tọa độ: Lat: ${coordinates.lat.toFixed(6)}, Lng: ${coordinates.lng.toFixed(6)}`)
+            // console.log(`Tọa độ: Lat: ${coordinates.lat.toFixed(6)}, Lng: ${coordinates.lng.toFixed(6)}`)
         } else {
             console.log('Chưa chọn tọa độ hoặc tọa độ không hợp lệ:', coordinates)
         }

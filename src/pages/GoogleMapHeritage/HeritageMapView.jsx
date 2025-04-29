@@ -60,10 +60,10 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
     // Handle select button click
     const handleSelectCoordinates = useCallback(() => {
         if (currentCoordinates && typeof currentCoordinates.lat === 'number' && typeof currentCoordinates.lng === 'number') {
-            console.log('Gửi tọa độ từ "Chọn" button:', currentCoordinates)
+            // console.log('Gửi tọa độ từ "Chọn" button:', currentCoordinates)
             onSelectCoordinates(currentCoordinates)
         } else {
-            console.log('Tọa độ không hợp lệ hoặc chưa chọn:', currentCoordinates)
+            // console.log('Tọa độ không hợp lệ hoặc chưa chọn:', currentCoordinates)
             onSelectCoordinates(null)
         }
     }, [currentCoordinates, onSelectCoordinates])
@@ -96,7 +96,7 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
         map.current.on('click', (e) => {
             const { lng, lat } = e.lngLat
             if (typeof lat !== 'number' || typeof lng !== 'number') {
-                console.log('Tọa độ click không hợp lệ:', { lat, lng })
+                // console.log('Tọa độ click không hợp lệ:', { lat, lng })
                 return
             }
 
@@ -116,7 +116,7 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
             newMarker.on('dragend', () => {
                 const newLngLat = newMarker.getLngLat()
                 if (typeof newLngLat.lat !== 'number' || typeof newLngLat.lng !== 'number') {
-                    console.log('Tọa độ drag không hợp lệ:', newLngLat)
+                    // console.log('Tọa độ drag không hợp lệ:', newLngLat)
                     return
                 }
                 setCurrentCoordinates({ lat: newLngLat.lat, lng: newLngLat.lng })
@@ -136,7 +136,7 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
         // Add initial markers
         initialMarkers.forEach(({ lat, lng, title }) => {
             if (typeof lat !== 'number' || typeof lng !== 'number') {
-                console.log('Tọa độ marker không hợp lệ:', { lat, lng, title })
+                // console.log('Tọa độ marker không hợp lệ:', { lat, lng, title })
                 return
             }
 
@@ -210,7 +210,7 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
             }
 
             if (typeof lat !== 'number' || typeof lng !== 'number') {
-                console.log('Tọa độ tìm kiếm không hợp lệ:', { lat, lng })
+                // console.log('Tọa độ tìm kiếm không hợp lệ:', { lat, lng })
                 setSearchError('Tọa độ không hợp lệ.')
                 return
             }
@@ -246,7 +246,7 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
             newMarker.on('dragend', () => {
                 const newLngLat = newMarker.getLngLat()
                 if (typeof newLngLat.lat !== 'number' || typeof newLngLat.lng !== 'number') {
-                    console.log('Tọa độ drag không hợp lệ:', newLngLat)
+                    // console.log('Tọa độ drag không hợp lệ:', newLngLat)
                     return
                 }
                 setCurrentCoordinates({ lat: newLngLat.lat, lng: newLngLat.lng })

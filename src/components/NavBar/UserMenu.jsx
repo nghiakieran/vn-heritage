@@ -20,7 +20,15 @@ const UserMenu = ({ userMenuLinks }) => {
   const handleLogout = () => {
     try {
       dispatch(logOut())
-      toast.success('Đăng xuất thành công!')
+      toast.success('Đăng xuất thành công!', {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        })
       navigate('/')
       setIsOpen(false)
     } catch (error) {
