@@ -4,6 +4,7 @@ import { Button } from '~/components/common/ui/Button';
 import { Label } from '~/components/common/ui/Label';
 import { Input } from '~/components/common/ui/Input';
 import { useGetUserByIdQuery, useUpdateUserMutation } from '~/store/apis/userSlice';
+import { toast } from 'react-toastify';
 
 const UserDetail = () => {
     const { id } = useParams();
@@ -15,7 +16,7 @@ const UserDetail = () => {
         role: '',
         phone: '',
         gender: '',
-        isActive: false, // Add isActive field
+        isActive: false, 
     });
 
     useEffect(() => {
@@ -32,12 +33,12 @@ const UserDetail = () => {
 
     useEffect(() => {
         if (updateSuccess) {
-            // toast.success('Cập nhật thành công!'); // Tùy chọn
+            toast.success('Cập nhật thành công!')
             navigate('/admin/users');
         }
         if (updateError) {
             console.error('Lỗi cập nhật:', updateErrorMessage);
-            // toast.error(`Cập nhật thất bại: ${updateErrorMessage?.data?.message || 'Lỗi không xác định'}`); // Tùy chọn
+            toast.error(`Cập nhật thất bại: ${updateErrorMessage?.data?.message || 'Lỗi không xác định'}`)
         }
     }, [updateSuccess, updateError, updateErrorMessage, navigate]);
 
@@ -51,7 +52,18 @@ const UserDetail = () => {
     };
 
     const handleUpdate = () => {
-        updateUser({ id, ...formData });
+        // Restructure data to match database schema
+        const updateData = {
+            ...formData,
+            account: {
+                isActive: formData.isActive // Move isActive into account object
+            }
+        };
+        
+        // Remove isActive from root level
+        delete updateData.isActive;
+        
+        updateUser({ id, ...updateData });
     };
 
     if (isLoading) return <div className="text-center">Đang tải...</div>;

@@ -40,7 +40,7 @@ const HeritageDetail = () => {
             navigate('/admin/heritages');
         }
         if (updateError) {
-            console.error('Lỗi cập nhật:', updateErrorMessage);
+            // console.error('Lỗi cập nhật:', updateErrorMessage);
             const errorMsg = updateErrorMessage?.data?.message || updateErrorMessage?.error || 'Lỗi không xác định';
             toast.error(`Cập nhật di tích thất bại: ${errorMsg}`);
         }
@@ -60,7 +60,7 @@ const HeritageDetail = () => {
     };
 
     const handleUpdate = () => {
-        console.log(formData);
+        // console.log(formData);
         updateHeritage({ id, formData });
     };
 
