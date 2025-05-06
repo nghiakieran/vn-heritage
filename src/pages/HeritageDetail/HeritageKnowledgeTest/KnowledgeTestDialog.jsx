@@ -4,6 +4,8 @@ import { cn } from '~/lib/utils'
 import { useLazyGetKnowledgeTestByIdQuery, useSubmitKnowledgeTestAttemptMutation } from '~/store/apis/knowledgeTestApi'
 import { Dialog, DialogDescription, DialogHeader, DialogTitle } from '~/components/common/ui/Dialog'
 import { toast } from 'react-toastify'
+import { useSelector } from 'react-redux'
+import { selectCurrentUser } from '~/store/slices/authSlice'
 
 // Constants
 const DEFAULT_TIME_PER_QUESTION = 120 // 2 minutes per question
@@ -54,7 +56,10 @@ const TestLoading = () => (
 
 const QuestionOption = ({ option, isSelected, onSelect }) => (
   <div
-    onClick={onSelect}
+    onClick={() => {
+      console.log('Clicked option:', option.optionId) // Debug sự kiện click
+      onSelect()
+    }}
     className={cn(
       'border rounded-lg p-4 cursor-pointer transition-all duration-200',
       isSelected ? 'border-heritage bg-heritage-light/20 shadow-sm' : 'hover:border-muted-foreground/30 hover:bg-secondary/50'
@@ -74,7 +79,6 @@ const QuestionOption = ({ option, isSelected, onSelect }) => (
 
 const NavigationButtons = ({ 
   currentQuestionIndex, 
-  // totalQuestions, 
   onPrev, 
   onNext, 
   onSubmit, 
@@ -162,7 +166,8 @@ const KnowledgeTestDialog = ({ open, onClose, testId, testInfo }) => {
   const [timeLeft, setTimeLeft] = useState(null)
   const [results, setResults] = useState(null)
   const [isTransitioning, setIsTransitioning] = useState(false)
-  
+  const userInfo = useSelector(selectCurrentUser)
+
   // Refs
   const contentRef = useRef(null)
   const timerRef = useRef(null)
@@ -172,10 +177,10 @@ const KnowledgeTestDialog = ({ open, onClose, testId, testInfo }) => {
   const [submitAttempt, { isLoading: isSubmitting }] = useSubmitKnowledgeTestAttemptMutation()
 
   // Memoized values
-  const currentQuestion = useMemo(() => 
-    test?.questions?.[currentQuestionIndex], 
-    [test, currentQuestionIndex]
-  )
+  const currentQuestion = useMemo(() => {
+    console.log('Current question data:', test?.questions?.[currentQuestionIndex]) // Debug dữ liệu câu hỏi
+    return test?.questions?.[currentQuestionIndex] || { questionId: '', options: [] }
+  }, [test, currentQuestionIndex])
   
   const totalQuestions = useMemo(() => 
     test?.questions?.length || 0, 
@@ -224,11 +229,16 @@ const KnowledgeTestDialog = ({ open, onClose, testId, testInfo }) => {
   // Event handlers
   const handleAnswerSelect = useCallback((questionId, optionId) => {
     if (results) return // Prevent changes after submission
+    console.log('Selecting answer:', { questionId, optionId }) // Debug chọn đáp án
 
-    setSelectedAnswers(prev => ({
-      ...prev,
-      [questionId]: [optionId], // Handle single choice selection
-    }))
+    setSelectedAnswers(prev => {
+      const updated = {
+        ...prev,
+        [questionId]: [optionId], // Handle single choice selection
+      }
+      console.log('Updated selectedAnswers:', updated) // Debug state sau khi cập nhật
+      return updated
+    })
   }, [results])
 
   const handleNextQuestion = useCallback(() => {
@@ -251,20 +261,23 @@ const KnowledgeTestDialog = ({ open, onClose, testId, testInfo }) => {
     if (isSubmitting || !test) return
 
     try {
+      console.log('Submitting with selectedAnswers:', selectedAnswers) // Debug state trước khi gửi
       const formattedAnswers = Object.entries(selectedAnswers).map(([questionId, optionIds]) => ({
         questionId,
-        selectedOptionIds: optionIds,
+        selectedOptionIds: optionIds || [], // Đảm bảo không undefined
       }))
-      
+      console.log('Formatted answers:', formattedAnswers) // Debug dữ liệu gửi lên server
+
       const result = await submitAttempt({
+        userId: userInfo?._id,
+        userName: userInfo?.displayname,
         testId: test._id,
-        answers: { answers: formattedAnswers },
+        answers: formattedAnswers ,
       }).unwrap()
 
       setResults(result)
       toast.success(`Chúc mừng! Bạn đã hoàn thành bài kiểm tra với số điểm ${result?.score || 0}/100`)
       
-      // Clear timer when test is submitted
       if (timerRef.current) {
         clearInterval(timerRef.current)
         timerRef.current = null
@@ -273,11 +286,11 @@ const KnowledgeTestDialog = ({ open, onClose, testId, testInfo }) => {
       console.error('Error submitting test:', err)
       toast.error('Có lỗi xảy ra khi nộp bài. Vui lòng thử lại.')
     }
-  }, [isSubmitting, test, selectedAnswers, submitAttempt])
+  }, [isSubmitting, test, selectedAnswers, submitAttempt, userInfo])
 
   // Side effects
   useEffect(() => {
-    if (open && testId) {
+    if (testId) {
       resetTest()
       fetchTest(testId)
     }
@@ -287,7 +300,7 @@ const KnowledgeTestDialog = ({ open, onClose, testId, testInfo }) => {
         clearInterval(timerRef.current)
       }
     }
-  }, [open, testId, fetchTest, resetTest])
+  }, [testId, fetchTest, resetTest]) // Chỉ reset khi testId thay đổi
 
   useEffect(() => {
     if (test && open) {
@@ -395,7 +408,7 @@ const KnowledgeTestDialog = ({ open, onClose, testId, testInfo }) => {
                 <QuestionOption
                   key={option.optionId}
                   option={option}
-                  isSelected={selectedAnswers[currentQuestion.questionId]?.includes(option.optionId)}
+                  isSelected={selectedAnswers[currentQuestion.questionId]?.includes(option.optionId) || false}
                   onSelect={() => handleAnswerSelect(currentQuestion.questionId, option.optionId)}
                 />
               ))}
@@ -406,7 +419,6 @@ const KnowledgeTestDialog = ({ open, onClose, testId, testInfo }) => {
         {/* Navigation */}
         <NavigationButtons
           currentQuestionIndex={currentQuestionIndex}
-          totalQuestions={totalQuestions}
           onPrev={handlePrevQuestion}
           onNext={handleNextQuestion}
           onSubmit={handleSubmitTest}
