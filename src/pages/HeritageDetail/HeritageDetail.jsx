@@ -23,7 +23,6 @@ const HeritageDetail = () => {
   const navigate = useNavigate()
   const { data, isFetching, isLoading, isError } = useGetHeritagesBySlugQuery(nameSlug)
   const id = data?._id
-  console.log(id);
   const userInfo = useSelector(selectCurrentUser)
   const isAuthenticated = !!userInfo
   const { data: allHeritages } = useGetHeritagesQuery({

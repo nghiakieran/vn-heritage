@@ -112,7 +112,6 @@ const UserProfile = () => {
     e.preventDefault()
     if (!validateForm()) return
 
-    const toastId = toast.loading('Đang cập nhật thông tin...')
 
     try {
       let avatarUrl = null
@@ -138,19 +137,24 @@ const UserProfile = () => {
       setIsAvatarChanged(false)
       setAvatarFile(null)
 
-      toast.update(toastId, {
-        render: 'Cập nhật thông tin thành công!',
-        type: 'success',
-        isLoading: false,
+      toast.success('Cập nhật thông tin thành công!', {
+        position: 'top-right',
         autoClose: 3000,
-        position: 'top-right'
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
       })
     } catch (err) {
-      toast.update(toastId, {
-        render: `Cập nhật thất bại: ${err.message || 'Đã xảy ra lỗi'}`,
-        type: 'error',
-        isLoading: false,
+      toast.error(`Cập nhật thất bại: ${err?.data?.message || err.message || 'Đã xảy ra lỗi'}`, {
+        position: 'top-right',
         autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
       })
     }
   }
@@ -163,9 +167,6 @@ const UserProfile = () => {
     setIsAvatarChanged(false)
     setAvatarFile(null)
     setErrors({})
-    toast.info('Đã hủy các thay đổi', {
-      position: "top-right"
-    })
   }
 
   // Update form data when user changes
