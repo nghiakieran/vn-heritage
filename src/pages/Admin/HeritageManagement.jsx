@@ -1,55 +1,53 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '~/components/common/ui/Button';
-import { Input } from '~/components/common/ui/Input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/common/ui/Table';
-import { Search, Trash2, Edit } from 'lucide-react';
-import { useDeleteHeritageMutation, useGetHeritagesQuery } from '~/store/apis/heritageApi';
-// import { toast } from 'react-toastify';
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Button } from '~/components/common/ui/Button'
+import { Input } from '~/components/common/ui/Input'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/common/ui/Table'
+import { Search, Trash2, Edit } from 'lucide-react'
+import { useDeleteHeritageMutation, useGetHeritagesQuery } from '~/store/apis/heritageApi'
+// import { toast } from 'react-toastify'
 
 const HeritageManagement = () => {
-    const navigate = useNavigate();
-    const [searchTerm, setSearchTerm] = useState('');
-    const [statusFilter, setStatusFilter] = useState('ALL');
-    const [page, setPage] = useState(1);
+    const navigate = useNavigate()
+    const [searchTerm, setSearchTerm] = useState('')
+    const [statusFilter, setStatusFilter] = useState('ALL')
+    const [page, setPage] = useState(1)
 
     const { data, isLoading, isError, error } = useGetHeritagesQuery({
         page,
         limit: 10,
         name: searchTerm,
         status: statusFilter,
-    });
+    })
 
-    console.log('API Data:', data);
+    const [deleteHeritage] = useDeleteHeritageMutation()
 
-    const [deleteHeritage] = useDeleteHeritageMutation();
-
-    const heritages = data?.heritages || [];
-    const pagination = data?.pagination || {};
-    const totalItems = pagination.totalItems || 0;
-    const currentPage = pagination.currentPage || page;
-    const totalPages = pagination.totalPages || 1;
+    const heritages = data?.heritages || []
+    const pagination = data?.pagination || {}
+    const totalItems = pagination.totalItems || 0
+    const currentPage = pagination.currentPage || page
+    const totalPages = pagination.totalPages || 1
 
     const handleDelete = async (id) => {
         if (window.confirm('Bạn có chắc muốn xóa di tích này?')) {
             try {
-                await deleteHeritage(id).unwrap();
-                // toast.success('Xóa di tích thành công!');
+                await deleteHeritage(id).unwrap()
+                // toast.success('Xóa di tích thành công!')
             } catch (err) {
-                console.error('Lỗi khi xóa di tích:', err);
-                // toast.error(`Xóa di tích thất bại: ${err?.data?.message || 'Lỗi không xác định'}`);
+                console.error('Lỗi khi xóa di tích:', err)
+                // toast.error(`Xóa di tích thất bại: ${err?.data?.message || 'Lỗi không xác định'}`)
             }
         }
-    };
+    }
 
 
-    if (isLoading) return <div className="text-center">Đang tải...</div>;
+    if (isLoading) return <div className="text-center">Đang tải...</div>
     if (isError)
         return (
             <div className="text-center text-red-500">
                 Lỗi: {error?.data?.message || 'Không thể tải danh sách di tích'}
             </div>
-        );
+        )
 
     return (
         <div className="space-y-6">
@@ -143,7 +141,7 @@ const HeritageManagement = () => {
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default HeritageManagement;
+export default HeritageManagement

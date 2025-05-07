@@ -6,7 +6,7 @@ export default {
     extend: {
       spacing: {
         'navbar': '72px',
-        'navbar-mobile': '69px'
+        'navbar-mobile': '72px'
       },
       fontFamily: {
         sans: ['ui-sans-serif', 'system-ui', 'sans-serif', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji']

@@ -203,54 +203,59 @@ const UserProfile = () => {
 
         {/* Content */}
         <form onSubmit={handleSubmit} className='p-6 sm:p-8 space-y-8'>
-                <div className='flex flex-col sm:flex-row items-center gap-6 pb-6 border-b'>
-                <div className='relative group'>
-                  <div className='w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-white shadow-sm'>
-                  {formData.avatar ? (
-                    <img
-                    src={formData.avatar}
-                    alt={formData.displayname || 'User'}
-                    loading='lazy'
-                    className='w-full h-full object-cover'
-                    />
-                  ) : (
-                    <div className='w-full h-full bg-gray-300 flex items-center justify-center text-white text-2xl font-bold'>
-                    {formData.displayname
-                      ? formData.displayname
-                        .split(' ')
-                        .slice(0, 2)
-                        .map((word) => word[0].toUpperCase())
-                        .join('')
-                      : 'NA'}
-                    </div>
-                  )}
-                  </div>
-                  {isEditing && (
-                  <label
-                    htmlFor='avatar-upload'
-                    className='absolute inset-0 flex items-center justify-center bg-black/50 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200'
-                  >
-                    <Camera size={32} className='text-white' />
-                    <input
-                    id='avatar-upload'
-                    type='file'
-                    accept='image/*'
-                    className='hidden'
-                    onChange={handleAvatarChange}
-                    aria-label='Tải lên ảnh đại diện'
-                    />
-                  </label>
-                  )}
-                  {isAvatarChanged && isEditing && (
-                  <div className='absolute -top-2 -right-2 bg-heritage text-white rounded-full w-6 h-6 flex items-center justify-center'>
-                    <Check size={14} />
-                  </div>
-                  )}
+          <div className='flex flex-col sm:flex-row items-center gap-6 pb-6 border-b'>
+            <div className='relative group'>
+              <div className='w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-white shadow-sm'>
+              {formData.avatar ? (
+                <img
+                  src={formData.avatar || '/images/avatar-default.jpg'}
+                  alt={formData.displayname || 'User'}
+                  loading='lazy'
+                  className='w-full h-full object-cover'
+                  onError={(e) => {
+                    if (e.target.src !== '/images/avatar-default.jpg') {
+                      e.target.src = '/images/avatar-default.jpg';
+                    }
+                  }}
+                />
+              ) : (
+                <div className='w-full h-full bg-gray-300 flex items-center justify-center text-white text-2xl font-bold'>
+                {formData.displayname
+                  ? formData.displayname
+                    .split(' ')
+                    .slice(0, 2)
+                    .map((word) => word[0].toUpperCase())
+                    .join('')
+                  : 'NA'}
                 </div>
-                <h3 className='text-xl font-semibold'>{user.displayname || 'User'}</h3>
-                </div>
+              )}
+              </div>
+              {isEditing && (
+              <label
+                htmlFor='avatar-upload'
+                className='absolute inset-0 flex items-center justify-center bg-black/50 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200'
+              >
+                <Camera size={32} className='text-white' />
+                <input
+                id='avatar-upload'
+                type='file'
+                accept='image/*'
+                className='hidden'
+                onChange={handleAvatarChange}
+                aria-label='Tải lên ảnh đại diện'
+                />
+              </label>
+              )}
+              {isAvatarChanged && isEditing && (
+              <div className='absolute -top-2 -right-2 bg-heritage text-white rounded-full w-6 h-6 flex items-center justify-center'>
+                <Check size={14} />
+              </div>
+              )}
+            </div>
+            <h3 className='text-xl font-semibold'>{user.displayname || 'User'}</h3>
+          </div>
 
-                {/* Personal Info */}
+              {/* Personal Info */}
           <div className='space-y-6'>
             <h3 className='text-lg font-medium text-heritage-dark'>Thông tin cá nhân</h3>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
@@ -265,7 +270,7 @@ const UserProfile = () => {
                   value={formData.displayname}
                   onChange={handleChange}
                   disabled={!isEditing}
-                  className={`w-full px-3 py-2 bg-background border ${errors.displayname ? 'border-destructive' : ''} 
+                  className={`w-full pl-4 px-3 py-2 bg-background border ${errors.displayname ? 'border-destructive' : ''} 
                     rounded-md disabled:opacity-70 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-ring transition-colors`}
                   placeholder='Nhập tên hiển thị'
                   aria-required='true'
@@ -308,7 +313,7 @@ const UserProfile = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   disabled={!isEditing}
-                  className={`w-full px-3 py-2 bg-background border ${errors.phone ? "border-destructive" : "border-input"} rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-70 disabled:cursor-not-allowed transition-colors`}
+                  className={`w-full pl-4 px-3 py-2 bg-background border ${errors.phone ? "border-destructive" : "border-input"} rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-70 disabled:cursor-not-allowed transition-colors`}
                   placeholder='Nhập số điện thoại'
                   aria-invalid={!!errors.phone}
                   aria-describedby={errors.phone ? 'phone-error' : undefined}
@@ -331,7 +336,7 @@ const UserProfile = () => {
                   onChange={handleChange}
                   disabled={!isEditing}
                   aria-label='Chọn ngày sinh'
-                  className='w-full px-3 py-2 bg-background border rounded-md focus:outline-none focus:ring-2 focus:ring-ring
+                  className='w-full pl-4 px-3 py-2 bg-background border rounded-md focus:outline-none focus:ring-2 focus:ring-ring
                     disabled:opacity-70 disabled:cursor-not-allowed transition-colors'
                 />
               </div>

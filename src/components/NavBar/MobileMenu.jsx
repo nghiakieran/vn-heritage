@@ -37,7 +37,7 @@ const MobileMenu = ({ isOpen, navLinks, userMenuLinks, onClose }) => {
             key={item.to}
             to={item.to}
             className={cn(
-              'p-4 rounded-md transition-colors',
+              'p-3 rounded-md transition-colors',
               location.pathname === item.to
                 ? 'bg-heritage-light text-heritage font-medium'
                 : 'hover:bg-accent hover:text-accent-foreground')}
@@ -55,7 +55,7 @@ const MobileMenu = ({ isOpen, navLinks, userMenuLinks, onClose }) => {
                 key={item.to}
                 to={item.to}
                 className={cn(
-                  'p-4 rounded-md transition-colors',
+                  'p-3 rounded-md transition-colors',
                   location.pathname === item.to
                     ? 'bg-heritage-light text-heritage font-medium'
                     : 'hover:bg-accent' )}

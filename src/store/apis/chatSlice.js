@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
-import { apiSlice } from './apiSlice';
+import { apiSlice } from './apiSlice'
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = 'http://localhost:8000'
 
 export const chatSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -26,14 +26,14 @@ export const chatSlice = apiSlice.injectEndpoints({
 
     uploadDocument: builder.mutation({
       query: (file) => {
-        const formData = new FormData();
-        formData.append('file', file, file.name);
+        const formData = new FormData()
+        formData.append('file', file, file.name)
         return {
           url: `${API_BASE_URL}/upload-file`,
           method: 'POST',
           body: formData,
           headers: {}, // Remove Content-Type for FormData
-        };
+        }
       },
       invalidatesTags: (result, error) => [{ type: 'Chat', id: 'LIST' }],
     }),
@@ -56,7 +56,7 @@ export const chatSlice = apiSlice.injectEndpoints({
       invalidatesTags: (result, error) => [{ type: 'Chat', id: 'LIST' }],
     }),
   }),
-});
+})
 
 export const {
   useGetApiResponseMutation,

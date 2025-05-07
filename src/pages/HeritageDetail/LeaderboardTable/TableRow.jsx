@@ -20,6 +20,6 @@ const TableRow = ({ ranking, formatDate, getInitials, getRankIcon }) => (
     </div>
     <div className='font-bold'>{ranking?.score} điểm</div>
   </div>
-);
+)
 
 export default TableRow

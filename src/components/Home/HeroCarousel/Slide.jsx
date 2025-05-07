@@ -26,7 +26,7 @@ const Slide = ({ slide, index, activeIndex }) => {
             <Link to='/heritages'>
               <Button 
                 size='lg'
-                className='w-52'>
+                className=' w-56'>
                 <BookOpen className='mr-2' size={20} />
                 Khám phá di tích
               </Button>
@@ -35,7 +35,7 @@ const Slide = ({ slide, index, activeIndex }) => {
               <Button 
                 size='lg'
                 variant='outline'
-                className='bg-primary-foreground/10 backdrop-blur-sm text-primary-foreground border hover:bg-primary-foreground/20 w-62'>
+                className='bg-primary-foreground/10 backdrop-blur-sm text-primary-foreground hover:bg-primary-foreground/20 w-56'>
                 <Map className='mr-2' size={20} />
                 Khám phá bản đồ
               </Button>
