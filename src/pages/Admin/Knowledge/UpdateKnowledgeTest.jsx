@@ -223,32 +223,45 @@ const UpdateKnowledgeTest = () => {
     }
 
     const handleUpdate = async () => {
-        if (!validateForm()) return
+        if (!validateForm()) return;
 
         try {
             const questions = await Promise.all(
                 formData.questions.map(async (question, index) => {
-                    let imageUrl = question.image
+                    let imageUrl = question.image;
                     if (imageFiles[index]) {
-                        const formDataUpload = new FormData()
-                        formDataUpload.append('image', imageFiles[index])
-                        const uploadedImage = await uploadKnowledgeTestImg(formDataUpload).unwrap()
-                        imageUrl = uploadedImage?.imageUrl || ''
+                        const formDataUpload = new FormData();
+                        formDataUpload.append('image', imageFiles[index]);
+                        const uploadedImage = await uploadKnowledgeTestImg(formDataUpload).unwrap();
+                        imageUrl = uploadedImage?.imageUrl || '';
                     }
-                    return { ...question, image: imageUrl }
+                    return {
+                        id: test.questions[index]?.questionId, // Map questionId to id
+                        content: question.content,
+                        explanation: question.explanation,
+                        image: imageUrl,
+                        options: question.options.map((option) => ({
+                            id: option.optionId, // Map optionId to id
+                            optionText: option.optionText,
+                            isCorrect: option.isCorrect,
+                        })),
+                    };
                 })
-            )
+            );
 
             const testData = {
-                ...formData,
+                heritageId: formData.heritageId,
+                title: formData.title,
+                content: formData.content,
                 questions,
-            }
-
-            await updateKnowledgeTest({ id: id, data: testData }).unwrap()
+                status: formData.status,
+            };
+            await updateKnowledgeTest({ testId: id, data: testData }).unwrap();
         } catch (err) {
-            toast.error(`Cập nhật bài kiểm tra thất bại: ${err?.data?.message || err.message || 'Đã xảy ra lỗi'}`)
+            toast.error(`Cập nhật bài kiểm tra thất bại: ${err?.data?.message || err.message || 'Đã xảy ra lỗi'}`);
         }
-    }
+    };
+
 
     if (isFetching) {
         return <div className="text-center">Đang tải thông tin bài kiểm tra...</div>
