@@ -1,5 +1,5 @@
 import { BookOpen, Loader2 } from 'lucide-react'
-import { useState, useMemo} from 'react'
+import { useState, useMemo } from 'react'
 import { useGetKnowledgeTestsQuery } from '~/store/apis/knowledgeTestApi'
 import KnowledgeTestDialog from './KnowledgeTestDialog'
 import { toast } from 'react-toastify'
@@ -24,9 +24,9 @@ const KnowledgeTestItem = ({ test, onClick }) => (
         <span className='flex items-center gap-1'>
           <i className="ri-bar-chart-2-line text-heritage-dark"></i>
           <span>Điểm TB:</span>
-        <span className='ml-1 font-semibold text-heritage-dark'>
-          {(test?.stats?.averageScore || 0).toFixed(2)}/100
-        </span>
+          <span className='ml-1 font-semibold text-heritage-dark'>
+            {(test?.stats?.averageScore || 0).toFixed(2)}/100
+          </span>
         </span>
       </div>
     </div>
@@ -64,16 +64,22 @@ const EmptyState = () => (
 
 const HeritageKnowledgeTest = ({ heritageId, heritageName }) => {
   const [activeTest, setActiveTest] = useState(null)
-  const { data, isLoading, error, refetch } = useGetKnowledgeTestsQuery(undefined, {
-    // Add cache invalidation policies if needed
-    refetchOnMountOrArgChange: true
-  })
+  const queryArgs = {
+    page: 1,
+    limit: 10,
+    search: '',
+  };
+
+  // Use the custom hook with the query arguments
+  const { data, isLoading, error, refetch } = useGetKnowledgeTestsQuery(queryArgs, {
+    refetchOnMountOrArgChange: true, // Refetch when component mounts or queryArgs change
+  });
 
   const openTest = (test) => {
     setActiveTest(test)
     toast.info(`Bắt đầu làm bài kiểm tra: ${test?.title}`)
   }
-  
+
   const closeTest = () => {
     setActiveTest(null)
     toast.info('Đã đóng bài kiểm tra')
@@ -97,13 +103,13 @@ const HeritageKnowledgeTest = ({ heritageId, heritageName }) => {
       ) : availableTests.length === 0 ? (
         <EmptyState />
       ) : (
-       <div className="flex justify-center items-center max-h-[70vh]">
-        <KnowledgeTestItem 
-          key={availableTests[0]?._id} 
-          test={availableTests[0]} 
-          onClick={openTest} 
-        />
-      </div>
+        <div className="flex justify-center items-center max-h-[70vh]">
+          <KnowledgeTestItem
+            key={availableTests[0]?._id}
+            test={availableTests[0]}
+            onClick={openTest}
+          />
+        </div>
       )}
 
       {activeTest && (

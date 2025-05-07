@@ -11,7 +11,7 @@ const LeaderboardTable = ({ heritageId, heritageName = 'Di tích lịch sử', i
   const [rankings, setRankings] = useState([])
   const [hasMore, setHasMore] = useState(true)
   const loaderRef = useRef(null) // IntersectionObserver
-  const dialogStateRef = useRef({ wasOpen: false, prevHeritageId: null }) 
+  const dialogStateRef = useRef({ wasOpen: false, prevHeritageId: null })
   //Lưu trạng thái dialog => để kiểm tra xem có cần reset không
 
 
@@ -29,8 +29,8 @@ const LeaderboardTable = ({ heritageId, heritageName = 'Di tích lịch sử', i
       return
     }
 
-    const needsReset = 
-      !dialogStateRef.current.wasOpen || 
+    const needsReset =
+      !dialogStateRef.current.wasOpen ||
       (dialogStateRef.current.prevHeritageId !== heritageId)
 
     if (needsReset) {
@@ -46,6 +46,7 @@ const LeaderboardTable = ({ heritageId, heritageName = 'Di tích lịch sử', i
     { heritageId, page, limit: 20 },
     { skip: !heritageId || !isOpen }
   )
+
 
   // Cập nhật dữ liệu khi API trả về
   useEffect(() => {
@@ -159,7 +160,7 @@ const LeaderboardTable = ({ heritageId, heritageName = 'Di tích lịch sử', i
       </div>
 
       <div className='space-y-1'>
-        {rankings.map(ranking => (
+        {rankings?.map(ranking => (
           <TableRow
             key={ranking.userId}
             ranking={ranking}

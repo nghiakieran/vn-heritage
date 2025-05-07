@@ -8,15 +8,16 @@ import { Button } from '~/components/common/ui/Button'
 import { selectCurrentUser } from '~/store/slices/authSlice'
 import { MessageCircle, X } from 'lucide-react'
 import { Dialog, DialogDescription, DialogHeader, DialogTitle } from '~/components/common/ui/Dialog'
-import { 
-  HeritageChat, 
-  LeaderboardTable, 
-  HeritageKnowledgeTest, 
-  HeritageDetailTabs, 
-  HeritageFeatures, 
-  HeritageInfo, 
-  HeritageHeader 
+import {
+  HeritageChat,
+  LeaderboardTable,
+  HeritageKnowledgeTest,
+  HeritageDetailTabs,
+  HeritageFeatures,
+  HeritageInfo,
+  HeritageHeader
 } from '~/components/lazyComponents'
+import DiscussionSection from './DiscussionSection'
 
 const HeritageDetail = () => {
   const { nameSlug } = useParams()
@@ -33,13 +34,13 @@ const HeritageDetail = () => {
   // Logic để random 3 di tích liên quan
   const getRandomRelatedHeritages = useMemo(() => {
     if (!allHeritages?.heritages || !id) return []
-    
+
     // Lọc bỏ di tích hiện tại
     const otherHeritages = allHeritages.heritages.filter(item => item._id !== id)
-    
+
     // Trộn ngẫu nhiên mảng
     const shuffled = [...otherHeritages].sort(() => Math.random() - 0.5)
-    
+
     // Lấy 3 di tích đầu tiên
     return shuffled.slice(0, 3)
   }, [allHeritages, id])
@@ -53,11 +54,11 @@ const HeritageDetail = () => {
       return
     }
     if (feature === 'chatroom') {
-      navigate(`/chat/heritage/${nameSlug}`, { 
-        state: { 
+      navigate(`/chat/heritage/${nameSlug}`, {
+        state: {
           heritageName: data?.name,
           heritageId: id
-        } 
+        }
       })
       return
     }
@@ -74,7 +75,7 @@ const HeritageDetail = () => {
 
   if (isError) {
     return (
-      <div className='lcn-container-x py-16 text-center mt-32'>
+      <div className='lcn-container-x py-16 text CLEARcenter'>
         <h2 className='text-2xl font-medium mb-4'>Có lỗi xảy ra</h2>
         <p className='text-muted-foreground mb-6'>Không thể tải thông tin di tích. Vui lòng thử lại sau.</p>
         <Button onClick={() => navigate('/heritages')}>Quay lại danh sách di tích</Button>
@@ -122,6 +123,7 @@ const HeritageDetail = () => {
                     ))}
                   </div>
                 </div>
+                <DiscussionSection heritageId={id} />
               </div>
               <div className='space-y-8'>
                 <Suspense fallback={<div>Đang tải...</div>}>

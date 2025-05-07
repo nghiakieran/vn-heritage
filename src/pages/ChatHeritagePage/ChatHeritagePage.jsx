@@ -1,12 +1,11 @@
 import { ArrowLeft, Menu, ChevronDown, Users } from 'lucide-react'
 import { useEffect, useRef, useState, useMemo } from 'react'
-import { useLocation, useParams } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import { selectCurrentUser } from '~/store/slices/authSlice'
 import { Button } from '~/components/common/ui/Button'
 import { useIsMobile } from '~/hooks/useIsMobile'
-import { TypingIndicator } from './TypingIndicator'
 import { MessageInput } from './MessageInput'
 import useSocket from '~/hooks/useSocket'
 import SystemMessage from './SystemMessage'
@@ -24,7 +23,6 @@ const MOCK_COMMUNITY_MESSAGES = []
 const ChatHeritagePage = () => {
   // Gọi tất cả Hook trước bất kỳ lệnh return nào
   const { data: usersData, isLoading, isError } = useGetAllActiveUsersQuery()
-  console.log('usersData', usersData)
   const userInfo = useSelector(selectCurrentUser)
   const isMobile = useIsMobile()
   const chatContainerRef = useRef(null)
@@ -32,7 +30,7 @@ const ChatHeritagePage = () => {
   // const heritageIdParam = id
   const location = useLocation()
 
-  const { heritageId, heritageName } = location.state || {}
+  const { heritageId } = location.state || {}
   const heritageIdParam = heritageId
   // Thêm useRef để theo dõi activeChat trước đó
   const prevActiveChatRef = useRef(null)
@@ -42,15 +40,14 @@ const ChatHeritagePage = () => {
     () => ({
       userId: userInfo?._id,
       username: userInfo?.displayname,
+      avatar: userInfo?.avatar
     }),
-    [userInfo?._id, userInfo?.displayname]
+    [userInfo?._id, userInfo?.displayname, userInfo?.avatar]
   )
-
   // Hook socket cho phòng chat
   const socketData = useSocket(currentUser, heritageIdParam)
 
   const {
-    isConnected,
     messages: communityMessages,
     privateMessages,
     usersInRoom,
@@ -58,7 +55,6 @@ const ChatHeritagePage = () => {
     joinDirectRoom,
     sendDirectMessage,
     handleTyping: handleCommunityTyping,
-    roomId,
     socketError: error,
     isLoadingMessages,
     hasMoreMessages,
@@ -72,6 +68,7 @@ const ChatHeritagePage = () => {
       id: user._id,
       name: user.displayname,
       status: user.account.isActive ? 'online' : 'offline',
+      avatar: user.avatar,
       unreadCount: 0,
     }))
   }, [usersData])
@@ -84,6 +81,7 @@ const ChatHeritagePage = () => {
         id: user.id,
         name: user.name,
         status: socketUser.id ? 'online' : 'offline',
+        avatar: user.avatar,
         unreadCount: user.unreadCount || 0,
       }
     })
@@ -113,7 +111,6 @@ const ChatHeritagePage = () => {
   // Lấy tin nhắn cho cuộc trò chuyện hiện tại
   const messages = useMemo(() => {
     if (activeChat === 'community') {
-      console.log('Community messages:', communityMessages)
       return communityMessages.length > 0 ? communityMessages : MOCK_COMMUNITY_MESSAGES
     }
     return privateMessages[activeChat] || []
@@ -191,8 +188,6 @@ const ChatHeritagePage = () => {
     return acc
   }, [])
 
-  console.log('Grouped messages:', groupedMessages)
-
   // Xử lý trạng thái loading và error sau khi gọi hết Hook
   if (isLoading) {
     return (
@@ -223,6 +218,7 @@ const ChatHeritagePage = () => {
         >
           <UserList
             users={enhancedUsers}
+            currentUser={currentUser}
             activeUserId={activeChat !== 'community' ? activeChat : null}
             onSelectUser={handleSelectUser}
             onSelectCommunity={() => {

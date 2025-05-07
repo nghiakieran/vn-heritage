@@ -7,8 +7,8 @@ import { Camera, Check, Loader2, X } from 'lucide-react'
 import { toDateInputFormat } from '~/utils/dateHelpers'
 import { useDispatch } from 'react-redux'
 import { setUser } from '~/store/slices/authSlice'
-const DEFAULT_AVATAR = '/images/avatar-default.jpg'
 
+const DEFAULT_AVATAR = '/images/avatar-default.jpg'
 
 const UserProfile = () => {
   const dispatch = useDispatch()
@@ -21,7 +21,7 @@ const UserProfile = () => {
       displayname: user?.displayname || '',
       phone: user?.phone || '',
       gender: user?.gender || '',
-      dateOfBirth: user?.dateOfBirth || toDateInputFormat(user?.dateOfBirth),
+      dateOfBirth: user?.dateOfBirth ? toDateInputFormat(user?.dateOfBirth) : '',
       avatar: user?.avatar || DEFAULT_AVATAR,
     }),
     [user]
@@ -29,7 +29,6 @@ const UserProfile = () => {
 
   const [isEditing, setIsEditing] = useState(false)
   const [formData, setFormData] = useState(initialFormData)
-  // eslint-disable-next-line no-unused-vars
   const [avatarPreview, setAvatarPreview] = useState(user?.avatar || DEFAULT_AVATAR)
   const [isAvatarChanged, setIsAvatarChanged] = useState(false)
   const [avatarFile, setAvatarFile] = useState(null)
@@ -72,7 +71,7 @@ const UserProfile = () => {
         setAvatarFile(file)
         setIsAvatarChanged(true)
         toast.info('Ảnh đại diện sẽ được cập nhật khi bạn lưu thay đổi', {
-          position: "top-right"
+          position: 'top-right',
         })
       }
       reader.onerror = () => {
@@ -113,9 +112,8 @@ const UserProfile = () => {
     e.preventDefault()
     if (!validateForm()) return
 
-
     try {
-      let avatarUrl = null
+      let avatarUrl = formData.avatar
       // Upload new avatar if changed
       if (isAvatarChanged && avatarFile) {
         const formDataUpload = new FormData()
@@ -126,17 +124,18 @@ const UserProfile = () => {
       // Update user profile
       const updateData = {
         ...formData,
-        avatar: avatarUrl || formData?.avatar,
+        avatar: avatarUrl,
         dateOfBirth: formData.dateOfBirth === '' ? null : formData.dateOfBirth,
       }
-      // Unwrap để lấy data trả về từ API
+      // Unwrap to get data from API
       const updatedUser = await updateUserProfile(updateData).unwrap()
 
-      // Dispatch action để update Redux store
+      // Dispatch action to update Redux store
       dispatch(setUser(updatedUser))
       setIsEditing(false)
       setIsAvatarChanged(false)
       setAvatarFile(null)
+      setAvatarPreview(avatarUrl || DEFAULT_AVATAR)
 
       toast.success('Cập nhật thông tin thành công!', {
         position: 'top-right',
@@ -148,15 +147,7 @@ const UserProfile = () => {
         progress: undefined,
       })
     } catch (err) {
-      toast.error(`Cập nhật thất bại: ${err?.data?.message || err.message || 'Đã xảy ra lỗi'}`, {
-        position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      })
+      toast.error(`Cập nhật thất bại: ${err?.data?.message || err.message || 'Đã xảy ra lỗi'}`)
     }
   }
 
@@ -172,11 +163,11 @@ const UserProfile = () => {
 
   // Update form data when user changes
   useEffect(() => {
-    if (user) {
+    if (user && !isEditing) {
       setFormData(initialFormData)
       setAvatarPreview(user.avatar || DEFAULT_AVATAR)
     }
-  }, [user, initialFormData])
+  }, [user, initialFormData, isEditing])
 
   if (!user) {
     return (
@@ -207,15 +198,15 @@ const UserProfile = () => {
           <div className='flex flex-col sm:flex-row items-center gap-6 pb-6 border-b'>
             <div className='relative group'>
               <div className='w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-white shadow-sm'>
-                {formData.avatar ? (
+                {avatarPreview ? (
                   <img
-                    src={formData.avatar || '/images/avatar-default.jpg'}
+                    src={avatarPreview}
                     alt={formData.displayname || 'User'}
                     loading='lazy'
                     className='w-full h-full object-cover'
                     onError={(e) => {
-                      if (e.target.src !== '/images/avatar-default.jpg') {
-                        e.target.src = '/images/avatar-default.jpg';
+                      if (e.target.src !== DEFAULT_AVATAR) {
+                        e.target.src = DEFAULT_AVATAR
                       }
                     }}
                   />
@@ -271,8 +262,8 @@ const UserProfile = () => {
                   value={formData.displayname}
                   onChange={handleChange}
                   disabled={!isEditing}
-                  className={`w-full pl-4 px-3 py-2 bg-background border ${errors.displayname ? 'border-destructive' : ''} 
-                    rounded-md disabled:opacity-70 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-ring transition-colors`}
+                  className={`w-full pl-4 px-3 py-2 bg-background border ${errors.displayname ? 'border-destructive' : ''
+                    } rounded-md disabled:opacity-70 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-ring transition-colors`}
                   placeholder='Nhập tên hiển thị'
                   aria-required='true'
                   aria-invalid={!!errors.displayname}
@@ -294,8 +285,7 @@ const UserProfile = () => {
                   value={formData.gender}
                   onChange={handleChange}
                   disabled={!isEditing}
-                  className='w-full px-3 py-2 bg-background border rounded-md disabled:opacity-70 disabled:cursor-not-allowed
-                  focus:outline-none focus:ring-2 focus:ring-ring transition-colors'
+                  className='w-full px-3 py-2 bg-background border rounded-md disabled:opacity-70 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-ring transition-colors'
                   aria-label='Chọn giới tính'
                 >
                   <option value='other'>Khác</option>
@@ -314,7 +304,8 @@ const UserProfile = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   disabled={!isEditing}
-                  className={`w-full pl-4 px-3 py-2 bg-background border ${errors.phone ? "border-destructive" : "border-input"} rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-70 disabled:cursor-not-allowed transition-colors`}
+                  className={`w-full pl-4 px-3 py-2 bg-background border ${errors.phone ? 'border-destructive' : 'border-input'
+                    } rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-70 disabled:cursor-not-allowed transition-colors`}
                   placeholder='Nhập số điện thoại'
                   aria-invalid={!!errors.phone}
                   aria-describedby={errors.phone ? 'phone-error' : undefined}
@@ -337,8 +328,7 @@ const UserProfile = () => {
                   onChange={handleChange}
                   disabled={!isEditing}
                   aria-label='Chọn ngày sinh'
-                  className='w-full pl-4 px-3 py-2 bg-background border rounded-md focus:outline-none focus:ring-2 focus:ring-ring
-                    disabled:opacity-70 disabled:cursor-not-allowed transition-colors'
+                  className='w-full pl-4 px-3 py-2 bg-background border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-70 disabled:cursor-not-allowed transition-colors'
                 />
               </div>
             </div>
@@ -346,7 +336,7 @@ const UserProfile = () => {
 
           {isEditing && (
             <div className='flex justify-end gap-4 pt-4 border-t border-border'>
-              <Button type='button' onClick={handleCancel} variant='outline' className='flex items-center gap-2'>
+              <Button type='button' onClick={handleCancel} variant aldrich='outline' className='flex items-center gap-2'>
                 <X size={16} />
                 <span>Hủy bỏ</span>
               </Button>
