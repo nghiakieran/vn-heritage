@@ -36,7 +36,7 @@ const baseQueryWithAuth = async (args, api, extraOptions) => {
     if (result?.error?.status === 401 || result?.error?.status === 410) {
       const { token, userInfo } = api.getState().auth
       const isLoggedIn = token && userInfo
-      console.log(args.url)
+      // console.log(args.url)
       const shouldSkipAuthCheck = AUTH_URLS.some((url) =>
         args.url.includes(url)
       )
@@ -52,7 +52,7 @@ const baseQueryWithAuth = async (args, api, extraOptions) => {
             api,
             extraOptions
           )
-          console.log(refreshResult)
+          // console.log(refreshResult)
           window.isRefreshing = false
           if (refreshResult?.data) {
             api.dispatch(
