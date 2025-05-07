@@ -16,9 +16,12 @@ const TestResults = ({ results, onClose }) => (
   <div className='space-y-6'>
     <h3 className='text-xl font-semibold'>Kết quả bài kiểm tra</h3>
     <div className='text-center py-4'>
-      <div className='text-3xl font-bold text-heritage mb-2'>{results?.score || 0}/100</div>
+      <div className='text-3xl font-bold text-heritage mb-2'>
+        {(results?.score ?? 0).toFixed(2)}/100
+      </div>
       <p className='text-muted-foreground'>Điểm số của bạn</p>
     </div>
+
     
     <button
       onClick={onClose}
