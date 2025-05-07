@@ -1,37 +1,37 @@
-import { useState, useEffect, useRef } from 'react';
-import { Button } from '~/components/common/ui/Button';
-import { Input } from '~/components/common/ui/Input';
-import { Loader2, Paperclip, Send } from 'lucide-react';
-import { toast } from 'react-toastify';
+import { useState, useEffect, useRef } from 'react'
+import { Button } from '~/components/common/ui/Button'
+import { Input } from '~/components/common/ui/Input'
+import { Loader2, Paperclip, Send } from 'lucide-react'
+import { toast } from 'react-toastify'
 import {
     useGetApiResponseMutation,
     useGetChatHistoryQuery,
     useUploadDocumentMutation,
     useUploadJsonMutation, // Added for landmark data
-} from '~/store/apis/chatSlice'; // Fixed import from chatSlice to chatApi
+} from '~/store/apis/chatSlice' // Fixed import from chatSlice to chatApi
 
-const HeritageChat = ({ heritageId, heritageName, landmarkData, onClose }) => {
-    const [messages, setMessages] = useState([]);
-    const [inputText, setInputText] = useState('');
-    const [sessionId, setSessionId] = useState(null);
-    const [isUploading, setIsUploading] = useState(false);
-    const [isLandmarkUploaded, setIsLandmarkUploaded] = useState(false);
-    const messagesEndRef = useRef(null);
-    const fileInputRef = useRef(null);
+const HeritageChat = ({ heritageId, heritageName, landmarkData }) => {
+    const [messages, setMessages] = useState([])
+    const [inputText, setInputText] = useState('')
+    const [sessionId, setSessionId] = useState(null)
+    const [isUploading, setIsUploading] = useState(false)
+    const [isLandmarkUploaded, setIsLandmarkUploaded] = useState(false)
+    const messagesEndRef = useRef(null)
+    const fileInputRef = useRef(null)
 
-    const selectedModel = 'gemini-1.5-flash';
+    const selectedModel = 'gemini-1.5-flash'
 
     const { data: history, isLoading: isHistoryLoading } = useGetChatHistoryQuery(sessionId, {
         skip: !sessionId,
-    });
+    })
 
-    const [getApiResponse] = useGetApiResponseMutation();
-    const [uploadDocument] = useUploadDocumentMutation();
-    const [uploadJson] = useUploadJsonMutation(); // Added for landmark data
+    const [getApiResponse] = useGetApiResponseMutation()
+    const [uploadDocument] = useUploadDocumentMutation()
+    const [uploadJson] = useUploadJsonMutation() // Added for landmark data
 
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages]);
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }, [messages])
 
     useEffect(() => {
         if (history && Array.isArray(history)) {
@@ -42,39 +42,39 @@ const HeritageChat = ({ heritageId, heritageName, landmarkData, onClose }) => {
                     content: item.content,
                     timestamp: new Date().toLocaleTimeString('vi-VN'),
                 }))
-            );
+            )
         }
-    }, [history]);
+    }, [history])
 
     useEffect(() => {
         const sendLandmarkData = async () => {
-            if (isLandmarkUploaded || !landmarkData) return;
+            if (isLandmarkUploaded || !landmarkData) return
             try {
-                console.log('Sending landmark data to /upload-landmark-info:', landmarkData);
-                const result = await uploadJson(landmarkData).unwrap();
-                console.log('Upload landmark response:', result);
-                setIsLandmarkUploaded(true);
+                console.log('Sending landmark data to /upload-landmark-info:', landmarkData)
+                const result = await uploadJson(landmarkData).unwrap()
+                console.log('Upload landmark response:', result)
+                setIsLandmarkUploaded(true)
                 const initMessage = {
                     id: Date.now(),
                     sender: 'ai',
                     content: `Đã tải thông tin về di tích ${heritageName}. Hỏi tôi bất cứ điều gì!`,
                     timestamp: new Date().toLocaleTimeString('vi-VN'),
-                };
-                setMessages([initMessage]);
-                toast.success('Đã tải thông tin di tích!');
+                }
+                setMessages([initMessage])
+                toast.success('Đã tải thông tin di tích!')
             } catch (error) {
-                console.error('Upload Landmark Error:', error);
-                toast.error(`Lỗi khi tải thông tin di tích: ${error.data?.detail || error.message}`);
+                console.error('Upload Landmark Error:', error)
+                toast.error(`Lỗi khi tải thông tin di tích: ${error.data?.detail || error.message}`)
             }
-        };
+        }
 
-        sendLandmarkData();
-    }, [heritageName, uploadJson, isLandmarkUploaded, landmarkData]);
+        sendLandmarkData()
+    }, [heritageName, uploadJson, isLandmarkUploaded, landmarkData])
 
     const handleSendMessage = async () => {
         if (!inputText.trim()) {
-            toast.error('Vui lòng nhập tin nhắn!');
-            return;
+            toast.error('Vui lòng nhập tin nhắn!')
+            return
         }
 
         const userMessage = {
@@ -82,50 +82,50 @@ const HeritageChat = ({ heritageId, heritageName, landmarkData, onClose }) => {
             sender: 'user',
             content: inputText,
             timestamp: new Date().toLocaleTimeString('vi-VN'),
-        };
+        }
 
-        setMessages((prev) => [...prev, userMessage]);
-        setInputText('');
+        setMessages((prev) => [...prev, userMessage])
+        setInputText('')
 
         try {
-            const context = `Dựa trên thông tin di tích ${heritageName} (ID: ${heritageId}): ${JSON.stringify(landmarkData, null, 2)}\nCâu hỏi: ${inputText}`;
+            const context = `Dựa trên thông tin di tích ${heritageName} (ID: ${heritageId}): ${JSON.stringify(landmarkData, null, 2)}\nCâu hỏi: ${inputText}`
             const response = await getApiResponse({
                 question: context,
                 sessionId,
                 model: selectedModel,
-            }).unwrap();
+            }).unwrap()
 
             const aiMessage = {
                 id: Date.now() + 1,
                 sender: 'ai',
                 content: response.response || 'AI: Đã nhận câu hỏi.',
                 timestamp: new Date().toLocaleTimeString('vi-VN'),
-            };
+            }
 
-            setMessages((prev) => [...prev, aiMessage]);
+            setMessages((prev) => [...prev, aiMessage])
             if (response.session_id && !sessionId) {
-                setSessionId(response.session_id);
+                setSessionId(response.session_id)
             }
         } catch (error) {
-            toast.error('Lỗi khi nhận phản hồi từ AI!');
-            console.error('API Error:', error);
+            toast.error('Lỗi khi nhận phản hồi từ AI!')
+            console.error('API Error:', error)
         }
-    };
+    }
 
     const handleFileUpload = async (event) => {
-        const files = event.target.files;
-        if (!files.length) return;
+        const files = event.target.files
+        if (!files.length) return
 
-        const maxSize = 10 * 1024 * 1024;
+        const maxSize = 10 * 1024 * 1024
         for (const file of files) {
             if (file.size > maxSize) {
-                toast.error(`Tệp ${file.name} vượt quá 10MB!`);
-                continue;
+                toast.error(`Tệp ${file.name} vượt quá 10MB!`)
+                continue
             }
 
-            setIsUploading(true);
+            setIsUploading(true)
             try {
-                const result = await uploadDocument(file).unwrap();
+                const result = await uploadDocument(file).unwrap()
                 const fileMessage = {
                     id: Date.now(),
                     sender: 'user',
@@ -135,46 +135,46 @@ const HeritageChat = ({ heritageId, heritageName, landmarkData, onClose }) => {
                         type: file.type,
                     },
                     timestamp: new Date().toLocaleTimeString('vi-VN'),
-                };
+                }
 
-                setMessages((prev) => [...prev, fileMessage]);
-                toast.success(`Đã tải lên ${file.name}!`);
+                setMessages((prev) => [...prev, fileMessage])
+                toast.success(`Đã tải lên ${file.name}!`)
 
-                const context = `Người dùng đã tải lên tệp ${file.name} liên quan đến di tích ${heritageName}. Dựa trên thông tin di tích: ${JSON.stringify(landmarkData, null, 2)}.`;
+                const context = `Người dùng đã tải lên tệp ${file.name} liên quan đến di tích ${heritageName}. Dựa trên thông tin di tích: ${JSON.stringify(landmarkData, null, 2)}.`
                 const response = await getApiResponse({
                     question: context,
                     sessionId,
                     model: selectedModel,
-                }).unwrap();
+                }).unwrap()
 
                 const aiMessage = {
                     id: Date.now() + 1,
                     sender: 'ai',
                     content: response.response || `AI: Đã nhận tệp ${file.name}.`,
                     timestamp: new Date().toLocaleTimeString('vi-VN'),
-                };
+                }
 
-                setMessages((prev) => [...prev, aiMessage]);
+                setMessages((prev) => [...prev, aiMessage])
                 if (response.session_id && !sessionId) {
-                    setSessionId(response.session_id);
+                    setSessionId(response.session_id)
                 }
             } catch (error) {
-                toast.error(`Tải lên ${file.name} thất bại!`);
-                console.error('Upload Error:', error);
+                toast.error(`Tải lên ${file.name} thất bại!`)
+                console.error('Upload Error:', error)
             } finally {
-                setIsUploading(false);
+                setIsUploading(false)
             }
         }
 
-        fileInputRef.current.value = '';
-    };
+        fileInputRef.current.value = ''
+    }
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            handleSendMessage();
+            e.preventDefault()
+            handleSendMessage()
         }
-    };
+    }
 
     return (
         <div className="flex flex-col h-[400px] w-[300px] bg-white rounded-lg shadow-lg">
@@ -255,7 +255,7 @@ const HeritageChat = ({ heritageId, heritageName, landmarkData, onClose }) => {
                 </Button>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default HeritageChat;
+export default HeritageChat

@@ -8,19 +8,25 @@ const KnowledgeTestItem = ({ test, onClick }) => (
   <div
     onClick={() => onClick(test)}
     onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onClick(test)}
-    className='bg-white border rounded-lg p-4 hover:border-heritage hover:bg-heritage-light/10 cursor-pointer transition-all duration-200 flex items-start'
+    className='bg-white border border-gray-200 rounded-lg p-4 hover:border-heritage-dark hover:bg-heritage-light/20 cursor-pointer transition-all duration-200 flex items-start shadow-sm hover:shadow-md'
     role='button'
     tabIndex={0}
     aria-label={`Bài kiểm tra ${test?.title}`}
   >
     <div className='flex-1'>
-      <h4 className='font-medium text-base mb-1'>{test?.title}</h4>
-      <p className='text-sm text-muted-foreground line-clamp-2 mb-3'>{test?.content}</p>
+      <h4 className='font-semibold text-lg mb-2 text-heritage-dark'>{test?.title}</h4>
+      <p className='text-sm text-muted-foreground line-clamp-3 mb-4'>{test?.content}</p>
       <div className='flex items-center text-sm text-muted-foreground'>
-        <span className='mr-3'>{test?.stats?.totalAttempts || 0} lượt làm</span>
-        <span className='flex items-center'>
+        <span className='mr-4 flex items-center gap-1'>
+          <i className="ri-file-list-2-line text-heritage-dark"></i>
+          {test?.stats?.totalAttempts || 0} lượt làm
+        </span>
+        <span className='flex items-center gap-1'>
+          <i className="ri-bar-chart-2-line text-heritage-dark"></i>
           <span>Điểm TB:</span>
-          <span className='ml-1 font-medium text-heritage-dark'>{test?.stats?.averageScore || 0}/100</span>
+        <span className='ml-1 font-semibold text-heritage-dark'>
+          {(test?.stats?.averageScore || 0).toFixed(2)}/100
+        </span>
         </span>
       </div>
     </div>
@@ -77,7 +83,7 @@ const HeritageKnowledgeTest = ({ heritageId, heritageName }) => {
   const availableTests = useMemo(() => (
     data?.results?.filter(test => test.heritageId === heritageId) || []
   ), [data?.results, heritageId])
-
+  console.log(availableTests);
   if (error) {
     const errorMessage = error?.data?.message || error?.error || 'Đã xảy ra lỗi.'
     toast.error(errorMessage)
@@ -91,15 +97,13 @@ const HeritageKnowledgeTest = ({ heritageId, heritageName }) => {
       ) : availableTests.length === 0 ? (
         <EmptyState />
       ) : (
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[70vh]'>
-          {availableTests.map((test) => (
-            <KnowledgeTestItem 
-              key={test?._id} 
-              test={test} 
-              onClick={openTest} 
-            />
-          ))}
-        </div>
+       <div className="flex justify-center items-center max-h-[70vh]">
+        <KnowledgeTestItem 
+          key={availableTests[0]?._id} 
+          test={availableTests[0]} 
+          onClick={openTest} 
+        />
+      </div>
       )}
 
       {activeTest && (

@@ -1,48 +1,48 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '~/components/common/ui/Button';
-import { Input } from '~/components/common/ui/Input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/common/ui/Table';
-import { Search, Trash2, Edit, UserCog } from 'lucide-react';
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Button } from '~/components/common/ui/Button'
+import { Input } from '~/components/common/ui/Input'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/common/ui/Table'
+import { Search, Trash2, Edit, UserCog } from 'lucide-react'
 import { useGetAllQuery, useDeleteUserMutation } from '~/store/apis/userSlice'
-import { toast } from 'react-toastify';
+import { toast } from 'react-toastify'
 
 const UserManagement = () => {
-  const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [roleFilter, setRoleFilter] = useState('ALL');
-  const [page, setPage] = useState(1);
-  const limit = 10;
+  const navigate = useNavigate()
+  const [searchTerm, setSearchTerm] = useState('')
+  const [roleFilter, setRoleFilter] = useState('ALL')
+  const [page, setPage] = useState(1)
+  const limit = 10
 
   const { data, isLoading, isError, error } = useGetAllQuery({
     page,
     limit,
     search: searchTerm,
     role: roleFilter !== 'ALL' ? roleFilter : undefined,
-  });
+  })
 
-  const [deleteUser] = useDeleteUserMutation();
+  const [deleteUser] = useDeleteUserMutation()
 
-  const users = data?.users || [];
-  const pagination = data?.pagination || {};
-  const totalItems = pagination.totalItems || 0;
-  const currentPage = pagination.currentPage || page;
-  const totalPages = pagination.totalPages || 1;
+  const users = data?.users || []
+  const pagination = data?.pagination || {}
+  const totalItems = pagination.totalItems || 0
+  const currentPage = pagination.currentPage || page
+  const totalPages = pagination.totalPages || 1
 
   const handleDelete = async (id) => {
     if (window.confirm('Bạn có chắc muốn xóa người dùng này?')) {
       try {
-        await deleteUser(id).unwrap();
-        toast.success('Xóa người dùng thành công!');
+        await deleteUser(id).unwrap()
+        toast.success('Xóa người dùng thành công!')
       } catch (err) {
-        console.error('Lỗi khi xóa người dùng:', err);
-        toast.error('Xóa người dùng thất bại!');
+        console.error('Lỗi khi xóa người dùng:', err)
+        toast.error('Xóa người dùng thất bại!')
       }
     }
-  };
+  }
 
-  if (isLoading) return <div className="text-center">Đang tải...</div>;
-  if (isError) return <div className="text-center text-red-500">Lỗi: {error?.data?.message || 'Không thể tải danh sách người dùng'}</div>;
+  if (isLoading) return <div className="text-center">Đang tải...</div>
+  if (isError) return <div className="text-center text-red-500">Lỗi: {error?.data?.message || 'Không thể tải danh sách người dùng'}</div>
 
   return (
     <div className="space-y-6">
@@ -158,7 +158,8 @@ const UserManagement = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default UserManagement;
+export default UserManagement
+

@@ -1,25 +1,25 @@
-import { BASE_URL } from '~/constants/fe.constant';
-import { apiSlice } from './apiSlice';
+import { BASE_URL } from '~/constants/fe.constant'
+import { apiSlice } from './apiSlice'
 
 export const heritageSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getHeritages: builder.query({
       query: ({ page = 1, limit = 9, name = '', status = 'ALL', sort = 'name', order = 'asc' }) => {
-        const params = new URLSearchParams();
-        params.append('page', page.toString());
-        params.append('limit', limit.toString());
-        if (name) params.append('name', name);
-        if (status !== 'ALL') params.append('status', status);
-        if (sort) params.append('sort', sort);
-        if (order) params.append('order', order);
-        return `${BASE_URL}/heritages?${params.toString()}`;
+        const params = new URLSearchParams()
+        params.append('page', page.toString())
+        params.append('limit', limit.toString())
+        if (name) params.append('name', name)
+        if (status !== 'ALL') params.append('status', status)
+        if (sort) params.append('sort', sort)
+        if (order) params.append('order', order)
+        return `${BASE_URL}/heritages?${params.toString()}`
       },
       providesTags: (result) =>
         result
           ? [
-              ...result.heritages.map(({ _id }) => ({ type: 'Heritages', id: _id })),
-              { type: 'Heritages', id: 'LIST' },
-            ]
+            ...result.heritages.map(({ _id }) => ({ type: 'Heritages', id: _id })),
+            { type: 'Heritages', id: 'LIST' },
+          ]
           : [{ type: 'Heritages', id: 'LIST' }],
     }),
 
@@ -65,7 +65,7 @@ export const heritageSlice = apiSlice.injectEndpoints({
       invalidatesTags: ['Heritages'],
     }),
   }),
-});
+})
 
 export const {
   useGetHeritagesQuery,
@@ -76,5 +76,5 @@ export const {
   useCreateHeritageMutation,
   useUpdateHeritageMutation,
   useDeleteHeritageMutation,
-} = heritageSlice;
+} = heritageSlice
 

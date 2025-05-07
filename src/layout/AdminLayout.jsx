@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, Outlet, Link, useLocation } from 'react-router-dom';
-import { logOut, selectCurrentUser } from '~/store/slices/authSlice';
-import { Button } from '~/components/common/ui/Button';
+import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate, Outlet, Link, useLocation } from 'react-router-dom'
+import { logOut, selectCurrentUser } from '~/store/slices/authSlice'
+import { Button } from '~/components/common/ui/Button'
 import {
   Menu,
   LogOut,
@@ -12,21 +12,21 @@ import {
   ChevronLeft,
   ChevronRight,
   Home,
-} from 'lucide-react';
-import { toast } from 'react-toastify';
+} from 'lucide-react'
+import { toast } from 'react-toastify'
 
 const AdminLayout = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const userInfo = useSelector(selectCurrentUser);
-  const isAuthenticated = !!userInfo;
-  const location = useLocation();
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const userInfo = useSelector(selectCurrentUser)
+  const isAuthenticated = !!userInfo
+  const location = useLocation()
   
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
   if (!isAuthenticated) {
-    navigate('/login');
-    return null;
+    navigate('/login')
+    return null
   }
 
   const handleLogout = () => {
@@ -41,19 +41,19 @@ const AdminLayout = () => {
   }
 
   const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+    setIsSidebarOpen(!isSidebarOpen)
+  }
 
   const navItems = [
     { name: 'Quản lý Người dùng', path: '/admin/users', icon: <Users className='w-5 h-5' /> },
     { name: 'Quản lý Di tích', path: '/admin/heritages', icon: <Users className='w-5 h-5' /> },
     { name: 'Quản lý Bài kiểm tra', path: '/admin/knowledge-tests', icon: <BookOpen className='w-5 h-5' /> },
     { name: 'Cài đặt', path: '/admin/settings', icon: <Settings className='w-5 h-5' /> },
-  ];
+  ]
 
   const isActiveRoute = (path) => {
-    return location.pathname === path;
-  };
+    return location.pathname === path
+  }
 
   return (
     <div className='flex h-screen bg-gray-100'>
@@ -139,7 +139,7 @@ const AdminLayout = () => {
         </main>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AdminLayout;
+export default AdminLayout

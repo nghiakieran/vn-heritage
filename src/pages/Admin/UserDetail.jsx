@@ -1,23 +1,23 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Button } from '~/components/common/ui/Button';
-import { Label } from '~/components/common/ui/Label';
-import { Input } from '~/components/common/ui/Input';
-import { useGetUserByIdQuery, useUpdateUserMutation } from '~/store/apis/userSlice';
-import { toast } from 'react-toastify';
+import { useState, useEffect } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
+import { Button } from '~/components/common/ui/Button'
+import { Label } from '~/components/common/ui/Label'
+import { Input } from '~/components/common/ui/Input'
+import { useGetUserByIdQuery, useUpdateUserMutation } from '~/store/apis/userSlice'
+import { toast } from 'react-toastify'
 
 const UserDetail = () => {
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const { data: user, isLoading, isError, error } = useGetUserByIdQuery(id);
-    const [updateUser, { isLoading: isUpdating, isSuccess: updateSuccess, isError: updateError, error: updateErrorMessage }] = useUpdateUserMutation();
+    const { id } = useParams()
+    const navigate = useNavigate()
+    const { data: user, isLoading, isError, error } = useGetUserByIdQuery(id)
+    const [updateUser, { isLoading: isUpdating, isSuccess: updateSuccess, isError: updateError, error: updateErrorMessage }] = useUpdateUserMutation()
     const [formData, setFormData] = useState({
         displayname: '',
         role: '',
         phone: '',
         gender: '',
         isActive: false, 
-    });
+    })
 
     useEffect(() => {
         if (user) {
@@ -27,29 +27,29 @@ const UserDetail = () => {
                 phone: user.phone || '',
                 gender: user.gender || 'other',
                 isActive: user.account?.isActive || false, // Initialize isActive
-            });
+            })
         }
-    }, [user]);
+    }, [user])
 
     useEffect(() => {
         if (updateSuccess) {
             toast.success('Cập nhật thành công!')
-            navigate('/admin/users');
+            navigate('/admin/users')
         }
         if (updateError) {
-            console.error('Lỗi cập nhật:', updateErrorMessage);
+            console.error('Lỗi cập nhật:', updateErrorMessage)
             toast.error(`Cập nhật thất bại: ${updateErrorMessage?.data?.message || 'Lỗi không xác định'}`)
         }
-    }, [updateSuccess, updateError, updateErrorMessage, navigate]);
+    }, [updateSuccess, updateError, updateErrorMessage, navigate])
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
+        const { name, value } = e.target
+        setFormData({ ...formData, [name]: value })
+    }
 
     const handleStatusChange = (e) => {
-        setFormData({ ...formData, isActive: e.target.checked });
-    };
+        setFormData({ ...formData, isActive: e.target.checked })
+    }
 
     const handleUpdate = () => {
         // Restructure data to match database schema
@@ -58,17 +58,17 @@ const UserDetail = () => {
             account: {
                 isActive: formData.isActive // Move isActive into account object
             }
-        };
+        }
         
         // Remove isActive from root level
-        delete updateData.isActive;
+        delete updateData.isActive
         
-        updateUser({ id, ...updateData });
-    };
+        updateUser({ id, ...updateData })
+    }
 
-    if (isLoading) return <div className="text-center">Đang tải...</div>;
-    if (isError) return <div className="text-center text-red-500">Lỗi khi tải dữ liệu: {error?.data?.message || error.error}</div>;
-    if (!user) return <div className="text-center">Không tìm thấy người dùng.</div>;
+    if (isLoading) return <div className="text-center">Đang tải...</div>
+    if (isError) return <div className="text-center text-red-500">Lỗi khi tải dữ liệu: {error?.data?.message || error.error}</div>
+    if (!user) return <div className="text-center">Không tìm thấy người dùng.</div>
 
     return (
         <div className="space-y-6">
@@ -188,7 +188,7 @@ const UserDetail = () => {
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default UserDetail;
+export default UserDetail

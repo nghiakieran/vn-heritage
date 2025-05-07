@@ -1,23 +1,23 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Button } from '~/components/common/ui/Button';
-import { Label } from '~/components/common/ui/Label';
-import { Input } from '~/components/common/ui/Input';
-import { toast } from 'react-toastify';
-import { useGetHeritagesByIdQuery, useUpdateHeritageMutation } from '~/store/apis/heritageApi';
+import { useState, useEffect } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
+import { Button } from '~/components/common/ui/Button'
+import { Label } from '~/components/common/ui/Label'
+import { Input } from '~/components/common/ui/Input'
+import { toast } from 'react-toastify'
+import { useGetHeritagesByIdQuery, useUpdateHeritageMutation } from '~/store/apis/heritageApi'
 
 const HeritageDetail = () => {
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const { data: heritage, isLoading, isError, error } = useGetHeritagesByIdQuery(id);
-    const [updateHeritage, { isLoading: isUpdating, isSuccess: updateSuccess, isError: updateError, error: updateErrorMessage }] = useUpdateHeritageMutation();
+    const { id } = useParams()
+    const navigate = useNavigate()
+    const { data: heritage, isLoading, isError, error } = useGetHeritagesByIdQuery(id)
+    const [updateHeritage, { isLoading: isUpdating, isSuccess: updateSuccess, isError: updateError, error: updateErrorMessage }] = useUpdateHeritageMutation()
     const [formData, setFormData] = useState({
         name: '',
         description: '',
         location: '',
         coordinates: { latitude: '', longitude: '' },
         status: 'ACTIVE',
-    });
+    })
 
     useEffect(() => {
         if (heritage) {
@@ -30,46 +30,46 @@ const HeritageDetail = () => {
                     longitude: heritage.coordinates?.longitude || '',
                 },
                 status: heritage.status || 'ACTIVE',
-            });
+            })
         }
-    }, [heritage]);
+    }, [heritage])
 
     useEffect(() => {
         if (updateSuccess) {
-            toast.success('Cập nhật di tích thành công!');
-            navigate('/admin/heritages');
+            toast.success('Cập nhật di tích thành công!')
+            navigate('/admin/heritages')
         }
         if (updateError) {
-            // console.error('Lỗi cập nhật:', updateErrorMessage);
-            const errorMsg = updateErrorMessage?.data?.message || updateErrorMessage?.error || 'Lỗi không xác định';
-            toast.error(`Cập nhật di tích thất bại: ${errorMsg}`);
+            // console.error('Lỗi cập nhật:', updateErrorMessage)
+            const errorMsg = updateErrorMessage?.data?.message || updateErrorMessage?.error || 'Lỗi không xác định'
+            toast.error(`Cập nhật di tích thất bại: ${errorMsg}`)
         }
-    }, [updateSuccess, updateError, updateErrorMessage, navigate]);
+    }, [updateSuccess, updateError, updateErrorMessage, navigate])
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value } = e.target
         if (name.startsWith('coordinates.')) {
-            const field = name.split('.')[1];
+            const field = name.split('.')[1]
             setFormData({
                 ...formData,
                 coordinates: { ...formData.coordinates, [field]: value },
-            });
+            })
         } else {
-            setFormData({ ...formData, [name]: value });
+            setFormData({ ...formData, [name]: value })
         }
-    };
+    }
 
     const handleUpdate = () => {
-        // console.log(formData);
-        updateHeritage({ id, formData });
-    };
-
-    if (isLoading) return <div className="text-center">Đang tải...</div>;
-    if (isError) {
-        const errorMsg = error?.data?.message || error?.error || 'Lỗi không xác định';
-        return <div className="text-center text-red-500">Lỗi khi tải dữ liệu: {errorMsg}</div>;
+        // console.log(formData)
+        updateHeritage({ id, formData })
     }
-    if (!heritage) return <div className="text-center">Không tìm thấy di tích.</div>;
+
+    if (isLoading) return <div className="text-center">Đang tải...</div>
+    if (isError) {
+        const errorMsg = error?.data?.message || error?.error || 'Lỗi không xác định'
+        return <div className="text-center text-red-500">Lỗi khi tải dữ liệu: {errorMsg}</div>
+    }
+    if (!heritage) return <div className="text-center">Không tìm thấy di tích.</div>
 
     return (
         <div className="space-y-6">
@@ -151,7 +151,7 @@ const HeritageDetail = () => {
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default HeritageDetail;
+export default HeritageDetail

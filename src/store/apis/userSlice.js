@@ -1,5 +1,5 @@
-import { BASE_URL } from '~/constants/fe.constant';
-import { apiSlice } from './apiSlice';
+import { BASE_URL } from '~/constants/fe.constant'
+import { apiSlice } from './apiSlice'
 
 export const userSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -73,30 +73,30 @@ export const userSlice = apiSlice.injectEndpoints({
     // CLIENT: Lấy tất cả active users
     getAllActiveUsers: builder.query({
       async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
-        let allUsers = [];
-        let page = 1;
-        const limit = 10;
-        let hasMore = true;
+        let allUsers = []
+        let page = 1
+        const limit = 10
+        let hasMore = true
 
         while (hasMore) {
-          const result = await fetchWithBQ(`/users?page=${page}&limit=${limit}`);
-          if (result.error) return { error: result.error };
+          const result = await fetchWithBQ(`/users?page=${page}&limit=${limit}`)
+          if (result.error) return { error: result.error }
 
-          allUsers = [...allUsers, ...result.data.users];
-          hasMore = page < result.data.pagination.totalPages;
-          page++;
+          allUsers = [...allUsers, ...result.data.users]
+          hasMore = page < result.data.pagination.totalPages
+          page++
         }
 
         const activeUsers = allUsers.filter(
           (user) => user.account && user.account.isActive === true
-        );
+        )
 
-        return { data: { users: activeUsers } };
+        return { data: { users: activeUsers } }
       },
       providesTags: ['User'],
     }),
   }),
-});
+})
 
 // Export hooks
 export const {
@@ -108,5 +108,5 @@ export const {
   useUpdateUserProfileMutation,
   useUploadAvatarMutation,
   useGetAllActiveUsersQuery,
-} = userSlice;
+} = userSlice
 

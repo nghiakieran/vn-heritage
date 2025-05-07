@@ -1,66 +1,66 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '~/components/common/ui/Button';
-import { Label } from '~/components/common/ui/Label';
-import { Input } from '~/components/common/ui/Input';
-import { useCreateHeritageMutation } from '~/store/apis/heritageApi';
-import { toast } from 'react-toastify';
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Button } from '~/components/common/ui/Button'
+import { Label } from '~/components/common/ui/Label'
+import { Input } from '~/components/common/ui/Input'
+import { useCreateHeritageMutation } from '~/store/apis/heritageApi'
+import { toast } from 'react-toastify'
 
 const AddHeritage = () => {
-    const navigate = useNavigate();
-    const [createHeritage, { isLoading: isCreating, isSuccess: createSuccess, isError: createError, error: createErrorMessage }] = useCreateHeritageMutation();
+    const navigate = useNavigate()
+    const [createHeritage, { isLoading: isCreating, isSuccess: createSuccess, isError: createError, error: createErrorMessage }] = useCreateHeritageMutation()
     const [formData, setFormData] = useState({
         name: '',
         description: '',
         location: '',
         coordinates: { latitude: '', longitude: '' },
         status: 'ACTIVE',
-    });
+    })
 
     useEffect(() => {
         if (createSuccess) {
-            toast.success('Tạo di tích thành công!');
-            navigate('/admin/heritages');
+            toast.success('Tạo di tích thành công!')
+            navigate('/admin/heritages')
         }
         if (createError) {
-            console.error('Lỗi tạo di tích:', createErrorMessage);
-            const errorMsg = createErrorMessage?.data?.message || createErrorMessage?.error || 'Lỗi không xác định';
-            toast.error(`Tạo di tích thất bại: ${errorMsg}`);
+            console.error('Lỗi tạo di tích:', createErrorMessage)
+            const errorMsg = createErrorMessage?.data?.message || createErrorMessage?.error || 'Lỗi không xác định'
+            toast.error(`Tạo di tích thất bại: ${errorMsg}`)
         }
-    }, [createSuccess, createError, createErrorMessage, navigate]);
+    }, [createSuccess, createError, createErrorMessage, navigate])
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value } = e.target
         if (name.startsWith('coordinates.')) {
-            const field = name.split('.')[1];
+            const field = name.split('.')[1]
             setFormData({
                 ...formData,
                 coordinates: { ...formData.coordinates, [field]: value },
-            });
+            })
         } else {
-            setFormData({ ...formData, [name]: value });
+            setFormData({ ...formData, [name]: value })
         }
-    };
+    }
 
     const handleCreate = () => {
         if (!formData.name.trim()) {
-            toast.error('Tên di tích không được để trống!');
-            return;
+            toast.error('Tên di tích không được để trống!')
+            return
         }
         if (!formData.description.trim()) {
-            toast.error('Mô tả không được để trống!');
-            return;
+            toast.error('Mô tả không được để trống!')
+            return
         }
         if (!formData.location.trim()) {
-            toast.error('Địa điểm không được để trống!');
-            return;
+            toast.error('Địa điểm không được để trống!')
+            return
         }
         if (!formData.coordinates.latitude || !formData.coordinates.longitude) {
-            toast.error('Tọa độ không được để trống!');
-            return;
+            toast.error('Tọa độ không được để trống!')
+            return
         }
-        createHeritage(formData);
-    };
+        createHeritage(formData)
+    }
 
     return (
         <div className="space-y-6">
@@ -142,7 +142,7 @@ const AddHeritage = () => {
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default AddHeritage;
+export default AddHeritage

@@ -1,14 +1,14 @@
-import About from '~/pages/About/About';
-import ChatHeritagePage from '~/pages/ChatHeritagePage/ChatHeritagePage';
-import EmailVerification from '~/pages/EmailVerification';
-import Favorites from '~/pages/Favorites';
-import GenericMapExplorer from '~/pages/GoogleMapHeritage/GenericMapExplorer';
-import HeritageDetail from '~/pages/HeritageDetail/HeritageDetail';
-import Heritages from '~/pages/Heritages';
-import Home from '~/pages/Home';
-import Login from '~/pages/Login';
-import Profile from '~/pages/Profile';
-import Register from '~/pages/Register';
+import About from '~/pages/About/About'
+import ChatHeritagePage from '~/pages/ChatHeritagePage/ChatHeritagePage'
+import EmailVerification from '~/pages/EmailVerification'
+import Favorites from '~/pages/Favorites'
+import GenericMapExplorer from '~/pages/GoogleMapHeritage/GenericMapExplorer'
+import HeritageDetail from '~/pages/HeritageDetail/HeritageDetail'
+import Heritages from '~/pages/Heritages'
+import Home from '~/pages/Home'
+import Login from '~/pages/Login'
+import Profile from '~/pages/Profile'
+import Register from '~/pages/Register'
 
 const publicRoutes = [
   { path: '/', element: <Home /> },
@@ -22,6 +22,6 @@ const publicRoutes = [
   { path: '/profile', element: <Profile /> },
   { path: '/favorites', element: <Favorites /> },
   { path: '/explore', element: <GenericMapExplorer /> },
-];
+]
 
-export default publicRoutes;
+export default publicRoutes
