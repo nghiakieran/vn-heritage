@@ -4,7 +4,7 @@ import { apiSlice } from './apiSlice';
 export const commentSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // Get all comments (with pagination, search, and filtering by heritageId)
-    getAll: builder.query({
+    getAllComment: builder.query({
       query: ({ page = 1, limit = 10, search = '', sort = 'createdAt', order = 'desc', heritageId }) => ({
         url: `${BASE_URL}/comments/`,
         method: 'GET',
@@ -64,7 +64,7 @@ export const commentSlice = apiSlice.injectEndpoints({
 
 // Export hooks
 export const {
-  useGetAllQuery,
+  useGetAllCommentQuery,
   useGetCommentByIdQuery,
   useCreateNewMutation,
   useUpdateCommentMutation,
