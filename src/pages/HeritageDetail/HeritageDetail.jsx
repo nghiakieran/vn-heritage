@@ -17,6 +17,7 @@ import {
   HeritageInfo, 
   HeritageHeader 
 } from '~/components/lazyComponents'
+import ErrorBoundary from './ErrorBoundary'
 
 const HeritageDetail = () => {
   const { nameSlug } = useParams()
@@ -29,7 +30,7 @@ const HeritageDetail = () => {
     page: 1,
     limit: 50
   })
-
+  console.log('Heritage data:', data._)
   // Logic để random 3 di tích liên quan
   const getRandomRelatedHeritages = useMemo(() => {
     if (!allHeritages?.heritages || !id) return []
@@ -97,7 +98,9 @@ const HeritageDetail = () => {
             <div className='grid grid-cols-1 sm:grid-cols-3 gap-8'>
               <div className='sm:col-span-2'>
                 <Suspense fallback={<div>Đang tải...</div>}>
-                  <HeritageDetailTabs data={data} isAuthenticated={isAuthenticated} navigate={navigate} />
+                  <ErrorBoundary>
+                    <HeritageDetailTabs data={data} isAuthenticated={isAuthenticated} navigate={navigate} />
+                  </ErrorBoundary>
                 </Suspense>
                 <div className='mt-10'>
                   <h3 className='lcn-heritage-detail-title mb-4'>Tính năng tương tác</h3>
