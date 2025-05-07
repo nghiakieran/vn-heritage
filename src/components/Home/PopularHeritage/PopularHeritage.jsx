@@ -14,7 +14,7 @@ const PopularHeritage = () => {
   // Fetch tất cả di tích
   const { data: response, isLoading, error } = useGetHeritagesQuery({
     page: 1,
-    limit: 50
+    limit: 10
   })
 
   useEffect(() => {

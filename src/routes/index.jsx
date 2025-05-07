@@ -20,6 +20,7 @@ const Login = lazy(() => import('~/pages/Login'))
 const Profile = lazy(() => import('~/pages/Profile'))
 const Register = lazy(() => import('~/pages/Register'))
 const NotFound = lazy(() => import('~/pages/NotFound'))
+const ForgotPassword = lazy(() => import('~/pages/ForgotPassword'))
 
 // Map route paths to lazy-loaded components
 const routeComponents = {
@@ -34,6 +35,7 @@ const routeComponents = {
   '/profile': <Profile />,
   '/favorites': <Favorites />,
   '/explore': <GenericMapExplorer />,
+  '/forgot-password': <ForgotPassword />,
 }
 
 const PublicRoutes = ({ children, restricted }) => {
@@ -83,7 +85,7 @@ const AppRoutes = () => {
       <ScrollToTop />
       <Routes>
         {/* Public Routes with MainLayout */}
-        <Route path="/" element={<MainLayout />}>
+        <Route path='/' element={<MainLayout />}>
           {publicRoutes.map(({ path, restricted }) => (
             <Route
               key={path}
@@ -101,7 +103,7 @@ const AppRoutes = () => {
               }
             />
           ))}
-          <Route path="*" element={<NotFound />} />
+          <Route path='*' element={<NotFound />} />
         </Route>
 
         {/* Private Routes with AdminLayout */}
