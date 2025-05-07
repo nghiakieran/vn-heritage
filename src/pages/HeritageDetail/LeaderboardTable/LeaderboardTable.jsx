@@ -77,7 +77,10 @@ const LeaderboardTable = ({ heritageId, heritageName = 'Di tích lịch sử', i
   }, [hasMore, isFetching, isOpen])
 
   // Các utility function
-  const formatDate = date => {
+  const formatDate = (date) => {
+    if (!date) {
+      return ''
+    }
     return new Intl.DateTimeFormat('vi-VN', {
       day: '2-digit',
       month: '2-digit',
