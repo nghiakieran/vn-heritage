@@ -23,8 +23,20 @@ export const heritageSlice = apiSlice.injectEndpoints({
           : [{ type: 'Heritages', id: 'LIST' }],
     }),
 
+
     getHeritagesById: builder.query({
-      query: (heritageId) => `${BASE_URL}/heritages/${heritageId}`,
+      query: (id) => ({
+        url: `${BASE_URL}/heritages/id/${id}`,
+        method: 'GET',
+      }),
+      providesTags: (result, error, id) => [{ type: 'Heritages', id }],
+    }),
+
+    getAllHeritageNames: builder.query({
+      query: () => ({
+        url: `${BASE_URL}/heritages/all-name`,
+        method: 'GET',
+      }),
       providesTags: (result, error, id) => [{ type: 'Heritages', id }],
     }),
 
@@ -50,7 +62,7 @@ export const heritageSlice = apiSlice.injectEndpoints({
 
     updateHeritage: builder.mutation({
       query: ({ id, data }) => ({
-        url: `${BASE_URL}/heritages/${id}`,
+        url: `${BASE_URL}/heritages/id/${id}`,
         method: 'PUT',
         body: data,
       }),
@@ -59,11 +71,20 @@ export const heritageSlice = apiSlice.injectEndpoints({
 
     deleteHeritage: builder.mutation({
       query: (id) => ({
-        url: `${BASE_URL}/heritages/${id}`,
+        url: `${BASE_URL}/heritages/id${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Heritages'],
     }),
+
+     uploadHeritageImg: builder.mutation({
+          query: (data) => ({
+            url: `${BASE_URL}/heritages/upload`,
+            method: 'POST',
+            body: data,
+          }),
+          invalidatesTags: (result, error, { id }) => [{ type: 'Heritages', id }],
+        }),
   }),
 })
 
@@ -76,5 +97,7 @@ export const {
   useCreateHeritageMutation,
   useUpdateHeritageMutation,
   useDeleteHeritageMutation,
+  useUploadHeritageImgMutation,
+  useGetAllHeritageNamesQuery
 } = heritageSlice
 

@@ -21,7 +21,7 @@ const AdminLayout = () => {
   const userInfo = useSelector(selectCurrentUser)
   const isAuthenticated = !!userInfo
   const location = useLocation()
-  
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
   if (!isAuthenticated) {
@@ -70,7 +70,7 @@ const AdminLayout = () => {
           <ul className='space-y-1'>
             <li>
               <Link to='/'>
-                <Button 
+                <Button
                   variant={isActiveRoute('/') ? 'secondary' : 'ghost'}
                   className={`w-full text-left !justify-start ${isActiveRoute('/') ? 'bg-gray-100' : ''}`}
                 >
@@ -120,8 +120,8 @@ const AdminLayout = () => {
             <span className='text-sm'>{userInfo?.displayname || 'Admin'}</span>
             {
               userInfo?.avatar ? (
-                <img 
-                  src={userInfo.avatar} 
+                <img
+                  src={userInfo.avatar}
                   alt='Avatar'
                   className='w-10 h-10 rounded-full object-cover'
                 />

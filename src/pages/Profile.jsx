@@ -13,7 +13,7 @@ const DEFAULT_AVATAR = '/images/avatar-default.jpg'
 const UserProfile = () => {
   const dispatch = useDispatch()
   const { data: user } = useGetUserProfileQuery()
-  
+
   const [updateUserProfile, { isLoading: isUpdating }] = useUpdateUserProfileMutation()
   const [uploadAvatar, { isLoading: isUploadingAvatar }] = useUploadAvatarMutation()
   const initialFormData = useMemo(
@@ -29,6 +29,7 @@ const UserProfile = () => {
 
   const [isEditing, setIsEditing] = useState(false)
   const [formData, setFormData] = useState(initialFormData)
+  // eslint-disable-next-line no-unused-vars
   const [avatarPreview, setAvatarPreview] = useState(user?.avatar || DEFAULT_AVATAR)
   const [isAvatarChanged, setIsAvatarChanged] = useState(false)
   const [avatarFile, setAvatarFile] = useState(null)
@@ -72,7 +73,7 @@ const UserProfile = () => {
         setIsAvatarChanged(true)
         toast.info('Ảnh đại diện sẽ được cập nhật khi bạn lưu thay đổi', {
           position: "top-right"
-          })
+        })
       }
       reader.onerror = () => {
         toast.error('Không thể đọc file ảnh')
@@ -130,7 +131,7 @@ const UserProfile = () => {
       }
       // Unwrap để lấy data trả về từ API
       const updatedUser = await updateUserProfile(updateData).unwrap()
-      
+
       // Dispatch action để update Redux store
       dispatch(setUser(updatedUser))
       setIsEditing(false)
@@ -206,56 +207,56 @@ const UserProfile = () => {
           <div className='flex flex-col sm:flex-row items-center gap-6 pb-6 border-b'>
             <div className='relative group'>
               <div className='w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-white shadow-sm'>
-              {formData.avatar ? (
-                <img
-                  src={formData.avatar || '/images/avatar-default.jpg'}
-                  alt={formData.displayname || 'User'}
-                  loading='lazy'
-                  className='w-full h-full object-cover'
-                  onError={(e) => {
-                    if (e.target.src !== '/images/avatar-default.jpg') {
-                      e.target.src = '/images/avatar-default.jpg';
-                    }
-                  }}
-                />
-              ) : (
-                <div className='w-full h-full bg-gray-300 flex items-center justify-center text-white text-2xl font-bold'>
-                {formData.displayname
-                  ? formData.displayname
-                    .split(' ')
-                    .slice(0, 2)
-                    .map((word) => word[0].toUpperCase())
-                    .join('')
-                  : 'NA'}
-                </div>
-              )}
+                {formData.avatar ? (
+                  <img
+                    src={formData.avatar || '/images/avatar-default.jpg'}
+                    alt={formData.displayname || 'User'}
+                    loading='lazy'
+                    className='w-full h-full object-cover'
+                    onError={(e) => {
+                      if (e.target.src !== '/images/avatar-default.jpg') {
+                        e.target.src = '/images/avatar-default.jpg';
+                      }
+                    }}
+                  />
+                ) : (
+                  <div className='w-full h-full bg-gray-300 flex items-center justify-center text-white text-2xl font-bold'>
+                    {formData.displayname
+                      ? formData.displayname
+                        .split(' ')
+                        .slice(0, 2)
+                        .map((word) => word[0].toUpperCase())
+                        .join('')
+                      : 'NA'}
+                  </div>
+                )}
               </div>
               {isEditing && (
-              <label
-                htmlFor='avatar-upload'
-                className='absolute inset-0 flex items-center justify-center bg-black/50 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200'
-              >
-                <Camera size={32} className='text-white' />
-                <input
-                id='avatar-upload'
-                type='file'
-                accept='image/*'
-                className='hidden'
-                onChange={handleAvatarChange}
-                aria-label='Tải lên ảnh đại diện'
-                />
-              </label>
+                <label
+                  htmlFor='avatar-upload'
+                  className='absolute inset-0 flex items-center justify-center bg-black/50 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200'
+                >
+                  <Camera size={32} className='text-white' />
+                  <input
+                    id='avatar-upload'
+                    type='file'
+                    accept='image/*'
+                    className='hidden'
+                    onChange={handleAvatarChange}
+                    aria-label='Tải lên ảnh đại diện'
+                  />
+                </label>
               )}
               {isAvatarChanged && isEditing && (
-              <div className='absolute -top-2 -right-2 bg-heritage text-white rounded-full w-6 h-6 flex items-center justify-center'>
-                <Check size={14} />
-              </div>
+                <div className='absolute -top-2 -right-2 bg-heritage text-white rounded-full w-6 h-6 flex items-center justify-center'>
+                  <Check size={14} />
+                </div>
               )}
             </div>
             <h3 className='text-xl font-semibold'>{user.displayname || 'User'}</h3>
           </div>
 
-              {/* Personal Info */}
+          {/* Personal Info */}
           <div className='space-y-6'>
             <h3 className='text-lg font-medium text-heritage-dark'>Thông tin cá nhân</h3>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
