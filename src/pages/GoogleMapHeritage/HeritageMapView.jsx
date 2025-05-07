@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { Button } from '~/components/common/ui/Button'
+import React from 'react'
 
 function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, onSelectCoordinates }) {
     const mapContainer = useRef(null)
@@ -60,10 +61,8 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
     // Handle select button click
     const handleSelectCoordinates = useCallback(() => {
         if (currentCoordinates && typeof currentCoordinates.lat === 'number' && typeof currentCoordinates.lng === 'number') {
-            // console.log('Gửi tọa độ từ "Chọn" button:', currentCoordinates)
             onSelectCoordinates(currentCoordinates)
         } else {
-            // console.log('Tọa độ không hợp lệ hoặc chưa chọn:', currentCoordinates)
             onSelectCoordinates(null)
         }
     }, [currentCoordinates, onSelectCoordinates])
@@ -96,7 +95,6 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
         map.current.on('click', (e) => {
             const { lng, lat } = e.lngLat
             if (typeof lat !== 'number' || typeof lng !== 'number') {
-                // console.log('Tọa độ click không hợp lệ:', { lat, lng })
                 return
             }
 
@@ -116,7 +114,6 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
             newMarker.on('dragend', () => {
                 const newLngLat = newMarker.getLngLat()
                 if (typeof newLngLat.lat !== 'number' || typeof newLngLat.lng !== 'number') {
-                    // console.log('Tọa độ drag không hợp lệ:', newLngLat)
                     return
                 }
                 setCurrentCoordinates({ lat: newLngLat.lat, lng: newLngLat.lng })
@@ -136,7 +133,6 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
         // Add initial markers
         initialMarkers.forEach(({ lat, lng, title }) => {
             if (typeof lat !== 'number' || typeof lng !== 'number') {
-                // console.log('Tọa độ marker không hợp lệ:', { lat, lng, title })
                 return
             }
 
@@ -210,7 +206,6 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
             }
 
             if (typeof lat !== 'number' || typeof lng !== 'number') {
-                // console.log('Tọa độ tìm kiếm không hợp lệ:', { lat, lng })
                 setSearchError('Tọa độ không hợp lệ.')
                 return
             }
@@ -227,8 +222,7 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
                 <div class="p-2">
                     <h3 class="font-medium">${placeName}</h3>
                     <p class="text-sm">Loại: ${placeType}</p>
-                    <p class="text-sm">Khu vực: ${context.find((c) => c.id.includes('region'))?.text || 'Không xác định'
-                }</p>
+                    <p class="text-sm">Khu vực: ${context.find((c) => c.id.includes('region'))?.text || 'Không xác định'}</p>
                 </div>
             `
 
@@ -246,7 +240,6 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
             newMarker.on('dragend', () => {
                 const newLngLat = newMarker.getLngLat()
                 if (typeof newLngLat.lat !== 'number' || typeof newLngLat.lng !== 'number') {
-                    // console.log('Tọa độ drag không hợp lệ:', newLngLat)
                     return
                 }
                 setCurrentCoordinates({ lat: newLngLat.lat, lng: newLngLat.lng })
@@ -311,13 +304,6 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
                             className="flex-1 p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             aria-label="Tìm kiếm địa điểm"
                         />
-                        {/* <button
-                            type="submit"
-                            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                            aria-label="Tìm kiếm"
-                        >
-                            Tìm
-                        </button> */}
                         <Button
                             type="submit"
                             aria-label="Tìm kiếm"
@@ -363,13 +349,6 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
                             aria-label="Địa chỉ hiện tại"
                         />
                     </div>
-                    {/* <button
-                        onClick={handleSelectCoordinates}
-                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mt-5"
-                        aria-label="Chọn tọa độ"
-                    >
-                        Chọn
-                    </button> */}
                     <Button
                         onClick={handleSelectCoordinates}
                         aria-label="Chọn tọa độ"
@@ -383,4 +362,4 @@ function HeritageMapView({ center, markers: initialMarkers = [], onMarkerClick, 
     )
 }
 
-export default HeritageMapView
+export default React.memo(HeritageMapView)
