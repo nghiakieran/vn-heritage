@@ -6,6 +6,7 @@ import { cn } from '~/lib/utils'
 
 export function UserList({
   users,
+  currentUser,
   activeUserId,
   onSelectUser,
   onSelectCommunity,
@@ -42,7 +43,7 @@ export function UserList({
       return statusOrder[a.status] - statusOrder[b.status] || (b.unreadCount || 0) - (a.unreadCount || 0)
     })
   }, [filteredUsers])
-  
+
   useEffect(() => {
     if (isOpen) {
       document.body.classList.add('overflow-hidden')
@@ -58,7 +59,7 @@ export function UserList({
 
   // Only render when sidebar is open and onSelectUser is provided
   if (!isOpen || !onSelectUser) return null
-  
+
   return (
     <div className='h-screen flex flex-col bg-sidebar text-white'>
       <div className='p-4 border-b border-white/10'>
@@ -76,7 +77,7 @@ export function UserList({
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => setSearchFocused(true)}
             onBlur={() => setSearchFocused(false)}
-          /> 
+          />
           {searchQuery && (
             <button
               className='text-white/70 hover:text-white'
@@ -143,7 +144,7 @@ export function UserList({
       </div>
 
       <div className='p-4 border-t border-white/10 flex items-center justify-between sticky bottom-0 z-10 bg-sidebar'>
-        <UserStatus name='Tài khoản của bạn' status='online' size='md' />
+        <UserStatus avatar={currentUser.avatar} name='Tài khoản của bạn' status='online' size='md' />
         <Button variant='ghost' size='icon' className='h-8 w-8 text-white/70'>
           <Smile className='h-4 w-4' />
         </Button>

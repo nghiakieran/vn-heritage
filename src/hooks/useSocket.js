@@ -28,20 +28,16 @@ const useSocket = (userData, heritageId) => {
     // Kết nối socket
     useEffect(() => {
         if (!userData || !userData.userId) {
-            console.log('No userData, skipping socket connect')
             return
         }
 
-        console.log('Connecting socket with userData:', userData)
         socketService.connect(userData)
 
         const handleConnect = () => {
-            console.log('Socket connected')
             setIsConnected(true)
         }
 
         const handleDisconnect = () => {
-            console.log('Socket disconnected')
             setIsConnected(false)
             setUsersInRoom([])
             setRoomId(null)
@@ -57,7 +53,6 @@ const useSocket = (userData, heritageId) => {
         }
 
         const handleError = (data) => {
-            console.error('Socket error:', data)
             setSocketError(data.message)
             if (data.code === 'ROOM_NOT_FOUND') {
                 setTimeout(() => {
@@ -71,12 +66,10 @@ const useSocket = (userData, heritageId) => {
         socketService.on('error', handleError)
 
         return () => {
-            console.log('Cleaning up socket connection')
             socketService.off(SOCKET_EVENTS.CONNECT, handleConnect)
             socketService.off(SOCKET_EVENTS.DISCONNECT, handleDisconnect)
             socketService.off('error', handleError)
             if (heritageId) {
-                console.log('Emitting leave-room:', { heritageId })
                 socketService.leaveRoom({ heritageId, userId: userData.userId })
             }
             socketService.disconnect()
@@ -86,7 +79,6 @@ const useSocket = (userData, heritageId) => {
     // Đăng ký sự kiện socket
     useEffect(() => {
         const handleRoomJoined = (data) => {
-            console.log('Received room-joined:', data)
             setRoomId(data.roomId)
             setSocketError(null)
             const systemMessage = {
@@ -98,16 +90,13 @@ const useSocket = (userData, heritageId) => {
             }
             setMessages((prev) => {
                 if (prev.some(msg => msg.isSystemMessage && msg.content === data.message)) {
-                    console.log('Skipping duplicate room-joined message:', data.message)
                     return prev
                 }
-                console.log('Adding room-joined message:', systemMessage)
                 return [...prev, systemMessage]
             })
         }
 
         const handleUserJoined = (data) => {
-            console.log('Received user-joined:', data)
             const systemMessage = {
                 id: `system-${Date.now()}`,
                 content: `${data.username} vừa tham gia phòng chat.`,
@@ -117,10 +106,8 @@ const useSocket = (userData, heritageId) => {
             }
             setMessages((prev) => {
                 if (prev.some(msg => msg.isSystemMessage && msg.content === systemMessage.content)) {
-                    console.log('Skipping duplicate user-joined message:', systemMessage.content)
                     return prev
                 }
-                console.log('Adding user-joined message:', systemMessage)
                 return [...prev, systemMessage]
             })
             setUsersInRoom((prev) => {
@@ -133,7 +120,6 @@ const useSocket = (userData, heritageId) => {
         }
 
         const handleUserLeft = (data) => {
-            console.log('Received user-left:', data)
             const systemMessage = {
                 id: `system-${Date.now()}`,
                 content: `${data.username} đã rời phòng chat.`,
@@ -143,17 +129,14 @@ const useSocket = (userData, heritageId) => {
             }
             setMessages((prev) => {
                 if (prev.some(msg => msg.isSystemMessage && msg.content === systemMessage.content)) {
-                    console.log('Skipping duplicate user-left message:', systemMessage.content)
                     return prev
                 }
-                console.log('Adding user-left message:', systemMessage)
                 return [...prev, systemMessage]
             })
             setUsersInRoom((prev) => prev.filter((user) => user.id !== data.userId))
         }
 
         const handleRoomUsers = (data) => {
-            console.log('Received room-users:', data)
             setUsersInRoom(data.users.map((user) => ({
                 id: user.userId,
                 name: user.username,
@@ -161,7 +144,6 @@ const useSocket = (userData, heritageId) => {
         }
 
         const handleNewMessage = (data) => {
-            console.log('Received new-message:', data)
             const sender = {
                 id: data.userId,
                 name: usersInRoom.find(user => user.id === data.userId)?.name || 'Unknown',
@@ -177,16 +159,13 @@ const useSocket = (userData, heritageId) => {
             }
             setMessages((prev) => {
                 if (prev.some(msg => msg.id === newMessage.id)) {
-                    console.log('Skipping duplicate message:', newMessage.id)
                     return prev
                 }
-                console.log('Adding new message:', newMessage)
                 return [...prev, newMessage]
             })
         }
 
         const handleRoomMessages = (data) => {
-            console.log('Received room-messages:', data)
             const newMessages = data.messages.map((msg) => {
                 const sender = {
                     id: msg.userId,
@@ -206,7 +185,6 @@ const useSocket = (userData, heritageId) => {
                 const uniqueMessages = newMessages.filter(
                     (msg) => !prev.some((existing) => existing.id === msg.id)
                 )
-                console.log('Adding room messages:', uniqueMessages)
                 setHasMoreMessages(uniqueMessages.length === limit)
                 setIsLoadingMessages(false)
                 return [...uniqueMessages, ...prev]
@@ -214,17 +192,14 @@ const useSocket = (userData, heritageId) => {
         }
 
         const handleJoinDm = (data) => {
-            console.log('Received join-dm:', data)
             const { dmRoomId } = data
             const recipientId = currentRecipientIdRef.current
 
             if (!recipientId) {
-                console.log('No recipientId set, cannot handle join-dm')
                 return
             }
 
             if (fetchedDmMessagesRef.current.has(recipientId)) {
-                console.log(`Đã lấy tin nhắn cho recipientId ${recipientId}, bỏ qua`)
                 return
             }
 
@@ -235,12 +210,10 @@ const useSocket = (userData, heritageId) => {
 
             fetchedDmMessagesRef.current.set(recipientId, dmRoomId)
 
-            console.log(`Fetching messages for dmRoomId ${dmRoomId} (recipientId: ${recipientId})`)
             socketService.getDirectMessages(dmRoomId, limit)
         }
 
         const handleNewDm = (data) => {
-            console.log('Received new-dm:', data)
             const sender = {
                 id: data.userId,
                 name: usersInRoom.find(user => user.id === data.userId)?.name || 'Unknown',
@@ -258,7 +231,6 @@ const useSocket = (userData, heritageId) => {
                 const currentMessages = prev[recipientId] || []
                 // Kiểm tra xem tin nhắn đã tồn tại chưa
                 if (currentMessages.some(msg => msg.id === newMessage.id)) {
-                    console.log(`Tin nhắn với id ${newMessage.id} đã tồn tại, bỏ qua`)
                     return prev
                 }
 
@@ -270,7 +242,6 @@ const useSocket = (userData, heritageId) => {
                     // Thay thế tin nhắn tạm bằng tin nhắn thực
                     const updatedMessages = [...currentMessages]
                     updatedMessages[tempMessageIndex] = newMessage
-                    console.log(`Thay thế tin nhắn tạm tại index ${tempMessageIndex} bằng tin nhắn thực`)
                     return {
                         ...prev,
                         [recipientId]: updatedMessages,
@@ -278,7 +249,6 @@ const useSocket = (userData, heritageId) => {
                 }
 
                 // Nếu không có tin nhắn tạm, thêm tin nhắn mới
-                console.log(`Thêm tin nhắn mới cho recipientId ${recipientId}:`, newMessage)
                 return {
                     ...prev,
                     [recipientId]: [...currentMessages, newMessage],
@@ -287,7 +257,6 @@ const useSocket = (userData, heritageId) => {
         }
 
         const handleDmMessages = (data) => {
-            console.log('Received dm-messages:', data)
             const { dmRoomId, messages } = data
             const recipientId = Object.keys(dmRoomIds).find(
                 (key) => dmRoomIds[key] === dmRoomId
@@ -323,7 +292,6 @@ const useSocket = (userData, heritageId) => {
         socketService.on(SOCKET_EVENTS.DM_MESSAGES, handleDmMessages)
 
         return () => {
-            console.log('Cleaning up socket events')
             socketService.off(SOCKET_EVENTS.ROOM_JOINED, handleRoomJoined)
             socketService.off(SOCKET_EVENTS.USER_JOINED, handleUserJoined)
             socketService.off(SOCKET_EVENTS.USER_LEFT, handleUserLeft)
@@ -339,11 +307,9 @@ const useSocket = (userData, heritageId) => {
     // Tham gia phòng cộng đồng
     useEffect(() => {
         if (!isConnected || !heritageId || !userData || hasJoinedRef.current) {
-            console.log('Skipping joinRoom:', { isConnected, heritageId, userData, hasJoined: hasJoinedRef.current })
             return
         }
 
-        console.log('Emitting join-room:', { heritageId, userData })
         socketService.joinRoom(heritageId, userData)
         hasJoinedRef.current = true
     }, [isConnected, heritageId, userData])
@@ -351,7 +317,6 @@ const useSocket = (userData, heritageId) => {
     // Lấy tin nhắn lần đầu khi có roomId (cho cộng đồng)
     useEffect(() => {
         if (roomId && !hasFetchedMessagesRef.current) {
-            console.log('Fetching initial messages for roomId:', roomId)
             setIsLoadingMessages(true)
             socketService.getMessages(roomId, limit)
             hasFetchedMessagesRef.current = true
@@ -361,11 +326,9 @@ const useSocket = (userData, heritageId) => {
     // Tải thêm tin nhắn khi kéo lên (cho cộng đồng)
     const loadMoreMessages = useCallback(() => {
         if (!roomId || isLoadingMessages || !hasMoreMessages) {
-            console.log('Cannot load more messages:', { roomId, isLoadingMessages, hasMoreMessages })
             return
         }
         const lastMessageTimestamp = messages.length > 0 ? messages[0].timestamp : null
-        console.log('Loading more messages:', { roomId, limit, lastMessageTimestamp })
         setIsLoadingMessages(true)
         socketService.getMessages(roomId, limit, lastMessageTimestamp)
     }, [roomId, messages, isLoadingMessages, hasMoreMessages])
@@ -373,7 +336,6 @@ const useSocket = (userData, heritageId) => {
     // Gửi tin nhắn cộng đồng
     const sendMessage = useCallback((content) => {
         if (!isConnected || !roomId) {
-            console.log('Cannot send message:', { isConnected, roomId })
             return
         }
 
@@ -383,18 +345,15 @@ const useSocket = (userData, heritageId) => {
             userId: userData.userId,
         }
 
-        console.log('Sending message:', messageData)
         socketService.sendMessage(roomId, messageData)
     }, [isConnected, roomId])
 
     // Tham gia phòng chat riêng
     const joinDirectRoom = useCallback((recipientId) => {
         if (!isConnected || !userData) {
-            console.log('Cannot join direct room:', { isConnected, userData })
             return
         }
 
-        console.log('Joining direct room with:', { userId1: userData.userId, userId2: recipientId })
         currentRecipientIdRef.current = recipientId
         socketService.joinDirectRoom(userData.userId, recipientId, userData)
 
@@ -407,13 +366,11 @@ const useSocket = (userData, heritageId) => {
     // Gửi tin nhắn riêng
     const sendDirectMessage = useCallback((recipientId, content) => {
         if (!isConnected) {
-            console.log('Cannot send direct message: not connected')
             return
         }
 
         const dmRoomId = dmRoomIds[recipientId]
         if (!dmRoomId) {
-            console.log('Cannot send direct message: dmRoomId not found for recipient', recipientId)
             return
         }
 
@@ -422,7 +379,6 @@ const useSocket = (userData, heritageId) => {
             type: 'TEXT',
         }
 
-        console.log('Sending direct message:', { dmRoomId, userId: userData.userId, message: messageData })
         socketService.sendDirectMessage(dmRoomId, userData.userId, messageData)
 
         // Thêm tin nhắn vào state ngay lập tức
@@ -437,7 +393,6 @@ const useSocket = (userData, heritageId) => {
             const currentMessages = prev[recipientId] || []
             // Kiểm tra xem có tin nhắn tương tự (cùng nội dung, cùng sender) chưa
             if (currentMessages.some(msg => msg.content === newMessage.content && msg.sender.id === newMessage.sender.id && msg.timestamp === newMessage.timestamp)) {
-                console.log(`Tin nhắn tạm với nội dung "${newMessage.content}" đã tồn tại, bỏ qua`)
                 return prev
             }
             return {

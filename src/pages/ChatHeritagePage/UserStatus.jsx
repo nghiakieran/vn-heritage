@@ -2,6 +2,7 @@ import { User } from 'lucide-react'
 import { cn } from '~/lib/utils'
 
 export function UserStatus({ name, status, avatar, className, showStatus = true, size = 'md' }) {
+  const DEFAULT_AVATAR = '/images/avatar-default.jpg'
   const avatarSizes = {
     sm: 'h-8 w-8',
     md: 'h-9 w-9',
@@ -26,7 +27,17 @@ export function UserStatus({ name, status, avatar, className, showStatus = true,
         <div className='relative'>
           <div className={cn('rounded-full flex items-center justify-center bg-primary/20 text-white', avatarSizes[size])}>
             {avatar ? (
-              <img src={avatar || '/images/avatar-default.jpg'} loading='lazy' alt={name} className='rounded-full object-cover w-full h-full' />
+              <img
+                src={avatar}
+                loading='lazy'
+                alt={name || 'User'}
+                className='rounded-full object-cover w-full h-full'
+                onError={(e) => {
+                  if (e.target.src !== DEFAULT_AVATAR) {
+                    e.target.src = DEFAULT_AVATAR
+                  }
+                }}
+              />
             ) : (
               <User className={cn(size === 'sm' ? 'h-4 w-4' : size === 'md' ? 'h-5 w-5' : 'h-6 w-6')} />
             )}
@@ -35,7 +46,7 @@ export function UserStatus({ name, status, avatar, className, showStatus = true,
             <span
               className={cn(
                 'absolute bottom-0 right-0 rounded-full border-2 border-sidebar',
-                statusColors[status],
+                statusColors[status] || statusColors.offline,
                 statusSizes[size],
                 status === 'online' && 'animate-pulse-dot',
               )}
@@ -49,11 +60,11 @@ export function UserStatus({ name, status, avatar, className, showStatus = true,
               'font-medium truncate block',
             )}
           >
-            {name}
+            {name || 'Unknown'}
           </span>
           {showStatus && (
             <div className={cn('flex items-center', size === 'sm' ? 'text-xs' : 'text-sm', 'text-white/60')}>
-              <span className='capitalize'>{status}</span>
+              <span className='capitalize'>{status || 'offline'}</span>
             </div>
           )}
         </div>
