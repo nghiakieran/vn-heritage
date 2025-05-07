@@ -2,6 +2,7 @@ import About from '~/pages/About/About'
 import ChatHeritagePage from '~/pages/ChatHeritagePage/ChatHeritagePage'
 import EmailVerification from '~/pages/EmailVerification'
 import Favorites from '~/pages/Favorites'
+import ForgotPassword from '~/pages/ForgotPassword'
 import GenericMapExplorer from '~/pages/GoogleMapHeritage/GenericMapExplorer'
 import HeritageDetail from '~/pages/HeritageDetail/HeritageDetail'
 import Heritages from '~/pages/Heritages'
@@ -22,6 +23,7 @@ const publicRoutes = [
   { path: '/profile', element: <Profile /> },
   { path: '/favorites', element: <Favorites /> },
   { path: '/explore', element: <GenericMapExplorer /> },
+  { path: '/forgot-password', element: <ForgotPassword />, restricted: true },
 ]
 
 export default publicRoutes
