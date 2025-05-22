@@ -6,6 +6,7 @@ import { toast } from 'react-toastify'
 import { selectCurrentUser } from '~/store/slices/authSlice'
 
 import { Button } from '~/components/common/ui/Button'
+import Avatar from '~/components/common/Avatar'
 import { logOut } from '~/store/slices/authSlice'
 
 const UserMenu = ({ userMenuLinks }) => {
@@ -64,13 +65,12 @@ const UserMenu = ({ userMenuLinks }) => {
       )}
       <div className='relative'>
          <Button onClick={() => setIsOpen(!isOpen)} variant='ghost' size='icon' className='hover:bg-transparent'>
-          {
-            currentUser?.avatar ? (
-              <img src={currentUser?.avatar} alt='profile' className='h-9 w-9 rounded-full object-cover hover:opacity-80 transition-opacity' />
-            ) : (
-              <span className='text-white bg-heritage hover:opacity-80 h-9 w-9 rounded-full flex items-center justify-center text-sm font-medium'>{currentUser?.displayname?.slice(0, 2).toUpperCase() || 'UN'}</span>
-            )
-          }
+          <Avatar 
+            src={currentUser?.avatar}
+            name={currentUser?.displayname}
+            size="md"
+            fallbackClassName="bg-heritage text-white"
+          />
         </Button>
         {
           isOpen && (
