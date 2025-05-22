@@ -20,7 +20,7 @@ const TableRow = ({ ranking, formatDate, getInitials, getRankIcon }) => {
         <div className='font-medium text-foreground'>{ranking?.displayName}</div>
         <div className='text-sm text-muted-foreground'>Hoàn thành: {formatDate(ranking?.completeDate)}</div>
       </div>
-      <div className='font-bold'>{ranking?.score} điểm</div>
+      <div className='font-bold'>{ranking?.score.toFixed(2)} điểm</div>
     </div>
   )
 }

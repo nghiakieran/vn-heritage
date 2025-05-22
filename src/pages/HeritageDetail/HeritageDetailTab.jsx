@@ -1,14 +1,25 @@
 import { useState, useCallback, useMemo } from 'react'
-import { Star, Loader2 } from 'lucide-react'
+import { Star, Loader2, MoreVertical, Trash2, ThumbsUp } from 'lucide-react'
 import { Suspense } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/common/ui/Tabs'
 import { Button } from '~/components/common/ui/Button'
 import { HistoryTab, GalleryTab } from '~/components/lazyComponents'
 import WriteReviewModal from '~/components/WriteReviewModal'
 import { useGetAllCommentQuery } from '~/store/apis/commentApi'
+import Avatar from '~/components/common/Avatar'
+import { useSelector } from 'react-redux'
+import { selectCurrentUser } from '~/store/slices/authSlice'
+import { useDeleteCommentMutation, useLikeCommentMutation } from '~/store/apis/commentApi'
+import { toast } from 'react-toastify'
+import { Dialog, DialogHeader, DialogTitle, DialogDescription } from '~/components/common/ui/Dialog'
 
 const HeritageDetailTabs = ({ data, isAuthenticated, navigate }) => {
   const [showWriteReview, setShowWriteReview] = useState(false)
+  const [openMenuId, setOpenMenuId] = useState(null)
+  const [deleteModal, setDeleteModal] = useState({ open: false, commentId: null })
+  const currentUser = useSelector(selectCurrentUser)
+  const [deleteComment] = useDeleteCommentMutation()
+  const [likeComment] = useLikeCommentMutation()
 
   // Sử dụng useMemo để memoize query options, tránh re-render không cần thiết
   const queryOptions = useMemo(() => ({
@@ -42,6 +53,30 @@ const HeritageDetailTabs = ({ data, isAuthenticated, navigate }) => {
   const handleReviewSubmit = useCallback((reviewData) => {
     setShowWriteReview(false) // Đóng modal sau khi submit thành công
   }, [])
+
+  const openDeleteModal = (commentId) => {
+    setDeleteModal({ open: true, commentId })
+    setOpenMenuId(null)
+  }
+
+  const confirmDelete = async () => {
+    try {
+      await deleteComment(deleteModal.commentId).unwrap()
+      setDeleteModal({ open: false, commentId: null })
+    } catch {
+      toast.error('Xóa bình luận thất bại!')
+    }
+  }
+
+  const closeDeleteModal = () => setDeleteModal({ open: false, commentId: null })
+
+  const handleLike = async (commentId) => {
+    try {
+      await likeComment(commentId).unwrap()
+    } catch {
+      toast.error('Thao tác like thất bại!')
+    }
+  }
 
   return (
     <Tabs defaultValue="overview">
@@ -110,8 +145,12 @@ const HeritageDetailTabs = ({ data, isAuthenticated, navigate }) => {
             {comments.map((comment) => (
               <div key={comment._id} className="border-b pb-6">
                 <div className="flex justify-between mb-2">
-                  <div className="flex items-center">
-                    <img className='h-9 w-9 rounded-full object-cover hover:opacity-80 transition-opacity' src={comment?.user?.avatar}/>
+                  <div className="flex items-center gap-3">
+                    <Avatar 
+                      src={comment?.user?.avatar}
+                      name={comment?.user?.displayName}
+                      size="md"
+                    />
                     <div>
                       <div className="font-medium">{comment.user?.displayName || comment.user?.id || 'Ẩn danh'}</div>
                       <div className="text-sm text-muted-foreground">
@@ -123,7 +162,7 @@ const HeritageDetailTabs = ({ data, isAuthenticated, navigate }) => {
                       </div>
                     </div>
                   </div>
-                  <div className="flex">
+                  <div className="flex items-center gap-2">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <Star
                         key={star}
@@ -131,6 +170,33 @@ const HeritageDetailTabs = ({ data, isAuthenticated, navigate }) => {
                         className={`${star <= comment.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
                       />
                     ))}
+                    {/* Like button */}
+                    <button
+                      className={`ml-2 flex items-center gap-1 px-2 py-1 rounded-full border ${comment.likes?.includes(currentUser?._id) ? 'bg-blue-100 text-blue-600 border-blue-300' : 'bg-gray-100 text-gray-500 border-gray-200'} hover:bg-blue-200 transition`}
+                      onClick={() => handleLike(comment._id)}
+                      disabled={!isAuthenticated}
+                    >
+                      <ThumbsUp size={16} />
+                      <span>{comment.likesCount || 0}</span>
+                    </button>
+                    {/* 3 dots menu for owner */}
+                    {currentUser?._id === comment.user?.id && (
+                      <div className="relative ml-2">
+                        <button onClick={() => setOpenMenuId(openMenuId === comment._id ? null : comment._id)} className="p-1 rounded-full hover:bg-gray-200">
+                          <MoreVertical size={18} />
+                        </button>
+                        {openMenuId === comment._id && (
+                          <div className="absolute right-0 mt-2 w-28 bg-white border rounded shadow z-10">
+                            <button
+                              onClick={() => { setOpenMenuId(null); openDeleteModal(comment._id) }}
+                              className="flex items-center gap-2 px-3 py-2 text-red-600 hover:bg-gray-100 w-full"
+                            >
+                              <Trash2 size={16} /> Xóa
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
                 <p className="text-sm text-justify">{comment.content}</p>
@@ -168,6 +234,16 @@ const HeritageDetailTabs = ({ data, isAuthenticated, navigate }) => {
             onSubmit={handleReviewSubmit}
           />
         )}
+        <Dialog open={deleteModal.open} onClose={closeDeleteModal}>
+          <DialogHeader>
+            <DialogTitle>Xác nhận xóa bình luận</DialogTitle>
+            <DialogDescription>Bạn có chắc chắn muốn xóa bình luận này? Hành động này không thể hoàn tác.</DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-3 p-4">
+            <Button variant="outline" onClick={closeDeleteModal}>Hủy</Button>
+            <Button variant="destructive" onClick={confirmDelete}>Xóa</Button>
+          </div>
+        </Dialog>
       </TabsContent>
     </Tabs>
   )
