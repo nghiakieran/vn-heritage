@@ -1,6 +1,7 @@
 # Vietnam Heritage Frontend
 
 ## Project Structure
+
 ```
 vn-heritage/
 ├── src/
@@ -8,9 +9,9 @@ vn-heritage/
 │   ├── assets/              # Static assets, images
 │   ├── components/          # Reusable components
 │   │   ├── common/         # Shared components
-│   │   ├── Footer/         
+│   │   ├── Footer/
 │   │   ├── Heritage/       # Heritage related components
-│   │   ├── Navigation/     # Navigation components
+│   │   ├── Home/           # Home components
 │   │   └── ToastProvider/  # Toast notifications
 │   ├── config/             # App configurations
 │   ├── constants/          # Constants and environment vars
@@ -39,82 +40,44 @@ vn-heritage/
 
 ## Key Features
 
-1. **Authentication**
-   - Login/Register
-   - Private/Public routes
-   - Auth state management
+1. **Heritage Exploration**
 
-2. **Heritage Management**
-   - Heritage listing
-   - Heritage details
-   - Search and filters
-   - Pagination
+   - View heritage list and details
+   - Interactive Google Maps integration
+   - Search nearby heritage sites
+   - View detailed information and images
 
-3. **User Features**
-   - Favorites system
-   - Knowledge tests
-   - Leaderboard
-   - Mail notifications
+2. **User Features**
 
-4. **UI Components**
-   - Responsive design
-   - Toast notifications
-   - Common components library
+   - Take knowledge tests
+   - View personal rankings
+   - Rate and review heritage sites
+   - Ask and answer questions about heritage sites
+
+3. **Admin Features**
+   - User management
+   - Heritage site management
+   - Quiz management
 
 ## Getting Started
 
 1. **Installation**
+
 ```bash
-# Install dependencies
 npm install
 ```
 
 2. **Development**
+
 ```bash
-# Start development server
 npm run dev
 ```
 
-3. **Build**
-```bash
-# Create production build
-npm run build
-```
-
 ## Environment Variables (.env)
+
 ```env
 APP_BACKEND_URL=http://localhost:8017
 ```
-
-## Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Create production build
-- `npm run lint` - Run ESLint
-- `npm run preview` - Preview production build
-
-## State Management
-
-The project uses Redux Toolkit with the following structure:
-
-- **APIs**: RTK Query API definitions
-  - `heritageApi.js` - Heritage related endpoints
-  - `authApi.js` - Authentication endpoints
-  - `knowledgeTestApi.js` - Knowledge test endpoints
-  - `leaderboardApi.js` - Leaderboard endpoints
-
-- **Slices**: Redux state slices
-  - `authSlice.js` - Authentication state
-  - `favoriteSlice.js` - Favorites management
-  - `paginationSlice.js` - Pagination state
-
-## Contributing
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/name`)
-3. Commit changes (`git commit -m 'Add feature'`)
-4. Push to branch (`git push origin feature/name`)
-5. Create Pull Request
 
 ### 🌐 Deployed Link
 
